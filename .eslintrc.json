@@ -1,0 +1,41 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:astro/recommended",
+    "plugin:mdx/recommended",
+    "prettier"
+  ],
+  "overrides": [
+    {
+      "files": ["*.astro"],
+      "parser": "astro-eslint-parser",
+      "parserOptions": {
+        "parser": "@typescript-eslint/parser",
+        "extraFileExtensions": [".astro"],
+        "sourceType": "module"
+      },
+      "rules": {
+        "astro/no-conflict-set-directives": "error",
+        "astro/no-unused-define-vars-in-style": "error"
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "sourceType": "module"
+      }
+    },
+    {
+      "files": ["*.mdx"],
+      "extends": ["plugin:mdx/recommended"],
+      "rules": {
+        "no-unused-vars": "off"
+      }
+    }
+  ],
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-console": "warn"
+  }
+}

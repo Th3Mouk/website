@@ -1,50 +1,155 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This
-				template serves as a lightweight, minimally-styled starting point for anyone looking to build
-				a personal website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to <a href="https://docs.astro.build/"
-					>read the docs
-				</a> or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out <a
-					href="https://github.com/Charca/astro-blog-template"
-					>astro-blog-template
-				</a> by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
-		</main>
-		<Footer />
-	</body>
-</html>
+<BaseLayout>
+  <div class="min-h-screen bg-base-100">
+    <!-- Hero Section -->
+    <div class="hero min-h-[calc(100vh-4rem)] relative overflow-hidden">
+      <!-- Background with theme-aware gradient -->
+      <div
+        class="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/5 to-transparent dark:from-primary/20 dark:via-secondary/10 dark:to-base-300/50"
+      >
+      </div>
+      <!-- Subtle pattern overlay -->
+      <div
+        class="absolute inset-0 opacity-[0.15] dark:opacity-[0.07]"
+        style='background-image: url("data:image/svg+xml,%3Csvg width=\'
+        60\'
+        height="\'60\'"
+        viewBox="\'0"
+        0
+        60
+        60\'
+        xmlns="\'http://www.w3.org/2000/svg\'%3E%3Cg"
+        fill="\'none\'"
+        fill-rule="\'evenodd\'%3E%3Cg"
+        fill="\'currentColor\'"
+        fill-opacity="\'0.4\'%3E%3Cpath"
+        d="\'M36"
+        34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6
+        34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6
+        4V0H4v4H0v2h4v4h2V6h4V4H6z\'
+        %3E%3C
+        g%3E%3C
+        g%3E%3C
+        svg%3E")'
+      >
+      </div>
+      <div class="hero-content relative flex-col lg:flex-row gap-12 max-w-6xl mx-auto px-6 py-16">
+        <!-- Image -->
+        <div class="avatar">
+          <div
+            class="w-72 rounded-full ring ring-primary/80 ring-offset-base-100 ring-offset-4 shadow-xl"
+          >
+            <img src="/profil2-blue.jpg" alt="Jérémy Marodon" class="bg-base-200" />
+          </div>
+        </div>
+        <!-- Content -->
+        <div class="text-center lg:text-left">
+          <h1 class="text-5xl font-extrabold mb-4">
+            <span class="text-gradient">Jérémy Marodon</span>
+          </h1>
+          <h2 class="text-2xl font-semibold text-base-content mb-6">
+            Formateur & Consultant Technique Senior
+          </h2>
+          <p class="text-lg text-base-content/80 mb-8 max-w-2xl">
+            J'accompagne les entreprises et développeurs dans leur montée en compétences techniques,
+            avec un focus sur des technologies modernes comme PHP, Symfony, React, DevOps, et IA.
+          </p>
+          <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
+            <a href="/about" class="btn btn-primary shadow-lg hover:shadow-primary/20"
+              >En savoir plus</a
+            >
+            <a
+              href="https://www.linkedin.com/in/jeremymarodon/"
+              target="_blank"
+              class="btn btn-outline hover:shadow-lg">Me contacter</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Services Section -->
+    <div class="py-16 bg-base-200">
+      <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center text-primary mb-8">Mes Services</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Formation Card -->
+          <div class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow">
+            <div class="card-body">
+              <h3 class="card-title text-primary">Formation</h3>
+              <p>Des formations adaptées à vos besoins :</p>
+              <ul class="list-disc pl-4 space-y-2 mt-4">
+                <li>PHP & Symfony avancé</li>
+                <li>React & DevOps</li>
+                <li>Tests & Qualité de code</li>
+              </ul>
+            </div>
+          </div>
+          <!-- Consulting Card -->
+          <div class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow">
+            <div class="card-body">
+              <h3 class="card-title text-secondary">Consulting</h3>
+              <p>Accompagnement technique et stratégique :</p>
+              <ul class="list-disc pl-4 space-y-2 mt-4">
+                <li>Architecture logicielle</li>
+                <li>CI/CD & DevOps</li>
+                <li>Optimisation des performances</li>
+              </ul>
+            </div>
+          </div>
+          <!-- Développement Card -->
+          <div class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow">
+            <div class="card-body">
+              <h3 class="card-title text-accent">Développement</h3>
+              <p>Développement sur mesure :</p>
+              <ul class="list-disc pl-4 space-y-2 mt-4">
+                <li>Applications web modernes</li>
+                <li>APIs & Microservices</li>
+                <li>Intégration IA</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="py-16 bg-gradient-to-r from-base-200 via-base-300 to-base-200">
+      <div class="container mx-auto text-center">
+        <div class="stats stats-vertical lg:stats-horizontal shadow-lg">
+          <div class="stat">
+            <div class="stat-title">Personnes formées</div>
+            <div class="stat-value text-primary">50+</div>
+            <div class="stat-desc">Depuis 2013</div>
+          </div>
+          <div class="stat">
+            <div class="stat-title">Projets réalisés</div>
+            <div class="stat-value text-secondary">25+</div>
+            <div class="stat-desc">Applications & Formations</div>
+          </div>
+          <div class="stat">
+            <div class="stat-title">Entreprises accompagnées</div>
+            <div class="stat-value text-accent">10+</div>
+            <div class="stat-desc">Partenariats et collaborations</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="py-16 bg-primary text-primary-content">
+      <div class="container mx-auto text-center">
+        <div class="max-w-2xl mx-auto">
+          <h2 class="text-2xl font-bold mb-4">Prêt à collaborer ?</h2>
+          <p class="mb-6">
+            Contactez-moi pour discuter de vos besoins en formation, consulting ou développement.
+          </p>
+          <a href="/contact" class="btn btn-secondary btn-lg">Me contacter</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

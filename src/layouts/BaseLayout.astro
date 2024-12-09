@@ -1,0 +1,36 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <BaseHead title={title} description={description} />
+  </head>
+  <body class="min-h-screen bg-base-100 text-base-content">
+    <Header />
+    <main class="container mx-auto px-4 py-16">
+      <slot />
+    </main>
+    <Footer />
+  </body><script is:inline>
+    // Get theme from localStorage or default to light
+    const theme = (() => {
+      if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+        return localStorage.getItem('theme');
+      }
+      return 'light';
+    })();
+    document.documentElement.setAttribute('data-theme', theme);
+  </script>
+</html>
