@@ -1,0 +1,40 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+}
+
+const { src, alt } = Astro.props;
+const webpSrc = src.replace('.jpg', '.webp');
+---
+
+<div class="avatar animate-container">
+  <div
+    class="w-72 rounded-full ring ring-primary/60 dark:ring-primary/40 ring-offset-base-100 ring-offset-2 shadow-xl transition-all duration-300 hover:ring-offset-4 hover:ring-primary/80"
+  >
+    <picture>
+      <source srcset={webpSrc} type="image/webp" />
+      <img
+        src={src}
+        alt={alt}
+        class="bg-base-200 transition-transform duration-300"
+        width="288"
+        height="288"
+        loading="eager"
+        decoding="async"
+      />
+    </picture>
+  </div>
+</div>
+
+<style>
+  .animate-container:hover img {
+    transform: scale(1.02);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-container:hover img {
+      transform: none;
+    }
+  }
+</style>

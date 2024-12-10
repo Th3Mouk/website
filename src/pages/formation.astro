@@ -1,0 +1,136 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FormationCard from '../components/FormationCard.astro';
+
+type FormationIcon = 'php' | 'symfony' | 'javascript' | 'database' | 'cicd' | 'devops' | 'infrastructure' | 'api' | 'tests' | 'ai' | 'methods';
+
+interface Formation {
+  title: string;
+  description: string;
+  icon: FormationIcon;
+}
+
+const formations: Formation[] = [
+  {
+    title: "PHP Moderne",
+    description: "Découvrez les bases de PHP 8+ tout en approfondissant les concepts avancés comme la programmation orientée objet et la gestion des dépendances avec Composer. Mettez vous à jour sur les nouvelles fonctionnalités et syntaxes de PHP. Cette formation vous aide à adopter les bonnes pratiques pour vos projets professionnels.",
+    icon: "php"
+  },
+  {
+    title: "Symfony",
+    description: "Apprenez à développer des applications avec Symfony, un framework PHP robuste et complet. Fort de plus de 10 ans d'expérience avec Symfony depuis la version 1.4, je vous guide à travers ses composants essentiels, Doctrine ORM, Twig, la création d'API REST et les bonnes pratiques en sécurité et en gestion de projets.",
+    icon: "symfony"
+  },
+  {
+    title: "Travailler avec l'IA",
+    description: "Découvrez comment intégrer des outils d'intelligence artificielle dans votre workflow pour gagner en efficacité. Apprenez à utiliser des modèles comme GPT d'OpenAI ou Claude d'Anthropic pour automatiser des tâches et développer plus rapidement.",
+    icon: "ai"
+  },
+  {
+    title: "JavaScript et TypeScript",
+    description: "Explorez les fondamentaux de JavaScript et découvrez comment TypeScript peut rendre vos projets plus fiables et maintenables. Cette formation vous accompagne dans l'utilisation des frameworks modernes comme React, Vue.js et Node.js (entre autres) pour construire des applications front-end et back-end performantes.",
+    icon: "javascript"
+  },
+  {
+    title: "Bases de Données",
+    description: "Maîtrisez les bonnes pratiques de gestion des bases de données, relationnelles (MySQL, PostgreSQL) et NoSQL (MongoDB, Redis). Cette formation couvre la modélisation, les requêtes et les bases pour structurer vos données de manière efficace.",
+    icon: "database"
+  },
+  {
+    title: "CI/CD",
+    description: "Apprenez à automatiser vos processus de développement avec des pipelines CI/CD. Découvrez comment tester et déployer vos applications de manière rapide et fiable en utilisant des outils modernes comme GitHub Actions, GitLab CI et Jenkins.",
+    icon: "cicd"
+  },
+  {
+    title: "DevOps / SRE",
+    description: "Initiez-vous aux pratiques DevOps et au Site Reliability Engineering (SRE) pour améliorer la supervision et la stabilité des applications en production. Découvrez comment mettre en place des outils de monitoring et d'alerting comme Prometheus, Grafana et Sentry pour assurer le bon fonctionnement de vos services.",
+    icon: "devops"
+  },
+  {
+    title: "Infrastructure et Hébergement",
+    description: "Apprenez à utiliser Docker et Kubernetes pour gérer vos conteneurs et explorez les outils d'infrastructure-as-code comme Terraform, Pulumi et Ansible. Cette formation couvre également l'hébergement web, l'installation de serveurs et les bases pour héberger vos applications sur différentes plateformes.",
+    icon: "infrastructure"
+  },
+  {
+    title: "Développement d'API",
+    description: "Découvrez les bonnes pratiques pour concevoir et développer des API RESTful fiables et bien documentées. Cette formation aborde la création d'API, la sécurisation des endpoints et l'utilisation d'outils comme Swagger et Postman pour garantir leur qualité.",
+    icon: "api"
+  },
+  {
+    title: "Tests et Qualité de Code",
+    description: "Apprenez à mettre en place une stratégie et une pyramide de tests dans vos projets. Découvrez les différents types de tests (unitaires, fonctionnels, etc...) et comment les intégrer dans vos workflows pour assurer une meilleure qualité et fiabilité de vos logiciels.",
+    icon: "tests"
+  },
+  {
+    title: "Méthodes de Travail",
+    description: "Initiez-vous aux méthodologies Agile comme Scrum et Kanban pour organiser vos projets et travailler efficacement en équipe. Cette formation vous accompagne également dans l'utilisation de Git et d'outils collaboratifs pour structurer vos workflows de manière productive.",
+    icon: "methods"
+  }
+];
+---
+
+<BaseLayout>
+  <div class="min-h-screen bg-base-100">
+    <!-- Hero Section -->
+    <div class="hero py-16 bg-base-200">
+      <div class="hero-content text-center">
+        <div class="max-w-3xl">
+          <h1 class="text-4xl font-bold mb-8">
+            <span class="text-gradient">Formations</span>
+          </h1>
+          <p class="text-xl text-base-content/80">
+            Des formations adaptées à vos besoins, pour monter en compétences sur les technologies modernes et les meilleures pratiques de développement.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formations Grid -->
+    <div class="container mx-auto px-4 py-16">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {formations.map((formation) => (
+          <FormationCard
+            title={formation.title}
+            description={formation.description}
+            icon={formation.icon}
+          />
+        ))}
+      </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="bg-gradient-to-br from-primary to-primary/90 py-16">
+      <div class="container mx-auto px-4 text-center text-primary-content">
+        <h2 class="text-3xl font-bold mb-4">Intéressé par une formation ?</h2>
+        <p class="mb-8 opacity-90 max-w-2xl mx-auto">
+          Contactez-moi pour discuter de vos besoins et objectifs. Je vous proposerai une formation sur mesure adaptée à votre contexte.
+        </p>
+        <a
+          href="https://www.linkedin.com/in/jeremymarodon/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-outline border-2 text-primary-content hover:bg-primary-content hover:text-primary transition-all duration-300 group px-8"
+          aria-label="Me contacter sur LinkedIn"
+        >
+          Me contacter
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke-width="2" 
+            stroke="currentColor" 
+            class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent;
+  }
+</style>

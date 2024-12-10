@@ -1,0 +1,59 @@
+---
+interface Props {
+  title: string;
+  value: string;
+  description: string;
+  color: string;
+}
+
+const { title, value, description, color } = Astro.props;
+---
+
+<div class="stat group">
+  <div class="stat-title text-base-content/70">{title}</div>
+  <div class={`stat-value text-${color} text-4xl font-bold opacity-90 group-hover:opacity-100 transition-all duration-300 animate-on-scroll`}>
+    {value}
+  </div>
+  <div class="stat-desc text-base-content/60 group-hover:text-base-content/80 transition-colors duration-300">
+    {description}
+  </div>
+</div>
+
+<script>
+  const animateStats = () => {
+    const stats = document.querySelectorAll('.animate-on-scroll');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('scale-up');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    stats.forEach(stat => observer.observe(stat));
+  };
+
+  document.addEventListener('DOMContentLoaded', animateStats);
+</script>
+
+<style>
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .animate-on-scroll.scale-up {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-on-scroll {
+      transition: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

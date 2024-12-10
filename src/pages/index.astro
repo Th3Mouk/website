@@ -1,5 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import AnimatedAvatar from '../components/AnimatedAvatar.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import AnimatedStat from '../components/AnimatedStat.astro';
 ---
 
 <BaseLayout>
@@ -14,37 +17,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <!-- Subtle pattern overlay -->
       <div
         class="absolute inset-0 opacity-[0.15] dark:opacity-[0.07]"
-        style='background-image: url("data:image/svg+xml,%3Csvg width=\'
-        60\'
-        height="\'60\'"
-        viewBox="\'0"
-        0
-        60
-        60\'
-        xmlns="\'http://www.w3.org/2000/svg\'%3E%3Cg"
-        fill="\'none\'"
-        fill-rule="\'evenodd\'%3E%3Cg"
-        fill="\'currentColor\'"
-        fill-opacity="\'0.4\'%3E%3Cpath"
-        d="\'M36"
-        34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6
-        34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6
-        4V0H4v4H0v2h4v4h2V6h4V4H6z\'
-        %3E%3C
-        g%3E%3C
-        g%3E%3C
-        svg%3E")'
+        style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'currentColor\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')"
       >
       </div>
       <div class="hero-content relative flex-col lg:flex-row gap-12 max-w-6xl mx-auto px-6 py-16">
         <!-- Image -->
-        <div class="avatar">
-          <div
-            class="w-72 rounded-full ring ring-primary/80 ring-offset-base-100 ring-offset-4 shadow-xl"
-          >
-            <img src="/profil2-blue.jpg" alt="Jérémy Marodon" class="bg-base-200" />
-          </div>
-        </div>
+        <AnimatedAvatar src="/profil2-blue.jpg" alt="Jérémy Marodon" />
         <!-- Content -->
         <div class="text-center lg:text-left">
           <h1 class="text-5xl font-extrabold mb-4">
@@ -58,96 +36,128 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             avec un focus sur des technologies modernes comme PHP, Symfony, React, DevOps, et IA.
           </p>
           <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
-            <a href="/about" class="btn btn-primary shadow-lg hover:shadow-primary/20"
-              >En savoir plus</a
+            <a 
+              href="/about" 
+              class="btn btn-primary shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+              aria-label="En savoir plus sur mes services"
             >
+              En savoir plus
+            </a>
             <a
               href="https://www.linkedin.com/in/jeremymarodon/"
               target="_blank"
-              class="btn btn-outline hover:shadow-lg">Me contacter</a
+              rel="noopener noreferrer"
+              class="btn btn-outline hover:btn-primary hover:shadow-lg transition-all duration-300"
+              aria-label="Me contacter sur LinkedIn"
             >
+              Me contacter
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 ml-2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+              </svg>
+            </a>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Services Section -->
-    <div class="py-16 bg-base-200">
-      <div class="container mx-auto px-6">
-        <h2 class="text-3xl font-bold text-center text-primary mb-8">Mes Services</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <!-- Formation Card -->
-          <div class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow">
-            <div class="card-body">
-              <h3 class="card-title text-primary">Formation</h3>
-              <p>Des formations adaptées à vos besoins :</p>
-              <ul class="list-disc pl-4 space-y-2 mt-4">
-                <li>PHP & Symfony avancé</li>
-                <li>React & DevOps</li>
-                <li>Tests & Qualité de code</li>
-              </ul>
-            </div>
-          </div>
-          <!-- Consulting Card -->
-          <div class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow">
-            <div class="card-body">
-              <h3 class="card-title text-secondary">Consulting</h3>
-              <p>Accompagnement technique et stratégique :</p>
-              <ul class="list-disc pl-4 space-y-2 mt-4">
-                <li>Architecture logicielle</li>
-                <li>CI/CD & DevOps</li>
-                <li>Optimisation des performances</li>
-              </ul>
-            </div>
-          </div>
-          <!-- Développement Card -->
-          <div class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow">
-            <div class="card-body">
-              <h3 class="card-title text-accent">Développement</h3>
-              <p>Développement sur mesure :</p>
-              <ul class="list-disc pl-4 space-y-2 mt-4">
-                <li>Applications web modernes</li>
-                <li>APIs & Microservices</li>
-                <li>Intégration IA</li>
-              </ul>
+    <div class="py-16">
+      <div class="container mx-auto px-4">
+        <!-- Services Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+          <ServiceCard
+            title="Formation"
+            description="Je propose des formations techniques adaptées aux développeurs souhaitant monter en compétences et aux responsables pédagogiques recherchant des formateurs qualifiés pour préparer leurs étudiants à intégrer le monde professionnel. Mes modules couvrent PHP, Symfony, React et DevOps, avec une approche axée sur des cas pratiques et les attentes réelles des entreprises. Chaque formation est conçue pour transmettre des compétences concrètes et directement applicables. Discutons ensemble de vos besoins pour concevoir un programme sur mesure."
+            items={[
+              'Formation développeurs & étudiants',
+              'Cas pratiques & projets réels',
+              'Programmes sur mesure'
+            ]}
+            icon="formation"
+            color="primary"
+            url="/formation"
+          />
+
+          <ServiceCard
+            title="Consulting"
+            description="Je vous accompagne pour résoudre vos problématiques techniques grâce à des solutions concrètes et adaptées à vos besoins. Que ce soit pour concevoir une architecture logicielle performante, accompagner une migration technologique, intégrer des workflows CI/CD fiables, ou mettre en place une stratégie de tests efficace, mon expertise vous aide à simplifier vos processus et garantir des résultats fiables. J'interviens également sur des audits techniques et la mise en conformité de vos infrastructures. Parlons de vos projets pour identifier ensemble les meilleures solutions."
+            items={[
+              'Architecture & Migration',
+              'Audit & Conformité',
+              'Optimisation & Performance'
+            ]}
+            icon="consulting"
+            color="secondary"
+          />
+
+          <ServiceCard
+            title="Développement"
+            description="Je vous aide à concrétiser vos projets en créant des applications modernes et performantes, en rénovant des bases de code vieillissantes pour les aligner sur les standards actuels, ou en développant de nouvelles fonctionnalités adaptées aux besoins de vos utilisateurs. Mon approche garantit des solutions fiables, évolutives et en phase avec vos objectifs métiers. Contactez-moi pour transformer vos idées en outils concrets."
+            items={[
+              'Applications web modernes',
+              'Rénovation de code legacy',
+              'Solutions sur mesure'
+            ]}
+            icon="development"
+            color="accent"
+          />
+        </div>
+
+        <!-- Stats Section -->
+        <div class="bg-base-200">
+          <div class="container mx-auto py-16 px-4 text-center">
+            <div class="stats stats-vertical lg:stats-horizontal shadow-xl bg-base-100 mx-auto">
+              <AnimatedStat
+                title="Personnes formées"
+                value="50+"
+                description="Depuis 2013"
+                color="primary"
+              />
+              
+              <AnimatedStat
+                title="Projets réalisés"
+                value="25+"
+                description="Applications & Formations"
+                color="secondary"
+              />
+              
+              <AnimatedStat
+                title="Entreprises accompagnées"
+                value="10+"
+                description="Partenariats et collaborations"
+                color="accent"
+              />
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Stats Section -->
-    <div class="py-16 bg-gradient-to-r from-base-200 via-base-300 to-base-200">
-      <div class="container mx-auto text-center">
-        <div class="stats stats-vertical lg:stats-horizontal shadow-lg">
-          <div class="stat">
-            <div class="stat-title">Personnes formées</div>
-            <div class="stat-value text-primary">50+</div>
-            <div class="stat-desc">Depuis 2013</div>
+        <!-- CTA Section -->
+        <div class="bg-gradient-to-br from-primary to-primary/90">
+          <div class="container mx-auto py-16 px-4 text-center text-primary-content">
+            <h2 class="text-3xl font-bold mb-4">Prêt à collaborer ?</h2>
+            <p class="mb-8 opacity-90 max-w-2xl mx-auto">
+              Contactez-moi pour discuter de vos besoins en formation, consulting ou développement.
+            </p>
+            <a
+              href="https://www.linkedin.com/in/jeremymarodon/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-outline border-2 text-primary-content hover:bg-primary-content hover:text-primary transition-all duration-300 group px-8"
+              aria-label="Me contacter sur LinkedIn"
+            >
+              Me contacter
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke-width="2" 
+                stroke="currentColor" 
+                class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+              </svg>
+            </a>
           </div>
-          <div class="stat">
-            <div class="stat-title">Projets réalisés</div>
-            <div class="stat-value text-secondary">25+</div>
-            <div class="stat-desc">Applications & Formations</div>
-          </div>
-          <div class="stat">
-            <div class="stat-title">Entreprises accompagnées</div>
-            <div class="stat-value text-accent">10+</div>
-            <div class="stat-desc">Partenariats et collaborations</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CTA Section -->
-    <div class="py-16 bg-primary text-primary-content">
-      <div class="container mx-auto text-center">
-        <div class="max-w-2xl mx-auto">
-          <h2 class="text-2xl font-bold mb-4">Prêt à collaborer ?</h2>
-          <p class="mb-6">
-            Contactez-moi pour discuter de vos besoins en formation, consulting ou développement.
-          </p>
-          <a href="/contact" class="btn btn-secondary btn-lg">Me contacter</a>
         </div>
       </div>
     </div>

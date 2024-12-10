@@ -47,14 +47,15 @@
 
   // Set initial theme
   document.documentElement.setAttribute('data-theme', theme);
-  const themeController = document.querySelector('.theme-controller');
+  const themeController = document.querySelector('.theme-controller') as HTMLInputElement;
   if (themeController) {
     themeController.checked = theme === 'dark';
   }
 
   // Handle theme changes
-  document.querySelector('.theme-controller')?.addEventListener('change', (e) => {
-    const newTheme = e.target.checked ? 'dark' : 'light';
+  document.querySelector('.theme-controller')?.addEventListener('change', (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    const newTheme = target.checked ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
   });
