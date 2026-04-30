@@ -1,155 +1,267 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import AnimatedAvatar from '../components/AnimatedAvatar.astro';
-import ServiceCard from '../components/ServiceCard.astro';
-import AnimatedStat from '../components/AnimatedStat.astro';
+import Button from '../components/ui/Button.astro';
+import Card from '../components/ui/Card.astro';
+import SectionKicker from '../components/ui/SectionKicker.astro';
+import StatusDot from '../components/ui/StatusDot.astro';
+import Tag from '../components/ui/Tag.astro';
 import ArrowUpRight from '../components/icons/ArrowUpRight.astro';
+import { testimonials } from '../data/testimonials';
+
+interface Service {
+  title: string;
+  pitch: string;
+  bullets: string[];
+  href?: string;
+}
+
+const services: Service[] = [
+  {
+    title: 'Formation',
+    pitch:
+      'Modules sur mesure pour développeurs et équipes : PHP, Symfony, JavaScript, DevOps, IA. Approche cas pratiques + projets réels, alignée sur les attentes des entreprises.',
+    bullets: ['Devs juniors → seniors', 'Cas pratiques & projets', 'Programmes sur mesure'],
+    href: '/formation',
+  },
+  {
+    title: 'Consulting',
+    pitch:
+      'Architecture, migrations, mise en place de CI/CD, stratégie de tests, audits techniques. Des solutions concrètes adaptées à votre contexte.',
+    bullets: ['Architecture & migration', 'Audit & conformité', 'Performance & qualité'],
+  },
+  {
+    title: 'Développement',
+    pitch:
+      'Applications modernes performantes, rénovation de bases de code legacy, nouvelles fonctionnalités. Code fiable, évolutif, en phase avec vos objectifs.',
+    bullets: ['Apps web modernes', 'Modernisation legacy', 'Solutions sur mesure'],
+  },
+];
+
+const stats = [
+  { value: '50+', label: 'Personnes formées', meta: 'depuis 2013' },
+  { value: '25+', label: 'Projets livrés', meta: 'apps & formations' },
+  { value: '10+', label: 'Entreprises accompagnées', meta: 'partenariats & missions' },
+];
+
+// Date formatting in French for testimonial attribution
+const formatDate = (iso: string) =>
+  new Date(iso).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long' });
 ---
 
 <BaseLayout>
-  <div class="min-h-screen bg-base-100">
-    <!-- Hero Section -->
-    <div class="hero min-h-[calc(100vh-4rem)] relative overflow-hidden">
-      <!-- Background with theme-aware gradient -->
-      <div
-        class="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/5 to-transparent dark:from-primary/20 dark:via-secondary/10 dark:to-base-300/50"
-      >
+  <!-- Hero -->
+  <section class="relative overflow-hidden border-b border-border">
+    <div class="absolute inset-0 grid-dots opacity-60" aria-hidden="true"></div>
+    <div
+      class="absolute inset-x-0 top-0 -z-10 h-96 bg-gradient-to-b from-blue-500/10 via-transparent to-transparent dark:from-blue-500/5"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="container-content relative grid gap-12 py-16 md:grid-cols-[1fr_auto] md:gap-16 md:py-24 lg:py-32">
+      <div class="max-w-2xl">
+        <SectionKicker class="mb-6">developer · educator · consultant</SectionKicker>
+
+        <h1 class="text-balance text-display font-bold text-text">
+          Jérémy <span class="text-blue-500">Marodon</span>
+        </h1>
+
+        <p class="mt-4 font-mono text-mono-sm uppercase tracking-wider text-text-muted">
+          Formateur &amp; Consultant Technique Senior
+        </p>
+
+        <p class="mt-8 max-w-xl text-pretty text-lead text-text-muted">
+          J'accompagne les entreprises et développeurs dans leur montée en compétences
+          techniques, avec un focus sur des technologies modernes comme PHP, Symfony,
+          React, DevOps et IA.
+        </p>
+
+        <div class="mt-10 flex flex-wrap items-center gap-3">
+          <Button href="mailto:marodon.jeremy@gmail.com">
+            Me contacter
+            <ArrowUpRight class="h-4 w-4" />
+          </Button>
+          <Button href="/formation" variant="ghost">
+            Voir les formations
+          </Button>
+        </div>
+
+        <div class="mt-8 flex flex-wrap items-center gap-4">
+          <StatusDot status="available" label="Ouvert aux missions" />
+          <span class="font-mono text-mono-sm text-text-subtle">·</span>
+          <span class="font-mono text-mono-sm text-text-muted">FR / EN</span>
+          <span class="font-mono text-mono-sm text-text-subtle">·</span>
+          <span class="font-mono text-mono-sm text-text-muted">Remote &amp; on-site</span>
+        </div>
       </div>
-      <!-- Subtle pattern overlay -->
-      <div
-        class="absolute inset-0 opacity-[0.15] dark:opacity-[0.07]"
-        style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'currentColor\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')"
-      >
-      </div>
-      <div class="hero-content relative flex-col lg:flex-row gap-12 max-w-6xl mx-auto px-6 py-16">
-        <!-- Image -->
-        <AnimatedAvatar src="/profil2-blue.jpg" alt="Jérémy Marodon" />
-        <!-- Content -->
-        <div class="text-center lg:text-left">
-          <h1 class="text-5xl font-extrabold mb-4">
-            <span class="text-gradient">Jérémy Marodon</span>
-          </h1>
-          <h2 class="text-2xl font-semibold text-base-content mb-6">
-            Formateur & Consultant Technique Senior
-          </h2>
-          <p class="text-lg text-base-content/80 mb-8 max-w-2xl">
-            J'accompagne les entreprises et développeurs dans leur montée en compétences techniques,
-            avec un focus sur des technologies modernes comme PHP, Symfony, React, DevOps, et IA.
-          </p>
-          <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
-            <a 
-              href="/about" 
-              class="btn btn-primary shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
-              aria-label="En savoir plus sur mes services"
-            >
-              En savoir plus
-            </a>
-            <a
-              href="https://www.linkedin.com/in/jeremymarodon/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn btn-outline hover:btn-primary hover:shadow-lg transition-all duration-300"
-              aria-label="Me contacter sur LinkedIn"
-            >
-              Me contacter
-              <ArrowUpRight class="w-4 h-4 ml-2" />
-            </a>
+
+      <!-- Avatar -->
+      <div class="hidden md:flex md:items-center md:justify-end">
+        <div class="relative">
+          <div
+            class="absolute inset-0 -z-10 rounded-full bg-blue-500/20 blur-2xl"
+            aria-hidden="true"
+          >
           </div>
+          <picture>
+            <source srcset="/profil2-blue.webp" type="image/webp" />
+            <img
+              src="/profil2-blue.jpg"
+              alt="Portrait de Jérémy Marodon"
+              width="320"
+              height="320"
+              loading="eager"
+              decoding="async"
+              class="h-72 w-72 rounded-full border border-border-strong object-cover shadow-xl"
+            />
+          </picture>
         </div>
       </div>
     </div>
+  </section>
 
-    <!-- Services Section -->
-    <div class="py-16">
-      <div class="container mx-auto px-4">
-        <!-- Services Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          <ServiceCard
-            title="Formation"
-            description="Je propose des formations techniques adaptées aux développeurs souhaitant monter en compétences et aux responsables pédagogiques recherchant des formateurs qualifiés pour préparer leurs étudiants à intégrer le monde professionnel. Mes modules couvrent PHP, Symfony, React et DevOps, avec une approche axée sur des cas pratiques et les attentes réelles des entreprises. Chaque formation est conçue pour transmettre des compétences concrètes et directement applicables. Discutons ensemble de vos besoins pour concevoir un programme sur mesure."
-            items={[
-              'Formation développeurs & étudiants',
-              'Cas pratiques & projets réels',
-              'Programmes sur mesure'
-            ]}
-            icon="formation"
-            color="primary"
-            url="/formation"
-          />
+  <!-- Services -->
+  <section class="border-b border-border py-20 md:py-28">
+    <div class="container-content">
+      <SectionKicker class="mb-3">services</SectionKicker>
+      <h2 class="text-balance text-h2 font-bold">Trois manières de travailler ensemble</h2>
+      <p class="mt-4 max-w-2xl text-pretty text-lead text-text-muted">
+        Selon le besoin : transmettre, accompagner ou construire. Souvent les trois en
+        même temps.
+      </p>
 
-          <ServiceCard
-            title="Consulting"
-            description="Je vous accompagne pour résoudre vos problématiques techniques grâce à des solutions concrètes et adaptées à vos besoins. Que ce soit pour concevoir une architecture logicielle performante, accompagner une migration technologique, intégrer des workflows CI/CD fiables, ou mettre en place une stratégie de tests efficace, mon expertise vous aide à simplifier vos processus et garantir des résultats fiables. J'interviens également sur des audits techniques et la mise en conformité de vos infrastructures. Parlons de vos projets pour identifier ensemble les meilleures solutions."
-            items={[
-              'Architecture & Migration',
-              'Audit & Conformité',
-              'Optimisation & Performance'
-            ]}
-            icon="consulting"
-            color="secondary"
-          />
+      <div class="mt-12 grid gap-6 md:grid-cols-3">
+        {
+          services.map((service) => (
+            <Card href={service.href} class="flex h-full flex-col">
+              <h3 class="text-h3 font-bold text-text">{service.title}</h3>
+              <p class="mt-3 text-text-muted">{service.pitch}</p>
+              <ul class="mt-6 space-y-2 border-t border-border pt-4 font-mono text-mono-sm text-text-muted">
+                {service.bullets.map((bullet) => (
+                  <li class="flex items-start gap-2">
+                    <span class="mt-1 text-blue-500" aria-hidden="true">
+                      ›
+                    </span>
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+              {service.href && (
+                <p class="mt-6 inline-flex items-center gap-1 font-mono text-mono-sm text-blue-500">
+                  En savoir plus <ArrowUpRight class="h-3 w-3" />
+                </p>
+              )}
+            </Card>
+          ))
+        }
+      </div>
+    </div>
+  </section>
 
-          <ServiceCard
-            title="Développement"
-            description="Je vous aide à concrétiser vos projets en créant des applications modernes et performantes, en rénovant des bases de code vieillissantes pour les aligner sur les standards actuels, ou en développant de nouvelles fonctionnalités adaptées aux besoins de vos utilisateurs. Mon approche garantit des solutions fiables, évolutives et en phase avec vos objectifs métiers. Contactez-moi pour transformer vos idées en outils concrets."
-            items={[
-              'Applications web modernes',
-              'Rénovation de code legacy',
-              'Solutions sur mesure'
-            ]}
-            icon="development"
-            color="accent"
-          />
-        </div>
-
-        <!-- Stats Section -->
-        <div class="bg-base-200">
-          <div class="container mx-auto py-16 px-4 text-center">
-            <div class="stats stats-vertical lg:stats-horizontal shadow-xl bg-base-100 mx-auto">
-              <AnimatedStat
-                title="Personnes formées"
-                value="50+"
-                description="Depuis 2013"
-                color="primary"
-              />
-              
-              <AnimatedStat
-                title="Projets réalisés"
-                value="25+"
-                description="Applications & Formations"
-                color="secondary"
-              />
-              
-              <AnimatedStat
-                title="Entreprises accompagnées"
-                value="10+"
-                description="Partenariats et collaborations"
-                color="accent"
-              />
+  <!-- Stats -->
+  <section class="border-b border-border bg-bg-subtle py-16">
+    <div class="container-content">
+      <SectionKicker class="mb-8">numbers</SectionKicker>
+      <div class="grid gap-8 md:grid-cols-3">
+        {
+          stats.map((stat) => (
+            <div>
+              <p class="text-display font-bold text-blue-500">{stat.value}</p>
+              <p class="mt-2 text-h3 font-bold text-text">{stat.label}</p>
+              <p class="mt-1 font-mono text-mono-sm text-text-subtle">{stat.meta}</p>
             </div>
-          </div>
-        </div>
-
-        <!-- CTA Section -->
-        <div class="bg-gradient-to-br from-primary to-primary/90">
-          <div class="container mx-auto py-16 px-4 text-center text-primary-content">
-            <h2 class="text-3xl font-bold mb-4">Prêt à collaborer ?</h2>
-            <p class="mb-8 opacity-90 max-w-2xl mx-auto">
-              Contactez-moi pour discuter de vos besoins en formation, consulting ou développement.
-            </p>
-            <a
-              href="https://www.linkedin.com/in/jeremymarodon/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn btn-outline border-2 text-primary-content hover:bg-primary-content hover:text-primary transition-all duration-300 group px-8"
-              aria-label="Me contacter sur LinkedIn"
-            >
-              Me contacter
-              <ArrowUpRight class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
-            </a>
-          </div>
-        </div>
+          ))
+        }
       </div>
     </div>
-  </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="border-b border-border py-20 md:py-28">
+    <div class="container-content">
+      <SectionKicker class="mb-3">testimonials</SectionKicker>
+      <h2 class="text-balance text-h2 font-bold">Ce que disent ceux qui ont travaillé avec moi</h2>
+      <p class="mt-4 max-w-2xl text-pretty text-lead text-text-muted">
+        Recommandations LinkedIn issues d'anciens collègues et managers.
+      </p>
+
+      <div class="mt-12 grid gap-6 md:grid-cols-2">
+        {
+          testimonials.map((t) => (
+            <Card class="flex h-full flex-col">
+              <blockquote class="flex-1 text-text">
+                <p class="text-pretty">&ldquo;{t.pullQuote}&rdquo;</p>
+              </blockquote>
+              <footer class="mt-6 flex items-center gap-4 border-t border-border pt-4">
+                <img
+                  src={t.photo}
+                  alt=""
+                  width="48"
+                  height="48"
+                  loading="lazy"
+                  decoding="async"
+                  class="h-12 w-12 rounded-full border border-border object-cover bg-bg-subtle"
+                />
+                <div class="min-w-0 flex-1">
+                  <p class="truncate font-bold text-text">{t.name}</p>
+                  <p class="truncate text-sm text-text-muted">{t.role}</p>
+                </div>
+                <Tag>{formatDate(t.date)}</Tag>
+              </footer>
+            </Card>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Formations CTA -->
+  <section class="border-b border-border py-20">
+    <div class="container-content">
+      <Card href="/formation" class="bg-bg-subtle">
+        <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div class="max-w-2xl">
+            <SectionKicker class="mb-3">training</SectionKicker>
+            <h2 class="text-h2 font-bold">Formations on-site</h2>
+            <p class="mt-3 text-text-muted">
+              11 modules taillés pour les équipes tech : PHP moderne, Symfony, JS/TS,
+              bases de données, CI/CD, DevOps, IA et plus. Hands-on, programme adapté
+              à votre stack.
+            </p>
+          </div>
+          <p
+            class="inline-flex shrink-0 items-center gap-2 font-mono text-mono-sm uppercase tracking-wider text-blue-500"
+          >
+            Voir le catalogue <ArrowUpRight class="h-4 w-4" />
+          </p>
+        </div>
+      </Card>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="py-20 md:py-28">
+    <div class="container-content text-center">
+      <SectionKicker class="mb-3 justify-center">contact</SectionKicker>
+      <h2 class="text-balance text-h1 font-bold">On en discute ?</h2>
+      <p class="mx-auto mt-4 max-w-xl text-pretty text-lead text-text-muted">
+        Formation, audit, accompagnement, mission tech &mdash; envoie un mail, je
+        réponds rapidement.
+      </p>
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+        <Button href="mailto:marodon.jeremy@gmail.com">
+          marodon.jeremy@gmail.com
+          <ArrowUpRight class="h-4 w-4" />
+        </Button>
+        <Button
+          href="https://www.linkedin.com/in/jeremymarodon/"
+          variant="ghost"
+          external
+        >
+          LinkedIn
+          <ArrowUpRight class="h-4 w-4" />
+        </Button>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
