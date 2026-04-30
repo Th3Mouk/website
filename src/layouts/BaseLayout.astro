@@ -13,13 +13,13 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="fr" data-theme="light">
   <head>
     <BaseHead title={title} description={description} />
   </head>
   <body class="min-h-screen bg-base-100 text-base-content">
     <Header />
-    <main class="container mx-auto px-4 py-16">
+    <main>
       <slot />
     </main>
     <Footer />
