@@ -1,0 +1,31 @@
+---
+interface Props {
+  href?: string;
+  external?: boolean;
+  class?: string;
+}
+
+const { href, external = false, class: className = '' } = Astro.props;
+
+const base =
+  'block rounded-lg border border-border bg-bg-elevated p-6 transition-all duration-200 ease-snappy';
+const interactive = href
+  ? 'hover:-translate-y-0.5 hover:border-blue-500 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
+  : '';
+
+const classes = [base, interactive, className].join(' ');
+
+const externalAttrs = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+---
+
+{
+  href ? (
+    <a href={href} class={classes} {...externalAttrs}>
+      <slot />
+    </a>
+  ) : (
+    <div class={classes}>
+      <slot />
+    </div>
+  )
+}

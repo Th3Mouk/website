@@ -1,0 +1,31 @@
+---
+interface Props {
+  status?: 'available' | 'busy' | 'unavailable';
+  label?: string;
+  class?: string;
+}
+
+const { status = 'available', label, class: className = '' } = Astro.props;
+
+const colors: Record<NonNullable<Props['status']>, string> = {
+  available: 'bg-green-500',
+  busy: 'bg-amber-500',
+  unavailable: 'bg-red-500',
+};
+
+const labels: Record<NonNullable<Props['status']>, string> = {
+  available: 'Disponible',
+  busy: 'Occupé',
+  unavailable: 'Indisponible',
+};
+
+const displayLabel = label ?? labels[status];
+---
+
+<span class:list={['inline-flex items-center gap-2 font-mono text-mono-sm text-text-muted', className]}>
+  <span class="relative flex h-2 w-2">
+    <span class={`absolute inline-flex h-full w-full animate-pulse-soft rounded-full ${colors[status]} opacity-75`}></span>
+    <span class={`relative inline-flex h-2 w-2 rounded-full ${colors[status]}`}></span>
+  </span>
+  {displayLabel}
+</span>

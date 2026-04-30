@@ -1,0 +1,52 @@
+---
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'ghost';
+  size?: 'sm' | 'md';
+  external?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+  class?: string;
+  ariaLabel?: string;
+}
+
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  external = false,
+  type = 'button',
+  class: className = '',
+  ariaLabel,
+} = Astro.props;
+
+const base =
+  'inline-flex items-center justify-center gap-2 rounded-md font-medium transition-all duration-200 ease-snappy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none';
+
+const variants: Record<NonNullable<Props['variant']>, string> = {
+  primary:
+    'bg-blue-500 text-white hover:bg-blue-600 hover:-translate-y-px hover:shadow-glow-blue',
+  ghost:
+    'border border-border-strong text-text hover:border-blue-500 hover:text-blue-500 hover:-translate-y-px',
+};
+
+const sizes: Record<NonNullable<Props['size']>, string> = {
+  sm: 'px-3 py-1.5 text-sm',
+  md: 'px-5 py-3 text-body',
+};
+
+const classes = [base, variants[variant], sizes[size], className].join(' ');
+
+const externalAttrs = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+---
+
+{
+  href ? (
+    <a href={href} class={classes} aria-label={ariaLabel} {...externalAttrs}>
+      <slot />
+    </a>
+  ) : (
+    <button type={type} class={classes} aria-label={ariaLabel}>
+      <slot />
+    </button>
+  )
+}

@@ -1,0 +1,24 @@
+---
+interface Props {
+  variant?: 'default' | 'subtle' | 'outline';
+  class?: string;
+}
+
+const { variant = 'default', class: className = '' } = Astro.props;
+
+const variants: Record<NonNullable<Props['variant']>, string> = {
+  default: 'bg-bg-subtle text-text-muted',
+  subtle: 'bg-blue-500/10 text-blue-500',
+  outline: 'border border-border-strong text-text-muted',
+};
+
+const classes = [
+  'inline-flex items-center rounded-sm px-2 py-0.5 font-mono text-mono-sm',
+  variants[variant],
+  className,
+].join(' ');
+---
+
+<span class={classes}>
+  <slot />
+</span>

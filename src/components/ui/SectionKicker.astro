@@ -1,0 +1,14 @@
+---
+// Mono-styled section label, used as a kicker above section headlines.
+// Renders as `// section-name` to evoke a code comment — signals the
+// developer/technical voice of the site.
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+---
+
+<p class:list={['font-mono text-mono-sm uppercase tracking-wider text-text-subtle', className]}>
+  <span class="text-blue-500">{'//'}</span>
+  <slot />
+</p>
