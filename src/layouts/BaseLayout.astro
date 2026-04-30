@@ -23,14 +23,5 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
       <slot />
     </main>
     <Footer />
-  </body><script is:inline>
-    // Get theme from localStorage or default to light
-    const theme = (() => {
-      if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-        return localStorage.getItem('theme');
-      }
-      return 'light';
-    })();
-    document.documentElement.setAttribute('data-theme', theme);
-  </script>
+  </body>
 </html>

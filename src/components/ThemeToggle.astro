@@ -42,21 +42,14 @@
 </label>
 
 <script>
-  // Get theme from localStorage or default to light
-  const theme = localStorage.getItem('theme') || 'light';
-
-  // Set initial theme
-  document.documentElement.setAttribute('data-theme', theme);
-  const themeController = document.querySelector('.theme-controller') as HTMLInputElement;
-  if (themeController) {
-    themeController.checked = theme === 'dark';
+  const html = document.documentElement;
+  const toggle = document.querySelector<HTMLInputElement>('.theme-controller');
+  if (toggle) {
+    toggle.checked = html.getAttribute('data-theme') === 'dark';
+    toggle.addEventListener('change', (e) => {
+      const next = (e.target as HTMLInputElement).checked ? 'dark' : 'light';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
   }
-
-  // Handle theme changes
-  document.querySelector('.theme-controller')?.addEventListener('change', (e: Event) => {
-    const target = e.target as HTMLInputElement;
-    const newTheme = target.checked ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-  });
 </script>
