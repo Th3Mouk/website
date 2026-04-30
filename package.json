@@ -10,7 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "lint": "eslint \"src/**/*.{js,astro,mdx}\" --fix",
+    "lint": "eslint . --fix",
     "format": "prettier --write \"src/**/*.{js,astro,mdx,css}\"",
     "check": "astro check"
   },
@@ -28,11 +28,12 @@
     "@typescript-eslint/parser": "^8.17.0",
     "astro-eslint-parser": "^1.1.0",
     "daisyui": "^4.12.14",
-    "eslint": "^8.57.1",
-    "eslint-config-prettier": "^9.1.0",
+    "eslint": "^9.16.0",
+    "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-astro": "^1.3.1",
-    "eslint-plugin-prettier": "^5.1.2",
-    "prettier": "^3.1.1",
+    "eslint-plugin-prettier": "^5.2.1",
+    "globals": "^17.5.0",
+    "prettier": "^3.4.2",
     "prettier-plugin-astro": "^0.14.1",
     "typescript": "^5.7.2"
   }
