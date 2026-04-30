@@ -1,122 +1,157 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import FormationCard from '../components/FormationCard.astro';
+import Button from '../components/ui/Button.astro';
+import Card from '../components/ui/Card.astro';
+import SectionKicker from '../components/ui/SectionKicker.astro';
+import Tag from '../components/ui/Tag.astro';
 import ArrowUpRight from '../components/icons/ArrowUpRight.astro';
-
-type FormationIcon = 'php' | 'symfony' | 'javascript' | 'database' | 'cicd' | 'devops' | 'infrastructure' | 'api' | 'tests' | 'ai' | 'methods';
 
 interface Formation {
   title: string;
   description: string;
-  icon: FormationIcon;
+  /** Short tag rendered as a mono chip on the card */
+  tag: string;
 }
 
 const formations: Formation[] = [
   {
-    title: "PHP Moderne",
-    description: "Découvrez les bases de PHP 8+ tout en approfondissant les concepts avancés comme la programmation orientée objet et la gestion des dépendances avec Composer. Mettez vous à jour sur les nouvelles fonctionnalités et syntaxes de PHP. Cette formation vous aide à adopter les bonnes pratiques pour vos projets professionnels.",
-    icon: "php"
+    title: 'PHP Moderne',
+    tag: 'language',
+    description:
+      "Découvrez les bases de PHP 8+ tout en approfondissant les concepts avancés comme la programmation orientée objet et la gestion des dépendances avec Composer. Mettez vous à jour sur les nouvelles fonctionnalités et syntaxes de PHP. Cette formation vous aide à adopter les bonnes pratiques pour vos projets professionnels.",
   },
   {
-    title: "Symfony",
-    description: "Apprenez à développer des applications avec Symfony, un framework PHP robuste et complet. Fort de plus de 10 ans d'expérience avec Symfony depuis la version 1.4, je vous guide à travers ses composants essentiels, Doctrine ORM, Twig, la création d'API REST et les bonnes pratiques en sécurité et en gestion de projets.",
-    icon: "symfony"
+    title: 'Symfony',
+    tag: 'framework',
+    description:
+      "Apprenez à développer des applications avec Symfony, un framework PHP robuste et complet. Fort de plus de 10 ans d'expérience avec Symfony depuis la version 1.4, je vous guide à travers ses composants essentiels, Doctrine ORM, Twig, la création d'API REST et les bonnes pratiques en sécurité et en gestion de projets.",
+  },
+  {
+    title: 'JavaScript & TypeScript',
+    tag: 'language',
+    description:
+      "Explorez les fondamentaux de JavaScript et découvrez comment TypeScript peut rendre vos projets plus fiables et maintenables. Cette formation vous accompagne dans l'utilisation des frameworks modernes comme React, Vue.js et Node.js (entre autres) pour construire des applications front-end et back-end performantes.",
   },
   {
     title: "Travailler avec l'IA",
-    description: "Découvrez comment intégrer des outils d'intelligence artificielle dans votre workflow pour gagner en efficacité. Apprenez à utiliser des modèles comme GPT d'OpenAI ou Claude d'Anthropic pour automatiser des tâches et développer plus rapidement.",
-    icon: "ai"
-  },
-  {
-    title: "JavaScript et TypeScript",
-    description: "Explorez les fondamentaux de JavaScript et découvrez comment TypeScript peut rendre vos projets plus fiables et maintenables. Cette formation vous accompagne dans l'utilisation des frameworks modernes comme React, Vue.js et Node.js (entre autres) pour construire des applications front-end et back-end performantes.",
-    icon: "javascript"
-  },
-  {
-    title: "Bases de Données",
-    description: "Maîtrisez les bonnes pratiques de gestion des bases de données, relationnelles (MySQL, PostgreSQL) et NoSQL (MongoDB, Redis). Cette formation couvre la modélisation, les requêtes et les bases pour structurer vos données de manière efficace.",
-    icon: "database"
-  },
-  {
-    title: "CI/CD",
-    description: "Apprenez à automatiser vos processus de développement avec des pipelines CI/CD. Découvrez comment tester et déployer vos applications de manière rapide et fiable en utilisant des outils modernes comme GitHub Actions, GitLab CI et Jenkins.",
-    icon: "cicd"
-  },
-  {
-    title: "DevOps / SRE",
-    description: "Initiez-vous aux pratiques DevOps et au Site Reliability Engineering (SRE) pour améliorer la supervision et la stabilité des applications en production. Découvrez comment mettre en place des outils de monitoring et d'alerting comme Prometheus, Grafana et Sentry pour assurer le bon fonctionnement de vos services.",
-    icon: "devops"
-  },
-  {
-    title: "Infrastructure et Hébergement",
-    description: "Apprenez à utiliser Docker et Kubernetes pour gérer vos conteneurs et explorez les outils d'infrastructure-as-code comme Terraform, Pulumi et Ansible. Cette formation couvre également l'hébergement web, l'installation de serveurs et les bases pour héberger vos applications sur différentes plateformes.",
-    icon: "infrastructure"
+    tag: 'productivity',
+    description:
+      "Découvrez comment intégrer des outils d'intelligence artificielle dans votre workflow pour gagner en efficacité. Apprenez à utiliser des modèles comme GPT d'OpenAI ou Claude d'Anthropic pour automatiser des tâches et développer plus rapidement.",
   },
   {
     title: "Développement d'API",
-    description: "Découvrez les bonnes pratiques pour concevoir et développer des API RESTful fiables et bien documentées. Cette formation aborde la création d'API, la sécurisation des endpoints et l'utilisation d'outils comme Swagger et Postman pour garantir leur qualité.",
-    icon: "api"
+    tag: 'backend',
+    description:
+      "Découvrez les bonnes pratiques pour concevoir et développer des API RESTful fiables et bien documentées. Cette formation aborde la création d'API, la sécurisation des endpoints et l'utilisation d'outils comme Swagger et Postman pour garantir leur qualité.",
   },
   {
-    title: "Tests et Qualité de Code",
-    description: "Apprenez à mettre en place une stratégie et une pyramide de tests dans vos projets. Découvrez les différents types de tests (unitaires, fonctionnels, etc...) et comment les intégrer dans vos workflows pour assurer une meilleure qualité et fiabilité de vos logiciels.",
-    icon: "tests"
+    title: 'Bases de données',
+    tag: 'data',
+    description:
+      'Maîtrisez les bonnes pratiques de gestion des bases de données, relationnelles (MySQL, PostgreSQL) et NoSQL (MongoDB, Redis). Cette formation couvre la modélisation, les requêtes et les bases pour structurer vos données de manière efficace.',
   },
   {
-    title: "Méthodes de Travail",
-    description: "Initiez-vous aux méthodologies Agile comme Scrum et Kanban pour organiser vos projets et travailler efficacement en équipe. Cette formation vous accompagne également dans l'utilisation de Git et d'outils collaboratifs pour structurer vos workflows de manière productive.",
-    icon: "methods"
-  }
+    title: 'Tests & qualité de code',
+    tag: 'quality',
+    description:
+      'Apprenez à mettre en place une stratégie et une pyramide de tests dans vos projets. Découvrez les différents types de tests (unitaires, fonctionnels, etc.) et comment les intégrer dans vos workflows pour assurer une meilleure qualité et fiabilité de vos logiciels.',
+  },
+  {
+    title: 'CI / CD',
+    tag: 'devops',
+    description:
+      'Apprenez à automatiser vos processus de développement avec des pipelines CI/CD. Découvrez comment tester et déployer vos applications de manière rapide et fiable en utilisant des outils modernes comme GitHub Actions, GitLab CI et Jenkins.',
+  },
+  {
+    title: 'DevOps / SRE',
+    tag: 'ops',
+    description:
+      "Initiez-vous aux pratiques DevOps et au Site Reliability Engineering (SRE) pour améliorer la supervision et la stabilité des applications en production. Découvrez comment mettre en place des outils de monitoring et d'alerting comme Prometheus, Grafana et Sentry pour assurer le bon fonctionnement de vos services.",
+  },
+  {
+    title: 'Infrastructure & hébergement',
+    tag: 'infra',
+    description:
+      "Apprenez à utiliser Docker et Kubernetes pour gérer vos conteneurs et explorez les outils d'infrastructure-as-code comme Terraform, Pulumi et Ansible. Cette formation couvre également l'hébergement web, l'installation de serveurs et les bases pour héberger vos applications sur différentes plateformes.",
+  },
+  {
+    title: 'Méthodes de travail',
+    tag: 'process',
+    description:
+      "Initiez-vous aux méthodologies Agile comme Scrum et Kanban pour organiser vos projets et travailler efficacement en équipe. Cette formation vous accompagne également dans l'utilisation de Git et d'outils collaboratifs pour structurer vos workflows de manière productive.",
+  },
 ];
 ---
 
-<BaseLayout>
-  <div class="min-h-screen bg-base-100">
-    <!-- Hero Section -->
-    <div class="hero py-16 bg-base-200">
-      <div class="hero-content text-center">
-        <div class="max-w-3xl">
-          <h1 class="text-4xl font-bold mb-8">
-            <span class="text-gradient">Formations</span>
-          </h1>
-          <p class="text-xl text-base-content/80">
-            Des formations adaptées à vos besoins, pour monter en compétences sur les technologies modernes et les meilleures pratiques de développement.
-          </p>
-        </div>
+<BaseLayout title="Formations | Jérémy Marodon" description="11 formations techniques pour développeurs et équipes : PHP, Symfony, JavaScript, DevOps, IA, et plus.">
+  <!-- Hero -->
+  <section class="relative overflow-hidden border-b border-border">
+    <div class="absolute inset-0 grid-dots opacity-50" aria-hidden="true"></div>
+    <div class="container-content relative py-16 md:py-24">
+      <SectionKicker class="mb-4">training catalogue</SectionKicker>
+      <h1 class="text-balance text-h1 font-bold">Formations on-site</h1>
+      <p class="mt-6 max-w-2xl text-pretty text-lead text-text-muted">
+        Onze modules conçus pour les équipes techniques qui veulent monter en compétences
+        sur les fondations modernes du métier &mdash; backend, data, DevOps, IA. Hands-on,
+        adaptés à votre stack, programme construit avec vous.
+      </p>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <Tag>FR · EN</Tag>
+        <Tag>2 à 5 jours</Tag>
+        <Tag>4 à 12 personnes</Tag>
+        <Tag>en présentiel</Tag>
       </div>
     </div>
+  </section>
 
-    <!-- Formations Grid -->
-    <div class="container mx-auto px-4 py-16">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {formations.map((formation) => (
-          <FormationCard
-            title={formation.title}
-            description={formation.description}
-            icon={formation.icon}
-          />
-        ))}
+  <!-- Catalogue -->
+  <section class="py-16 md:py-20">
+    <div class="container-content">
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {
+          formations.map((formation, i) => (
+            <Card class="flex h-full flex-col">
+              <div class="flex items-start justify-between gap-4">
+                <h2 class="text-h3 font-bold text-text">{formation.title}</h2>
+                <span class="shrink-0 font-mono text-mono-sm text-text-subtle">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+              </div>
+              <p class="mt-4 text-text-muted">{formation.description}</p>
+              <div class="mt-6 border-t border-border pt-4">
+                <Tag variant="subtle">#{formation.tag}</Tag>
+              </div>
+            </Card>
+          ))
+        }
       </div>
     </div>
+  </section>
 
-    <!-- CTA Section -->
-    <div class="bg-gradient-to-br from-primary to-primary/90 py-16">
-      <div class="container mx-auto px-4 text-center text-primary-content">
-        <h2 class="text-3xl font-bold mb-4">Intéressé par une formation ?</h2>
-        <p class="mb-8 opacity-90 max-w-2xl mx-auto">
-          Contactez-moi pour discuter de vos besoins et objectifs. Je vous proposerai une formation sur mesure adaptée à votre contexte.
-        </p>
-        <a
+  <!-- CTA -->
+  <section class="border-t border-border bg-bg-subtle py-20">
+    <div class="container-content text-center">
+      <SectionKicker class="mb-3 justify-center">contact</SectionKicker>
+      <h2 class="text-balance text-h2 font-bold">Un sujet précis ? Une équipe à former ?</h2>
+      <p class="mx-auto mt-4 max-w-xl text-pretty text-lead text-text-muted">
+        Décris-moi le contexte (taille de l'équipe, niveau, stack, période) et je te
+        renvoie un programme adapté avec un devis sous 48h.
+      </p>
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+        <Button href="mailto:marodon.jeremy@gmail.com?subject=Demande%20de%20formation">
+          Demander un devis
+          <ArrowUpRight class="h-4 w-4" />
+        </Button>
+        <Button
           href="https://www.linkedin.com/in/jeremymarodon/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="btn btn-outline border-2 text-primary-content hover:bg-primary-content hover:text-primary transition-all duration-300 group px-8"
-          aria-label="Me contacter sur LinkedIn"
+          variant="ghost"
+          external
         >
-          Me contacter
-          <ArrowUpRight class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
-        </a>
+          LinkedIn
+          <ArrowUpRight class="h-4 w-4" />
+        </Button>
       </div>
     </div>
-  </div>
+  </section>
 </BaseLayout>
