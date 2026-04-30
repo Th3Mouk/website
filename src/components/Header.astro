@@ -1,48 +1,182 @@
 ---
-import HeaderLink from './HeaderLink.astro';
 import { SITE_TITLE } from '../consts';
 import ThemeToggle from './ThemeToggle.astro';
 import LinkedIn from './icons/LinkedIn.astro';
 import Github from './icons/Github.astro';
+
+interface NavItem {
+  href: string;
+  label: string;
+}
+
+const nav: NavItem[] = [
+  { href: '/', label: 'Accueil' },
+  { href: '/formation', label: 'Formations' },
+  { href: '/about', label: 'À propos' },
+];
+
+const pathname = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(href + '/');
 ---
 
-<header class="bg-base-200 shadow-lg">
-  <nav class="container mx-auto px-4 py-4">
-    <div class="flex items-center justify-between">
-      <h2 class="text-2xl font-bold">
-        <a href="/" class="text-primary hover:text-primary-focus">{SITE_TITLE}</a>
-      </h2>
+<header
+  class="sticky top-0 z-40 border-b border-border bg-bg/80 backdrop-blur-md supports-[backdrop-filter]:bg-bg/70"
+>
+  <nav class="container-content flex h-16 items-center justify-between gap-4">
+    <!-- Brand -->
+    <a
+      href="/"
+      class="group inline-flex items-baseline gap-1 font-bold text-text transition-colors hover:text-blue-500"
+      aria-label="Retour à l'accueil"
+    >
+      <span class="text-lg">{SITE_TITLE}</span>
+      <span class="font-mono text-mono-sm text-blue-500" aria-hidden="true">/</span>
+    </a>
 
-      <div class="flex items-center space-x-8">
-        <div class="hidden md:flex space-x-6">
-          <HeaderLink href="/" class="text-base-content hover:text-primary">Home</HeaderLink>
-          <HeaderLink href="/formation" class="text-base-content hover:text-primary">Formations</HeaderLink>
-          <!-- <HeaderLink href="/blog" class="text-base-content hover:text-primary">Blog</HeaderLink> -->
-          <!-- <HeaderLink href="/about" class="text-base-content hover:text-primary">About</HeaderLink> -->
-        </div>
+    <!-- Desktop nav -->
+    <ul class="hidden items-center gap-1 md:flex">
+      {
+        nav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+              class:list={[
+                'rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                isActive(item.href)
+                  ? 'text-blue-500'
+                  : 'text-text-muted hover:bg-bg-subtle hover:text-text',
+              ]}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
 
-        <div class="flex items-center space-x-4">
-          <ThemeToggle />
-          <div class="social-links flex space-x-4">
-            <a
-              href="https://www.linkedin.com/in/jeremymarodon/"
-              target="_blank"
-              class="text-base-content hover:text-primary"
-            >
-              <span class="sr-only">Contact me on LinkedIn</span>
-              <LinkedIn size={32} class="fill-current" />
-            </a>
-            <a
-              href="https://github.com/Th3Mouk"
-              target="_blank"
-              class="text-base-content hover:text-primary"
-            >
-              <span class="sr-only">Go to my GitHub repo</span>
-              <Github size={32} class="fill-current" />
-            </a>
-          </div>
-        </div>
-      </div>
+    <!-- Right cluster -->
+    <div class="flex items-center gap-2">
+      <ThemeToggle />
+      <a
+        href="https://www.linkedin.com/in/jeremymarodon/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hidden rounded-md p-2 text-text-muted transition-colors hover:bg-bg-subtle hover:text-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 sm:inline-flex"
+        aria-label="LinkedIn"
+      >
+        <LinkedIn size={20} class="fill-current" />
+      </a>
+      <a
+        href="https://github.com/Th3Mouk"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hidden rounded-md p-2 text-text-muted transition-colors hover:bg-bg-subtle hover:text-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 sm:inline-flex"
+        aria-label="GitHub"
+      >
+        <Github size={20} class="fill-current" />
+      </a>
+
+      <!-- Mobile menu toggle -->
+      <button
+        type="button"
+        class="mobile-menu-toggle inline-flex h-9 w-9 items-center justify-center rounded-md border border-border-strong bg-bg text-text-muted transition-colors hover:border-blue-500 hover:text-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 md:hidden"
+        aria-label="Ouvrir le menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="menu-icon h-4 w-4"
+          aria-hidden="true"
+        >
+          <line x1="4" x2="20" y1="6" y2="6"></line>
+          <line x1="4" x2="20" y1="12" y2="12"></line>
+          <line x1="4" x2="20" y1="18" y2="18"></line>
+        </svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="close-icon hidden h-4 w-4"
+          aria-hidden="true"
+        >
+          <line x1="6" x2="18" y1="6" y2="18"></line>
+          <line x1="6" x2="18" y1="18" y2="6"></line>
+        </svg>
+      </button>
     </div>
   </nav>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="hidden border-t border-border bg-bg-elevated md:hidden">
+    <ul class="container-content flex flex-col py-2">
+      {
+        nav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+              class:list={[
+                'block rounded-md px-3 py-3 text-sm font-medium transition-colors',
+                isActive(item.href)
+                  ? 'bg-blue-500/10 text-blue-500'
+                  : 'text-text-muted hover:bg-bg-subtle hover:text-text',
+              ]}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+      <li class="mt-2 flex items-center gap-2 border-t border-border pt-3 sm:hidden">
+        <a
+          href="https://www.linkedin.com/in/jeremymarodon/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="rounded-md p-2 text-text-muted transition-colors hover:bg-bg-subtle hover:text-blue-500"
+          aria-label="LinkedIn"
+        >
+          <LinkedIn size={20} class="fill-current" />
+        </a>
+        <a
+          href="https://github.com/Th3Mouk"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="rounded-md p-2 text-text-muted transition-colors hover:bg-bg-subtle hover:text-blue-500"
+          aria-label="GitHub"
+        >
+          <Github size={20} class="fill-current" />
+        </a>
+      </li>
+    </ul>
+  </div>
 </header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.mobile-menu-toggle');
+  const menu = document.querySelector<HTMLDivElement>('#mobile-menu');
+  const menuIcon = toggle?.querySelector<SVGElement>('.menu-icon');
+  const closeIcon = toggle?.querySelector<SVGElement>('.close-icon');
+
+  if (toggle && menu && menuIcon && closeIcon) {
+    toggle.addEventListener('click', () => {
+      const open = menu.classList.toggle('hidden') === false;
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
+      menuIcon.classList.toggle('hidden', open);
+      closeIcon.classList.toggle('hidden', !open);
+    });
+  }
+</script>
