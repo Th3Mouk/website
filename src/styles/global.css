@@ -1,12 +1,63 @@
+/* Tailwind v4 + DaisyUI v5 (CSS-first config). The design-token
+   layer (electric-blue scale, semantic bg/text/border, fonts, sizes,
+   animations) lives in tailwind.config.mjs, loaded via @config below. */
+@import 'tailwindcss';
+@config '../../tailwind.config.mjs';
+@plugin 'daisyui';
+
 /* Self-hosted fonts (no CDN). Atkinson Hyperlegible (a11y-first sans)
    + JetBrains Mono Variable for code/mono accents. */
 @import '@fontsource/atkinson-hyperlegible/400.css';
 @import '@fontsource/atkinson-hyperlegible/700.css';
 @import '@fontsource-variable/jetbrains-mono/wght.css';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* `dark:` variant resolves on [data-theme="dark"] (set pre-paint by the
+   inline script in BaseHead). Tailwind 4 dropped the v3 darkMode option;
+   declare the variant in CSS instead. */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+@plugin 'daisyui/theme' {
+  name: 'light';
+  default: true;
+  color-scheme: light;
+  --color-primary: #0066ff;
+  --color-primary-content: #ffffff;
+  --color-secondary: #475569;
+  --color-secondary-content: #ffffff;
+  --color-accent: #0066ff;
+  --color-accent-content: #ffffff;
+  --color-neutral: #0f172a;
+  --color-neutral-content: #f1f5f9;
+  --color-base-100: #ffffff;
+  --color-base-200: #f8fafc;
+  --color-base-300: #e2e8f0;
+  --color-base-content: #0f172a;
+  --color-info: #0066ff;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+}
+
+@plugin 'daisyui/theme' {
+  name: 'dark';
+  color-scheme: dark;
+  --color-primary: #3b82f6;
+  --color-primary-content: #0a0a0f;
+  --color-secondary: #94a3b8;
+  --color-secondary-content: #0a0a0f;
+  --color-accent: #3b82f6;
+  --color-accent-content: #0a0a0f;
+  --color-neutral: #f1f5f9;
+  --color-neutral-content: #0a0a0f;
+  --color-base-100: #0a0a0f;
+  --color-base-200: #111118;
+  --color-base-300: #262631;
+  --color-base-content: #f1f5f9;
+  --color-info: #3b82f6;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+}
 
 @layer base {
   :root,

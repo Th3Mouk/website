@@ -1,7 +1,17 @@
-/** @type {import('tailwindcss').Config} */
+/**
+ * Tailwind v3-style design tokens, loaded by global.css via the
+ * `@config` directive (Tailwind 4 backwards compat).
+ *
+ * DaisyUI is configured separately via `@plugin "daisyui"` in CSS
+ * (DaisyUI 5 dropped the tailwind.config.mjs plugin entry).
+ *
+ * Dark variant is now declared in CSS via `@custom-variant`, so the
+ * `darkMode` field is no longer used.
+ *
+ * @type {import('tailwindcss').Config}
+ */
 export default {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
-  darkMode: ['class', '[data-theme="dark"]'],
   theme: {
     extend: {
       colors: {
@@ -78,49 +88,5 @@ export default {
         },
       },
     },
-  },
-  plugins: [require('daisyui')],
-  daisyui: {
-    themes: [
-      {
-        light: {
-          primary: '#0066FF',
-          'primary-content': '#FFFFFF',
-          secondary: '#475569',
-          'secondary-content': '#FFFFFF',
-          accent: '#0066FF',
-          'accent-content': '#FFFFFF',
-          neutral: '#0F172A',
-          'neutral-content': '#F1F5F9',
-          'base-100': '#FFFFFF',
-          'base-200': '#F8FAFC',
-          'base-300': '#E2E8F0',
-          'base-content': '#0F172A',
-          info: '#0066FF',
-          success: '#10B981',
-          warning: '#F59E0B',
-          error: '#EF4444',
-        },
-        dark: {
-          primary: '#3B82F6',
-          'primary-content': '#0A0A0F',
-          secondary: '#94A3B8',
-          'secondary-content': '#0A0A0F',
-          accent: '#3B82F6',
-          'accent-content': '#0A0A0F',
-          neutral: '#F1F5F9',
-          'neutral-content': '#0A0A0F',
-          'base-100': '#0A0A0F',
-          'base-200': '#111118',
-          'base-300': '#262631',
-          'base-content': '#F1F5F9',
-          info: '#3B82F6',
-          success: '#10B981',
-          warning: '#F59E0B',
-          error: '#EF4444',
-        },
-      },
-    ],
-    darkTheme: 'dark',
   },
 };
