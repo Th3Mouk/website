@@ -1,0 +1,345 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
+import Card from '../components/ui/Card.astro';
+import SectionKicker from '../components/ui/SectionKicker.astro';
+import StatusDot from '../components/ui/StatusDot.astro';
+import Tag from '../components/ui/Tag.astro';
+import ArrowUpRight from '../components/icons/ArrowUpRight.astro';
+import { testimonials } from '../data/testimonials';
+
+interface SkillGroup {
+  category: string;
+  items: string[];
+}
+
+const hardSkills: SkillGroup[] = [
+  { category: 'Languages', items: ['PHP 8+', 'JavaScript', 'TypeScript'] },
+  { category: 'Backend', items: ['Symfony', 'Doctrine ORM', 'Node.js', 'API REST'] },
+  { category: 'Frontend', items: ['React', 'Vue.js', 'Astro', 'Tailwind'] },
+  { category: 'Data', items: ['PostgreSQL', 'MySQL', 'MongoDB', 'Redis'] },
+  {
+    category: 'DevOps & infra',
+    items: ['Docker', 'Kubernetes', 'Terraform', 'Pulumi', 'Ansible', 'GitHub Actions', 'GitLab CI'],
+  },
+  { category: 'Observabilité', items: ['Prometheus', 'Grafana', 'Sentry'] },
+  { category: 'Qualité', items: ['Tests unitaires & E2E', 'CI/CD', 'Code review'] },
+  { category: 'IA', items: ['OpenAI GPT', 'Anthropic Claude', 'Intégration LLM'] },
+  { category: 'Méthodes', items: ['Agile', 'Scrum', 'Kanban', 'Git', 'TDD'] },
+];
+
+interface SoftSkill {
+  title: string;
+  description: string;
+  proofQuote: string;
+  proofAuthor: string;
+}
+
+// Each soft skill is anchored to a verbatim quote from the LinkedIn
+// recommendations in src/data/testimonials.ts — no claim without proof.
+const softSkills: SoftSkill[] = [
+  {
+    title: 'Pédagogie',
+    description:
+      "Transmettre clairement, du junior au senior. Capable de vulgariser sans simplifier à outrance, et de faire monter une équipe en compétences sur le temps long.",
+    proofQuote:
+      "Une personne qui n'hésite pas à partager ce qui se fait de meilleur en termes de process tech, d'expériences et de capacités à proposer des solutions réalistes face à des problèmes complexes — le tout avec un esprit pédagogique hors normes.",
+    proofAuthor: 'Ilyes Abd-Lillah, Lead Front-end',
+  },
+  {
+    title: 'Leadership technique',
+    description:
+      "Donner le cap, embarquer l'équipe, mettre les mains dans le code quand il faut. Pas de leader ivory tower : la décision technique se justifie en lisant le code.",
+    proofQuote:
+      "Si vous recherchez un leader technique capable de mettre les mains dans le cambouis pour montrer la bonne direction, alors Jérémy est le candidat idéal.",
+    proofAuthor: 'Kévin Bargoin, Expert Kubernetes',
+  },
+  {
+    title: 'Excellence & rigueur',
+    description:
+      "Sensible à la qualité du code, à la stabilité en prod, aux choix d'architecture qui tiennent dans le temps. Préfère un build vert à un feature push.",
+    proofQuote:
+      "Côté technique, Jérémy fait preuve d'excellence. Il sait prendre les bonnes décisions. Il est sensible à la qualité ce qui est aussi un point important dans une équipe.",
+    proofAuthor: 'Mehdi Tassi, Manager QA/QE',
+  },
+  {
+    title: 'Communication',
+    description:
+      "Explique le 'pourquoi' avant le 'comment'. Sait parler aux devs, aux PM, aux stakeholders — et faire converger les conversations vers des décisions partagées.",
+    proofQuote:
+      "C'est un excellent développeur, un très bon communicateur mais aussi un collaborateur très apprécié. Il est capable d'inspirer son équipe et il a une vision claire de ce qu'il veut accomplir.",
+    proofAuthor: 'Kévin Bargoin, Expert Kubernetes',
+  },
+];
+
+interface TimelineEntry {
+  period: string;
+  role: string;
+  company: string;
+  note?: string;
+}
+
+// Reconstructed from the LinkedIn recommendation context
+// (Kévin Bargoin: 4+ years at Domraider; Mehdi Tassi: 2 years at
+// Skilleos; Anthony Thomas: 3 structures together). Dates are
+// approximate placeholders — to be replaced with real values from CV.
+const timeline: TimelineEntry[] = [
+  {
+    period: '2024 — aujourd\'hui',
+    role: 'Formateur & Consultant Technique Senior',
+    company: 'Indépendant',
+    note: 'Formation, audit technique, mission de dev — équipes & devs en montée en compétences.',
+  },
+  {
+    period: '2022 — 2024',
+    role: 'Lead Tech',
+    company: 'Skilleos',
+    note: "Mise en place des tests perf/API/E2E en CI/CD, qualité produit.",
+  },
+  {
+    period: '2018 — 2022',
+    role: 'Lead Developer',
+    company: 'Domraider',
+    note: 'Front (React) + back (Symfony), leadership tech, partage de connaissance.',
+  },
+  {
+    period: '2013 — 2018',
+    role: 'Développeur',
+    company: 'Plusieurs structures',
+    note: 'Démarrage carrière — backend PHP / Symfony 1.4 → 4.x.',
+  },
+];
+
+const formatDate = (iso: string) =>
+  new Date(iso).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long' });
+---
+
+<BaseLayout title="À propos | Jérémy Marodon" description="Parcours, expertise technique, soft skills et recommandations de Jérémy Marodon — formateur et consultant tech senior.">
+  <!-- Hero -->
+  <section class="relative overflow-hidden border-b border-border">
+    <div class="absolute inset-0 grid-dots opacity-50" aria-hidden="true"></div>
+    <div class="container-content relative grid gap-12 py-16 md:grid-cols-[auto_1fr] md:gap-16 md:py-24">
+      <div class="flex justify-center md:block">
+        <div class="relative">
+          <div
+            class="absolute inset-0 -z-10 rounded-full bg-blue-500/20 blur-2xl"
+            aria-hidden="true"
+          >
+          </div>
+          <picture>
+            <source srcset="/profil2-blue.webp" type="image/webp" />
+            <img
+              src="/profil2-blue.jpg"
+              alt="Portrait de Jérémy Marodon"
+              width="240"
+              height="240"
+              loading="eager"
+              decoding="async"
+              class="h-56 w-56 rounded-full border border-border-strong object-cover shadow-xl md:h-60 md:w-60"
+            />
+          </picture>
+        </div>
+      </div>
+
+      <div>
+        <SectionKicker class="mb-4">about</SectionKicker>
+        <h1 class="text-balance text-h1 font-bold">
+          Bonjour, je suis <span class="text-blue-500">Jérémy</span>.
+        </h1>
+
+        <!-- TODO(content): cette bio longue est un draft basé sur les recos LinkedIn et
+             les stats du site. À relire et personnaliser par Jérémy. -->
+        <div class="mt-6 space-y-4 text-pretty text-lead text-text-muted">
+          <p>
+            Je suis développeur depuis 2013 et formateur depuis presque aussi longtemps.
+            J'aide les entreprises et les développeurs à livrer du logiciel solide, et à
+            faire monter en compétences les équipes qui le construisent.
+          </p>
+          <p>
+            J'ai grandi techniquement sur PHP/Symfony (depuis Symfony 1.4), puis JavaScript
+            et l'écosystème front moderne, avant d'attraper le DevOps et l'infrastructure
+            par nécessité — quand un produit prod tombe à 3h du matin, on apprend vite.
+            Aujourd'hui je passe autant de temps à transmettre qu'à coder, et j'aime
+            beaucoup ça.
+          </p>
+          <p>
+            Mon credo : la qualité technique se construit par petites décisions
+            cohérentes, pas par grands plans. Et la meilleure façon de faire monter une
+            équipe, c'est de coder avec elle.
+          </p>
+        </div>
+
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <StatusDot status="available" label="Ouvert aux missions" />
+          <span class="font-mono text-mono-sm text-text-subtle">·</span>
+          <span class="font-mono text-mono-sm text-text-muted">FR / EN</span>
+          <span class="font-mono text-mono-sm text-text-subtle">·</span>
+          <span class="font-mono text-mono-sm text-text-muted">Remote &amp; on-site</span>
+        </div>
+
+        <div class="mt-8 flex flex-wrap gap-3">
+          <Button href="mailto:marodon.jeremy@gmail.com">
+            Me contacter
+            <ArrowUpRight class="h-4 w-4" />
+          </Button>
+          <Button
+            href="https://www.linkedin.com/in/jeremymarodon/"
+            variant="ghost"
+            external
+          >
+            LinkedIn
+            <ArrowUpRight class="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hard skills -->
+  <section class="border-b border-border py-20 md:py-28">
+    <div class="container-content">
+      <SectionKicker class="mb-3">stack &amp; tools</SectionKicker>
+      <h2 class="text-balance text-h2 font-bold">Compétences techniques</h2>
+      <p class="mt-4 max-w-2xl text-pretty text-lead text-text-muted">
+        Ce avec quoi je travaille au quotidien. Le reste s'apprend.
+      </p>
+
+      <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {
+          hardSkills.map((group) => (
+            <div class="border-l-2 border-border pl-5">
+              <p class="font-mono text-mono-sm uppercase tracking-wider text-text-subtle">
+                <span class="text-blue-500">{'//'}</span> {group.category}
+              </p>
+              <ul class="mt-3 flex flex-wrap gap-2">
+                {group.items.map((item) => (
+                  <li>
+                    <Tag>{item}</Tag>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Soft skills (with proof) -->
+  <section class="border-b border-border bg-bg-subtle py-20 md:py-28">
+    <div class="container-content">
+      <SectionKicker class="mb-3">how I work</SectionKicker>
+      <h2 class="text-balance text-h2 font-bold">Soft skills, version preuves</h2>
+      <p class="mt-4 max-w-2xl text-pretty text-lead text-text-muted">
+        Pas de buzzwords sans preuve. Chaque qualité est appuyée par une recommandation
+        LinkedIn d'un ancien collègue ou manager.
+      </p>
+
+      <div class="mt-12 grid gap-6 md:grid-cols-2">
+        {
+          softSkills.map((skill) => (
+            <Card class="flex h-full flex-col">
+              <h3 class="text-h3 font-bold text-text">{skill.title}</h3>
+              <p class="mt-3 text-text-muted">{skill.description}</p>
+              <blockquote class="mt-6 border-l-2 border-blue-500 pl-4">
+                <p class="text-pretty italic text-text">&ldquo;{skill.proofQuote}&rdquo;</p>
+                <footer class="mt-3 font-mono text-mono-sm text-text-subtle">
+                  — {skill.proofAuthor}
+                </footer>
+              </blockquote>
+            </Card>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section class="border-b border-border py-20 md:py-28">
+    <div class="container-content">
+      <SectionKicker class="mb-3">timeline</SectionKicker>
+      <h2 class="text-balance text-h2 font-bold">Parcours</h2>
+
+      <!-- TODO(content): périodes reconstruites à partir des recos LinkedIn — à valider/préciser par Jérémy -->
+      <ol class="mt-12 space-y-8 border-l border-border pl-8">
+        {
+          timeline.map((entry) => (
+            <li class="relative">
+              <span
+                class="absolute -left-[2.125rem] top-2 h-2.5 w-2.5 rounded-full border-2 border-bg bg-blue-500"
+                aria-hidden="true"
+              />
+              <p class="font-mono text-mono-sm uppercase tracking-wider text-text-subtle">
+                {entry.period}
+              </p>
+              <p class="mt-2 text-h3 font-bold text-text">
+                {entry.role}{' '}
+                <span class="font-normal text-text-muted">@ {entry.company}</span>
+              </p>
+              {entry.note && <p class="mt-2 text-text-muted">{entry.note}</p>}
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Full testimonials -->
+  <section class="border-b border-border py-20 md:py-28">
+    <div class="container-content">
+      <SectionKicker class="mb-3">recommendations</SectionKicker>
+      <h2 class="text-balance text-h2 font-bold">Ce qu'ils disent — version intégrale</h2>
+      <p class="mt-4 max-w-2xl text-pretty text-lead text-text-muted">
+        Recommandations LinkedIn complètes. Tu peux retrouver les originaux sur mon profil.
+      </p>
+
+      <div class="mt-12 space-y-6">
+        {
+          testimonials.map((t) => (
+            <Card>
+              <div class="flex items-start gap-4">
+                <img
+                  src={t.photo}
+                  alt=""
+                  width="56"
+                  height="56"
+                  loading="lazy"
+                  decoding="async"
+                  class="h-14 w-14 shrink-0 rounded-full border border-border bg-bg-subtle object-cover"
+                />
+                <div class="min-w-0 flex-1">
+                  <p class="font-bold text-text">{t.name}</p>
+                  <p class="text-sm text-text-muted">{t.role}</p>
+                  <p class="mt-1 font-mono text-mono-sm text-text-subtle">
+                    {formatDate(t.date)} · {t.relation}
+                  </p>
+                </div>
+              </div>
+              <blockquote class="mt-6 border-l-2 border-blue-500 pl-4">
+                <p class="text-pretty text-text">{t.fullQuote}</p>
+              </blockquote>
+            </Card>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact CTA -->
+  <section class="py-20 md:py-28">
+    <div class="container-content text-center">
+      <SectionKicker class="mb-3 justify-center">contact</SectionKicker>
+      <h2 class="text-balance text-h1 font-bold">Discutons de ton projet</h2>
+      <p class="mx-auto mt-4 max-w-xl text-pretty text-lead text-text-muted">
+        Formation, accompagnement, audit, mission de dev — décris-moi le contexte, je
+        reviens vers toi rapidement.
+      </p>
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+        <Button href="mailto:marodon.jeremy@gmail.com">
+          marodon.jeremy@gmail.com
+          <ArrowUpRight class="h-4 w-4" />
+        </Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
