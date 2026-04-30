@@ -1,12 +1,111 @@
-/*
-  Originally based on Bear Blog's default CSS.
-  https://github.com/HermanMartinus/bearblog (MIT)
- */
+/* Self-hosted fonts (no CDN). Atkinson Hyperlegible (a11y-first sans)
+   + JetBrains Mono Variable for code/mono accents. */
+@import '@fontsource/atkinson-hyperlegible/400.css';
+@import '@fontsource/atkinson-hyperlegible/700.css';
+@import '@fontsource-variable/jetbrains-mono/wght.css';
 
-.text-gradient {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent;
-  background-size: 200% auto;
-  animation: gradient 8s linear infinite;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root,
+  [data-theme='light'] {
+    --color-bg: 255 255 255;
+    --color-bg-subtle: 248 250 252;
+    --color-bg-elevated: 255 255 255;
+    --color-border: 226 232 240;
+    --color-border-strong: 203 213 225;
+    --color-text: 15 23 42;
+    --color-text-muted: 71 85 105;
+    --color-text-subtle: 100 116 139;
+  }
+
+  [data-theme='dark'] {
+    --color-bg: 10 10 15;
+    --color-bg-subtle: 17 17 24;
+    --color-bg-elevated: 22 22 29;
+    --color-border: 38 38 49;
+    --color-border-strong: 58 58 71;
+    --color-text: 241 245 249;
+    --color-text-muted: 148 163 184;
+    --color-text-subtle: 100 116 139;
+  }
+
+  html {
+    color-scheme: light;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  html[data-theme='dark'] {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-bg text-text font-sans;
+  }
+
+  ::selection {
+    @apply bg-blue-500 text-white;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-blue-500 ring-offset-2;
+    --tw-ring-offset-color: rgb(var(--color-bg));
+  }
+
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-bg-subtle;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border-strong rounded-md border-2 border-solid;
+    border-color: rgb(var(--color-bg));
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-text-subtle;
+  }
+
+  hr {
+    @apply border-border;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  .container-content {
+    @apply mx-auto w-full max-w-content px-5 md:px-8 lg:px-12;
+  }
+
+  .container-prose {
+    @apply mx-auto w-full max-w-prose px-5 md:px-6;
+  }
+
+  .grid-dots {
+    background-image: radial-gradient(rgb(var(--color-border-strong) / 0.4) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-blue-400 to-blue-600;
+    background-size: 200% auto;
+    animation: gradient 8s linear infinite;
+  }
 }
 
 @keyframes gradient {
@@ -15,5 +114,16 @@
   }
   100% {
     background-position: 200% center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
