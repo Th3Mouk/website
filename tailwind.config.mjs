@@ -1,46 +1,126 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
-	theme: {
-		extend: {},
-	},
-	plugins: [
-		require('daisyui'),
-	],
-	daisyui: {
-		themes: [
-			{
-				light: {
-					"primary": "#2563eb",          // Blue-600 pour plus de contraste
-					"secondary": "#0284c7",        // Sky-600
-					"accent": "#0891b2",           // Cyan-600
-					"neutral": "#1e293b",          // Slate-800
-					"base-100": "#ffffff",         // White
-					"base-200": "#f8fafc",         // Slate-50
-					"base-300": "#f1f5f9",         // Slate-100
-					"base-content": "#1e293b",     // Slate-800
-					"info": "#3b82f6",             // Blue-500
-					"success": "#22c55e",          // Green-500
-					"warning": "#f59e0b",          // Amber-500
-					"error": "#ef4444",            // Red-500
-					"primary-content": "#ffffff",   // White
-				},
-				dark: {
-					"primary": "#60a5fa",          // Blue-400
-					"secondary": "#38bdf8",        // Sky-400
-					"accent": "#22d3ee",           // Cyan-400
-					"neutral": "#f8fafc",          // Slate-50
-					"base-100": "#0f172a",         // Slate-900
-					"base-200": "#1e293b",         // Slate-800
-					"base-300": "#334155",         // Slate-700
-					"base-content": "#f8fafc",     // Slate-50
-					"info": "#60a5fa",             // Blue-400
-					"success": "#4ade80",          // Green-400
-					"warning": "#fbbf24",          // Amber-400
-					"error": "#f87171",            // Red-400
-					"primary-content": "#0f172a",   // Slate-900
-				}
-			}
-		]
-	}
-}
+  content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+  darkMode: ['class', '[data-theme="dark"]'],
+  theme: {
+    extend: {
+      colors: {
+        blue: {
+          50: '#E6F0FF',
+          100: '#CCE0FF',
+          200: '#99C2FF',
+          300: '#66A3FF',
+          400: '#3B82F6',
+          500: '#0066FF',
+          600: '#0052CC',
+          700: '#003D99',
+          800: '#002966',
+          900: '#001433',
+          950: '#0A1A33',
+        },
+        bg: 'rgb(var(--color-bg) / <alpha-value>)',
+        'bg-subtle': 'rgb(var(--color-bg-subtle) / <alpha-value>)',
+        'bg-elevated': 'rgb(var(--color-bg-elevated) / <alpha-value>)',
+        border: 'rgb(var(--color-border) / <alpha-value>)',
+        'border-strong': 'rgb(var(--color-border-strong) / <alpha-value>)',
+        text: 'rgb(var(--color-text) / <alpha-value>)',
+        'text-muted': 'rgb(var(--color-text-muted) / <alpha-value>)',
+        'text-subtle': 'rgb(var(--color-text-subtle) / <alpha-value>)',
+      },
+      fontFamily: {
+        sans: ['"Atkinson Hyperlegible"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        mono: [
+          '"JetBrains Mono Variable"',
+          '"JetBrains Mono"',
+          'ui-monospace',
+          'SFMono-Regular',
+          'Menlo',
+          'monospace',
+        ],
+      },
+      fontSize: {
+        display: ['clamp(2.5rem, 6vw, 4.5rem)', { lineHeight: '1.05', letterSpacing: '-0.02em' }],
+        h1: ['clamp(2rem, 4vw, 3rem)', { lineHeight: '1.1', letterSpacing: '-0.015em' }],
+        h2: ['clamp(1.5rem, 3vw, 2rem)', { lineHeight: '1.2', letterSpacing: '-0.01em' }],
+        h3: ['clamp(1.25rem, 2vw, 1.5rem)', { lineHeight: '1.3' }],
+        lead: ['1.125rem', { lineHeight: '1.6' }],
+        body: ['1rem', { lineHeight: '1.7' }],
+        'mono-sm': ['0.8125rem', { lineHeight: '1.4' }],
+      },
+      maxWidth: {
+        prose: '720px',
+        content: '1200px',
+      },
+      borderRadius: {
+        DEFAULT: '6px',
+        sm: '4px',
+        md: '6px',
+        lg: '8px',
+      },
+      transitionTimingFunction: {
+        snappy: 'cubic-bezier(0.16, 1, 0.3, 1)',
+      },
+      boxShadow: {
+        'glow-blue': '0 0 0 4px rgba(0, 102, 255, 0.15)',
+      },
+      animation: {
+        'pulse-soft': 'pulseSoft 2s ease-in-out infinite',
+        'fade-up': 'fadeUp 600ms cubic-bezier(0.16, 1, 0.3, 1) both',
+      },
+      keyframes: {
+        pulseSoft: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.4' },
+        },
+        fadeUp: {
+          '0%': { opacity: '0', transform: 'translateY(8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+      },
+    },
+  },
+  plugins: [require('daisyui')],
+  daisyui: {
+    themes: [
+      {
+        light: {
+          primary: '#0066FF',
+          'primary-content': '#FFFFFF',
+          secondary: '#475569',
+          'secondary-content': '#FFFFFF',
+          accent: '#0066FF',
+          'accent-content': '#FFFFFF',
+          neutral: '#0F172A',
+          'neutral-content': '#F1F5F9',
+          'base-100': '#FFFFFF',
+          'base-200': '#F8FAFC',
+          'base-300': '#E2E8F0',
+          'base-content': '#0F172A',
+          info: '#0066FF',
+          success: '#10B981',
+          warning: '#F59E0B',
+          error: '#EF4444',
+        },
+        dark: {
+          primary: '#3B82F6',
+          'primary-content': '#0A0A0F',
+          secondary: '#94A3B8',
+          'secondary-content': '#0A0A0F',
+          accent: '#3B82F6',
+          'accent-content': '#0A0A0F',
+          neutral: '#F1F5F9',
+          'neutral-content': '#0A0A0F',
+          'base-100': '#0A0A0F',
+          'base-200': '#111118',
+          'base-300': '#262631',
+          'base-content': '#F1F5F9',
+          info: '#3B82F6',
+          success: '#10B981',
+          warning: '#F59E0B',
+          error: '#EF4444',
+        },
+      },
+    ],
+    darkTheme: 'dark',
+  },
+};
