@@ -2,29 +2,102 @@
 import LinkedIn from './icons/LinkedIn.astro';
 import Github from './icons/Github.astro';
 
-const today = new Date();
+const year = new Date().getFullYear();
+
+const pages = [
+  { href: '/', label: 'Accueil' },
+  { href: '/formation', label: 'Formations' },
+  { href: '/about', label: 'À propos' },
+];
 ---
 
-<footer class="bg-base-200 text-base-content/60 py-8">
-  <div class="container mx-auto px-4 flex flex-col items-center gap-4 text-center">
-    <p>&copy; {today.getFullYear()} Jérémy Marodon. All rights reserved.</p>
-    <div class="flex justify-center gap-4">
-      <a
-        href="https://www.linkedin.com/in/jeremymarodon/"
-        target="_blank"
-        class="hover:text-primary transition-colors"
-      >
-        <span class="sr-only">Contact me on LinkedIn</span>
-        <LinkedIn size={32} />
-      </a>
-      <a
-        href="https://github.com/Th3Mouk"
-        target="_blank"
-        class="hover:text-primary transition-colors"
-      >
-        <span class="sr-only">Go to my GitHub repo</span>
-        <Github size={32} />
-      </a>
+<footer class="mt-24 border-t border-border bg-bg-subtle">
+  <div class="container-content py-12">
+    <div class="grid gap-10 md:grid-cols-3">
+      <!-- Brand -->
+      <div>
+        <p class="font-bold text-text">
+          Jérémy Marodon <span class="font-mono text-mono-sm text-blue-500">/</span>
+        </p>
+        <p class="mt-3 max-w-xs text-sm text-text-muted">
+          Formateur &amp; consultant technique senior. J'aide les équipes et développeurs
+          à livrer du logiciel fiable, depuis 2013.
+        </p>
+      </div>
+
+      <!-- Pages -->
+      <div>
+        <p class="font-mono text-mono-sm uppercase tracking-wider text-text-subtle">
+          <span class="text-blue-500">{'//'}</span> pages
+        </p>
+        <ul class="mt-4 space-y-2 text-sm">
+          {
+            pages.map((page) => (
+              <li>
+                <a
+                  href={page.href}
+                  class="text-text-muted transition-colors hover:text-blue-500"
+                >
+                  {page.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Connect -->
+      <div>
+        <p class="font-mono text-mono-sm uppercase tracking-wider text-text-subtle">
+          <span class="text-blue-500">{'//'}</span> connect
+        </p>
+        <ul class="mt-4 space-y-2 text-sm">
+          <li>
+            <a
+              href="mailto:marodon.jeremy@gmail.com"
+              class="text-text-muted transition-colors hover:text-blue-500"
+            >
+              marodon.jeremy@gmail.com
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.linkedin.com/in/jeremymarodon/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 text-text-muted transition-colors hover:text-blue-500"
+            >
+              <LinkedIn size={16} class="fill-current" />
+              LinkedIn
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://github.com/Th3Mouk"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 text-text-muted transition-colors hover:text-blue-500"
+            >
+              <Github size={16} class="fill-current" />
+              GitHub
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div
+      class="mt-10 flex flex-col items-start gap-2 border-t border-border pt-6 text-sm text-text-subtle md:flex-row md:items-center md:justify-between"
+    >
+      <p>&copy; {year} Jérémy Marodon. Tous droits réservés.</p>
+      <p class="font-mono text-mono-sm">
+        Built with <a
+          href="https://astro.build"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-text-muted transition-colors hover:text-blue-500">Astro</a
+        >
+      </p>
     </div>
   </div>
 </footer>
