@@ -140,8 +140,8 @@ const formatDate = (iso: string) =>
                   <ArrowUpRight class="h-4 w-4 shrink-0 text-text-subtle" />
                 )}
               </div>
-              <p class="mt-3 text-text-muted">{service.pitch}</p>
-              <ul class="mt-auto space-y-2 border-t border-border pt-4 font-mono text-mono-sm text-text-muted">
+              <p class="mt-3 pb-8 text-text-muted">{service.pitch}</p>
+              <ul class="mt-auto space-y-2 border-t border-border pt-5 font-mono text-mono-sm text-text-muted">
                 {service.bullets.map((bullet) => (
                   <li class="flex items-start gap-2">
                     <span class="mt-1 text-blue-500" aria-hidden="true">
@@ -241,14 +241,16 @@ const formatDate = (iso: string) =>
 
   <!-- Contact -->
   <section class="py-20 md:py-28">
-    <div class="container-content text-center">
-      <SectionKicker class="mb-3 justify-center">contact</SectionKicker>
-      <h2 class="text-balance text-h1 font-bold">On en discute ?</h2>
-      <p class="mx-auto mt-4 max-w-xl text-pretty text-lead text-text-muted">
-        Formation, audit, accompagnement, mission tech &mdash; envoie un mail, je
-        réponds rapidement.
-      </p>
-      <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+    <div class="container-content grid gap-10 md:grid-cols-[1fr_auto] md:items-end md:gap-16">
+      <div class="max-w-2xl">
+        <SectionKicker class="mb-3">contact</SectionKicker>
+        <h2 class="text-balance text-h1 font-bold">On en discute ?</h2>
+        <p class="mt-4 text-pretty text-lead text-text-muted">
+          Formation, audit, accompagnement, mission tech &mdash; envoie un mail,
+          je réponds rapidement.
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
         <Button href="mailto:marodon.jeremy@gmail.com">
           marodon.jeremy@gmail.com
           <ArrowUpRight class="h-4 w-4" />

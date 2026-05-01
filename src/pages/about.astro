@@ -327,14 +327,16 @@ const formatDate = (iso: string) =>
 
   <!-- Contact CTA -->
   <section class="py-20 md:py-28">
-    <div class="container-content text-center">
-      <SectionKicker class="mb-3 justify-center">contact</SectionKicker>
-      <h2 class="text-balance text-h1 font-bold">Discutons de ton projet</h2>
-      <p class="mx-auto mt-4 max-w-xl text-pretty text-lead text-text-muted">
-        Formation, accompagnement, audit, mission de dev — décris-moi le contexte, je
-        reviens vers toi rapidement.
-      </p>
-      <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+    <div class="container-content grid gap-10 md:grid-cols-[1fr_auto] md:items-end md:gap-16">
+      <div class="max-w-2xl">
+        <SectionKicker class="mb-3">contact</SectionKicker>
+        <h2 class="text-balance text-h1 font-bold">Discutons de ton projet</h2>
+        <p class="mt-4 text-pretty text-lead text-text-muted">
+          Formation, accompagnement, audit, mission de dev &mdash; décris-moi le
+          contexte, je reviens vers toi rapidement.
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
         <Button href="mailto:marodon.jeremy@gmail.com">
           marodon.jeremy@gmail.com
           <ArrowUpRight class="h-4 w-4" />

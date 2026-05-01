@@ -131,14 +131,18 @@ const formations: Formation[] = [
 
   <!-- CTA -->
   <section class="border-t border-border bg-bg-subtle py-20">
-    <div class="container-content text-center">
-      <SectionKicker class="mb-3 justify-center">contact</SectionKicker>
-      <h2 class="text-balance text-h2 font-bold">Un sujet précis ? Une équipe à former ?</h2>
-      <p class="mx-auto mt-4 max-w-xl text-pretty text-lead text-text-muted">
-        Décris-moi le contexte (taille de l'équipe, niveau, stack, période) et je te
-        renvoie un programme adapté avec un devis sous 48h.
-      </p>
-      <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+    <div class="container-content grid gap-10 md:grid-cols-[1fr_auto] md:items-end md:gap-16">
+      <div class="max-w-2xl">
+        <SectionKicker class="mb-3">contact</SectionKicker>
+        <h2 class="text-balance text-h2 font-bold">
+          Un sujet précis ? Une équipe à former ?
+        </h2>
+        <p class="mt-4 text-pretty text-lead text-text-muted">
+          Décris-moi le contexte (taille de l'équipe, niveau, stack, période) et
+          je te renvoie un programme adapté avec un devis sous 48h.
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
         <Button href="mailto:marodon.jeremy@gmail.com?subject=Demande%20de%20formation">
           Demander un devis
           <ArrowUpRight class="h-4 w-4" />
