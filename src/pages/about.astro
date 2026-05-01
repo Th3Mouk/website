@@ -14,7 +14,7 @@ interface SkillGroup {
 }
 
 const hardSkills: SkillGroup[] = [
-  { category: 'Languages', items: ['PHP 8+', 'JavaScript', 'TypeScript'] },
+  { category: 'Langages', items: ['PHP 8+', 'JavaScript', 'TypeScript'] },
   { category: 'Backend', items: ['Symfony', 'Doctrine ORM', 'Node.js', 'API REST'] },
   { category: 'Frontend', items: ['React', 'Vue.js', 'Astro', 'Tailwind'] },
   { category: 'Data', items: ['PostgreSQL', 'MySQL', 'MongoDB', 'Redis'] },
@@ -49,7 +49,7 @@ const softSkills: SoftSkill[] = [
   {
     title: 'Leadership technique',
     description:
-      "Donner le cap, embarquer l'équipe, mettre les mains dans le code quand il faut. Pas de leader ivory tower : la décision technique se justifie en lisant le code.",
+      "Donner le cap, embarquer l'équipe, mettre les mains dans le code quand il faut. Pas de leader en tour d'ivoire : la décision technique se justifie en lisant le code.",
     proofQuote:
       "Si vous recherchez un leader technique capable de mettre les mains dans le cambouis pour montrer la bonne direction, alors Jérémy est le candidat idéal.",
     proofAuthor: 'Kévin Bargoin, Expert Kubernetes',
@@ -65,7 +65,7 @@ const softSkills: SoftSkill[] = [
   {
     title: 'Communication',
     description:
-      "Explique le 'pourquoi' avant le 'comment'. Sait parler aux devs, aux PM, aux stakeholders — et faire converger les conversations vers des décisions partagées.",
+      "Explique le 'pourquoi' avant le 'comment'. Sait parler aux devs, aux PM, aux parties prenantes — et faire converger les conversations vers des décisions partagées.",
     proofQuote:
       "C'est un excellent développeur, un très bon communicateur mais aussi un collaborateur très apprécié. Il est capable d'inspirer son équipe et il a une vision claire de ce qu'il veut accomplir.",
     proofAuthor: 'Kévin Bargoin, Expert Kubernetes',
@@ -122,7 +122,7 @@ const formatDate = (iso: string) =>
       <div class="flex justify-center md:block">
         <div class="relative">
           <div
-            class="absolute inset-0 -z-10 rounded-full bg-blue-500/20 blur-2xl"
+            class="absolute inset-0 -z-10 rounded-full bg-blue-500/10 blur-3xl"
             aria-hidden="true"
           >
           </div>
@@ -135,14 +135,14 @@ const formatDate = (iso: string) =>
               height="240"
               loading="eager"
               decoding="async"
-              class="h-56 w-56 rounded-full border border-border-strong object-cover shadow-xl md:h-60 md:w-60"
+              class="h-40 w-40 rounded-full border border-border-strong object-cover shadow-xl md:h-60 md:w-60"
             />
           </picture>
         </div>
       </div>
 
       <div>
-        <SectionKicker class="mb-4">about</SectionKicker>
+        <SectionKicker class="mb-4">à propos</SectionKicker>
         <h1 class="text-balance text-h1 font-bold">
           Bonjour, je suis <span class="text-blue-500">Jérémy</span>.
         </h1>
@@ -174,7 +174,7 @@ const formatDate = (iso: string) =>
           <span class="font-mono text-mono-sm text-text-subtle">·</span>
           <span class="font-mono text-mono-sm text-text-muted">FR / EN</span>
           <span class="font-mono text-mono-sm text-text-subtle">·</span>
-          <span class="font-mono text-mono-sm text-text-muted">Remote &amp; on-site</span>
+          <span class="font-mono text-mono-sm text-text-muted">À distance &amp; sur site</span>
         </div>
 
         <div class="mt-8 flex flex-wrap gap-3">
@@ -198,7 +198,7 @@ const formatDate = (iso: string) =>
   <!-- Hard skills -->
   <section class="border-b border-border py-20 md:py-28">
     <div class="container-content">
-      <SectionKicker class="mb-3">stack &amp; tools</SectionKicker>
+      <SectionKicker class="mb-3">stack &amp; outils</SectionKicker>
       <h2 class="text-balance text-h2 font-bold">Compétences techniques</h2>
       <p class="mt-4 max-w-2xl text-pretty text-lead text-text-muted">
         Ce avec quoi je travaille au quotidien. Le reste s'apprend.
@@ -228,7 +228,7 @@ const formatDate = (iso: string) =>
   <!-- Soft skills (with proof) -->
   <section class="border-b border-border bg-bg-subtle py-20 md:py-28">
     <div class="container-content">
-      <SectionKicker class="mb-3">how I work</SectionKicker>
+      <SectionKicker class="mb-3">méthode</SectionKicker>
       <h2 class="text-balance text-h2 font-bold">Soft skills, version preuves</h2>
       <p class="mt-4 max-w-2xl text-pretty text-lead text-text-muted">
         Pas de buzzwords sans preuve. Chaque qualité est appuyée par une recommandation
@@ -257,7 +257,7 @@ const formatDate = (iso: string) =>
   <!-- Timeline -->
   <section class="border-b border-border py-20 md:py-28">
     <div class="container-content">
-      <SectionKicker class="mb-3">timeline</SectionKicker>
+      <SectionKicker class="mb-3">chronologie</SectionKicker>
       <h2 class="text-balance text-h2 font-bold">Parcours</h2>
 
       <!-- TODO(content): périodes reconstruites à partir des recos LinkedIn — à valider/préciser par Jérémy -->
@@ -287,7 +287,7 @@ const formatDate = (iso: string) =>
   <!-- Full testimonials -->
   <section class="border-b border-border py-20 md:py-28">
     <div class="container-content">
-      <SectionKicker class="mb-3">recommendations</SectionKicker>
+      <SectionKicker class="mb-3">recommandations</SectionKicker>
       <h2 class="text-balance text-h2 font-bold">Ce qu'ils disent — version intégrale</h2>
       <p class="mt-4 max-w-2xl text-pretty text-lead text-text-muted">
         Recommandations LinkedIn complètes. Tu peux retrouver les originaux sur mon profil.

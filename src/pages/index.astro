@@ -26,13 +26,13 @@ const services: Service[] = [
   {
     title: 'Consulting',
     pitch:
-      'Architecture, migrations, mise en place de CI/CD, stratégie de tests, audits techniques. Des solutions concrètes adaptées à votre contexte.',
+      'Architecture, migrations, mise en place de CI/CD, stratégie de tests, audits techniques. Des solutions concrètes adaptées à ton contexte.',
     bullets: ['Architecture & migration', 'Audit & conformité', 'Performance & qualité'],
   },
   {
     title: 'Développement',
     pitch:
-      'Applications modernes performantes, rénovation de bases de code legacy, nouvelles fonctionnalités. Code fiable, évolutif, en phase avec vos objectifs.',
+      'Applications modernes performantes, rénovation de bases de code legacy, nouvelles fonctionnalités. Code fiable, évolutif, en phase avec tes objectifs.',
     bullets: ['Apps web modernes', 'Modernisation legacy', 'Solutions sur mesure'],
   },
 ];
@@ -60,7 +60,7 @@ const formatDate = (iso: string) =>
 
     <div class="container-content relative grid gap-12 py-16 md:grid-cols-[1fr_auto] md:gap-16 md:py-24 lg:py-32">
       <div class="max-w-2xl">
-        <SectionKicker class="mb-6">developer · educator · consultant</SectionKicker>
+        <SectionKicker class="mb-6">développeur · formateur · consultant</SectionKicker>
 
         <h1 class="text-balance text-display font-bold text-text">
           Jérémy <span class="text-blue-500">Marodon</span>
@@ -91,7 +91,7 @@ const formatDate = (iso: string) =>
           <span class="font-mono text-mono-sm text-text-subtle">·</span>
           <span class="font-mono text-mono-sm text-text-muted">FR / EN</span>
           <span class="font-mono text-mono-sm text-text-subtle">·</span>
-          <span class="font-mono text-mono-sm text-text-muted">Remote &amp; on-site</span>
+          <span class="font-mono text-mono-sm text-text-muted">À distance &amp; sur site</span>
         </div>
       </div>
 
@@ -99,7 +99,7 @@ const formatDate = (iso: string) =>
       <div class="hidden md:flex md:items-center md:justify-end">
         <div class="relative">
           <div
-            class="absolute inset-0 -z-10 rounded-full bg-blue-500/20 blur-2xl"
+            class="absolute inset-0 -z-10 rounded-full bg-blue-500/10 blur-3xl"
             aria-hidden="true"
           >
           </div>
@@ -161,7 +161,7 @@ const formatDate = (iso: string) =>
   <!-- Stats -->
   <section class="border-b border-border bg-bg-subtle py-16">
     <div class="container-content">
-      <SectionKicker class="mb-8">numbers</SectionKicker>
+      <SectionKicker class="mb-8">chiffres</SectionKicker>
       <div class="grid gap-8 md:grid-cols-3">
         {
           stats.map((stat) => (
@@ -179,7 +179,7 @@ const formatDate = (iso: string) =>
   <!-- Testimonials -->
   <section class="border-b border-border py-20 md:py-28">
     <div class="container-content">
-      <SectionKicker class="mb-3">testimonials</SectionKicker>
+      <SectionKicker class="mb-3">témoignages</SectionKicker>
       <h2 class="text-balance text-h2 font-bold">Ce que disent ceux qui ont travaillé avec moi</h2>
       <p class="mt-4 max-w-2xl text-pretty text-lead text-text-muted">
         Recommandations LinkedIn issues d'anciens collègues et managers.
@@ -221,12 +221,12 @@ const formatDate = (iso: string) =>
       <Card href="/formation" class="bg-bg-subtle">
         <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div class="max-w-2xl">
-            <SectionKicker class="mb-3">training</SectionKicker>
-            <h2 class="text-h2 font-bold">Formations on-site</h2>
+            <SectionKicker class="mb-3">formations</SectionKicker>
+            <h2 class="text-h2 font-bold">Formations sur site</h2>
             <p class="mt-3 text-text-muted">
               11 modules taillés pour les équipes tech : PHP moderne, Symfony, JS/TS,
-              bases de données, CI/CD, DevOps, IA et plus. Hands-on, programme adapté
-              à votre stack.
+              bases de données, CI/CD, DevOps, IA et plus. Concret, programme adapté
+              à ta stack.
             </p>
           </div>
           <p
