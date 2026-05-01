@@ -26,13 +26,13 @@ const services: Service[] = [
   {
     title: 'Consulting',
     pitch:
-      'Architecture, migrations, mise en place de CI/CD, stratégie de tests, audits techniques. Des solutions concrètes adaptées à ton contexte.',
-    bullets: ['Architecture & migration', 'Audit & conformité', 'Performance & qualité'],
+      "Décisions techniques difficiles, architectures qui tiennent, audits qui débloquent. De l'application au cloud, du code à la conformité.",
+    bullets: ['Architecture & cloud', 'Audit, sécurité & conformité', 'Performance & qualité'],
   },
   {
     title: 'Développement',
     pitch:
-      'Applications modernes performantes, rénovation de bases de code legacy, nouvelles fonctionnalités. Code fiable, évolutif, en phase avec tes objectifs.',
+      'Applications modernes performantes, rénovation de bases de code legacy, nouvelles fonctionnalités. Code fiable, évolutif, en phase avec vos objectifs.',
     bullets: ['Apps web modernes', 'Modernisation legacy', 'Solutions sur mesure'],
   },
 ];
@@ -58,8 +58,31 @@ const formatDate = (iso: string) =>
     >
     </div>
 
-    <div class="container-content relative grid gap-12 py-16 md:grid-cols-[1fr_auto] md:gap-16 md:py-24 lg:py-32">
-      <div class="max-w-2xl">
+    <div class="container-content relative grid gap-6 py-12 sm:gap-8 sm:py-16 md:grid-cols-[1fr_auto] md:gap-16 md:py-24 lg:py-28">
+      <!-- Avatar -->
+      <div class="flex justify-center md:order-2 md:items-center md:justify-end">
+        <div class="relative">
+          <div
+            class="absolute inset-0 -z-10 rounded-full bg-blue-500/10 blur-3xl"
+            aria-hidden="true"
+          >
+          </div>
+          <picture>
+            <source srcset="/profil2-blue.webp" type="image/webp" />
+            <img
+              src="/profil2-blue.jpg"
+              alt="Portrait de Jérémy Marodon"
+              width="320"
+              height="320"
+              loading="eager"
+              decoding="async"
+              class="h-32 w-32 rounded-full border border-border-strong object-cover shadow-xl sm:h-40 sm:w-40 md:h-72 md:w-72"
+            />
+          </picture>
+        </div>
+      </div>
+
+      <div class="max-w-2xl md:order-1">
         <SectionKicker class="mb-6">développeur · formateur · consultant</SectionKicker>
 
         <h1 class="text-balance text-display font-bold text-text">
@@ -67,13 +90,14 @@ const formatDate = (iso: string) =>
         </h1>
 
         <p class="mt-4 font-mono text-mono-sm uppercase tracking-wider text-text-muted">
-          Formateur &amp; Consultant Technique Senior
+          Web · Cloud · DevOps &mdash; indépendant, 13 ans de pratique
         </p>
 
         <p class="mt-8 max-w-xl text-pretty text-lead text-text-muted">
-          J'accompagne les entreprises et développeurs dans leur montée en compétences
-          techniques, avec un focus sur des technologies modernes comme PHP, Symfony,
-          React, DevOps et IA.
+          Tous les jours, je code. Je traduis des intentions en solutions sur mesure
+          qui passent à l'échelle, tiennent dans le temps et respectent les exigences
+          du projet &mdash; tout en faisant monter en compétences les équipes qui les
+          portent, sans ralentir leur livraison.
         </p>
 
         <div class="mt-10 flex flex-wrap items-center gap-3">
@@ -92,29 +116,6 @@ const formatDate = (iso: string) =>
           <span class="font-mono text-mono-sm text-text-muted">FR / EN</span>
           <span class="font-mono text-mono-sm text-text-subtle">·</span>
           <span class="font-mono text-mono-sm text-text-muted">À distance &amp; sur site</span>
-        </div>
-      </div>
-
-      <!-- Avatar -->
-      <div class="hidden md:flex md:items-center md:justify-end">
-        <div class="relative">
-          <div
-            class="absolute inset-0 -z-10 rounded-full bg-blue-500/10 blur-3xl"
-            aria-hidden="true"
-          >
-          </div>
-          <picture>
-            <source srcset="/profil2-blue.webp" type="image/webp" />
-            <img
-              src="/profil2-blue.jpg"
-              alt="Portrait de Jérémy Marodon"
-              width="320"
-              height="320"
-              loading="eager"
-              decoding="async"
-              class="h-72 w-72 rounded-full border border-border-strong object-cover shadow-xl"
-            />
-          </picture>
         </div>
       </div>
     </div>
@@ -176,6 +177,45 @@ const formatDate = (iso: string) =>
     </div>
   </section>
 
+  <!-- Projets / cas -->
+  <!-- TODO(content): remplacer les 3 cartes placeholder par 3 vrais cas
+       (contexte, problème, décision tech, résultat). Cible : page dédiée
+       /projets/[slug] avec fiche complète, et tuiles teaser en homepage. -->
+  <section class="border-b border-border py-20 md:py-28">
+    <div class="container-content">
+      <div class="flex items-end justify-between gap-6">
+        <div class="max-w-2xl">
+          <SectionKicker class="mb-3">projets</SectionKicker>
+          <h2 class="text-balance text-h2 font-bold">Quelques cas concrets</h2>
+          <p class="mt-4 text-pretty text-lead text-text-muted">
+            Des missions où la décision technique ou pédagogique a fait la différence.
+            Contexte, problème, ce qu'on a décidé, le résultat.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-12 grid gap-6 md:grid-cols-3">
+        {
+          [1, 2, 3].map((i) => (
+            <Card class="flex h-full flex-col">
+              <p class="font-mono text-mono-sm uppercase tracking-wider text-text-subtle">
+                cas #{String(i).padStart(2, '0')}
+              </p>
+              <h3 class="mt-3 text-h3 font-bold text-text">À venir</h3>
+              <p class="mt-3 text-text-muted">
+                Mission, contexte, décision technique, résultat mesuré. Fiche complète
+                bientôt disponible.
+              </p>
+              <div class="mt-auto border-t border-border pt-4">
+                <Tag variant="subtle">#bientôt</Tag>
+              </div>
+            </Card>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
   <!-- Testimonials -->
   <section class="border-b border-border py-20 md:py-28">
     <div class="container-content">
@@ -226,7 +266,7 @@ const formatDate = (iso: string) =>
             <p class="mt-3 text-text-muted">
               11 modules taillés pour les équipes tech : PHP moderne, Symfony, JS/TS,
               bases de données, CI/CD, DevOps, IA et plus. Concret, programme adapté
-              à ta stack.
+              à votre stack.
             </p>
           </div>
           <p
@@ -244,9 +284,9 @@ const formatDate = (iso: string) =>
     <div class="container-content grid gap-10 md:grid-cols-[1fr_auto] md:items-end md:gap-16">
       <div class="max-w-2xl">
         <SectionKicker class="mb-3">contact</SectionKicker>
-        <h2 class="text-balance text-h1 font-bold">On en discute ?</h2>
+        <h2 class="text-balance text-h1 font-bold">Discutons de votre projet</h2>
         <p class="mt-4 text-pretty text-lead text-text-muted">
-          Formation, audit, accompagnement, mission tech &mdash; envoie un mail,
+          Formation, audit, accompagnement, mission tech &mdash; envoyez un mail,
           je réponds rapidement.
         </p>
       </div>

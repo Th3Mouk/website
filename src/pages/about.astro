@@ -18,11 +18,16 @@ const hardSkills: SkillGroup[] = [
   { category: 'Backend', items: ['Symfony', 'Doctrine ORM', 'Node.js', 'API REST'] },
   { category: 'Frontend', items: ['React', 'Vue.js', 'Astro', 'Tailwind'] },
   { category: 'Data', items: ['PostgreSQL', 'MySQL', 'MongoDB', 'Redis'] },
+  { category: 'Cloud & infra', items: ['AWS', 'Docker', 'Kubernetes'] },
   {
-    category: 'DevOps & infra',
-    items: ['Docker', 'Kubernetes', 'Terraform', 'Pulumi', 'Ansible', 'GitHub Actions', 'GitLab CI'],
+    category: 'IaC & CI/CD',
+    items: ['Terraform', 'Pulumi', 'Ansible', 'GitHub Actions', 'GitLab CI'],
   },
   { category: 'Observabilité', items: ['Prometheus', 'Grafana', 'Sentry'] },
+  {
+    category: 'Conformité & sécurité',
+    items: ['ISO 27001', 'SOC 2', 'SOC 3', 'RGPD'],
+  },
   { category: 'Qualité', items: ['Tests unitaires & E2E', 'CI/CD', 'Code review'] },
   { category: 'IA', items: ['OpenAI GPT', 'Anthropic Claude', 'Intégration LLM'] },
   { category: 'Méthodes', items: ['Agile', 'Scrum', 'Kanban', 'Git', 'TDD'] },
@@ -86,9 +91,9 @@ interface TimelineEntry {
 const timeline: TimelineEntry[] = [
   {
     period: '2024 — aujourd\'hui',
-    role: 'Formateur & Consultant Technique Senior',
+    role: 'Formateur, Consultant & Responsable Infrastructure',
     company: 'Indépendant',
-    note: 'Formation, audit technique, mission de dev — équipes & devs en montée en compétences.',
+    note: "Formation, audit technique, missions de dev — et responsable d'une infrastructure cloud (AWS, IaC) avec contraintes de conformité (ISO 27001, SOC 2, RGPD).",
   },
   {
     period: '2022 — 2024',
@@ -114,11 +119,11 @@ const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long' });
 ---
 
-<BaseLayout title="À propos | Jérémy Marodon" description="Parcours, expertise technique, soft skills et recommandations de Jérémy Marodon — formateur et consultant tech senior.">
+<BaseLayout title="À propos | Jérémy Marodon" description="Parcours, expertise technique (PHP, Symfony, AWS, IaC, conformité ISO 27001 / SOC 2 / RGPD), soft skills et recommandations de Jérémy Marodon — formateur et consultant tech.">
   <!-- Hero -->
   <section class="relative overflow-hidden border-b border-border">
     <div class="absolute inset-0 grid-dots opacity-50" aria-hidden="true"></div>
-    <div class="container-content relative grid gap-12 py-16 md:grid-cols-[auto_1fr] md:gap-16 md:py-24">
+    <div class="container-content relative grid gap-8 py-12 sm:gap-12 sm:py-16 md:grid-cols-[auto_1fr] md:gap-16 md:py-24">
       <div class="flex justify-center md:block">
         <div class="relative">
           <div
@@ -159,8 +164,10 @@ const formatDate = (iso: string) =>
             J'ai grandi techniquement sur PHP/Symfony (depuis Symfony 1.4), puis JavaScript
             et l'écosystème front moderne, avant d'attraper le DevOps et l'infrastructure
             par nécessité — quand un produit prod tombe à 3h du matin, on apprend vite.
-            Aujourd'hui je passe autant de temps à transmettre qu'à coder, et j'aime
-            beaucoup ça.
+            Depuis deux ans, je suis responsable d'une infrastructure complète sur AWS,
+            en Infrastructure-as-Code, avec les contraintes de conformité qui vont avec
+            (ISO 27001, SOC 2, RGPD). Aujourd'hui je passe autant de temps à transmettre
+            qu'à coder, et j'aime beaucoup ça.
           </p>
           <p>
             Mon credo : la qualité technique se construit par petites décisions
@@ -330,10 +337,10 @@ const formatDate = (iso: string) =>
     <div class="container-content grid gap-10 md:grid-cols-[1fr_auto] md:items-end md:gap-16">
       <div class="max-w-2xl">
         <SectionKicker class="mb-3">contact</SectionKicker>
-        <h2 class="text-balance text-h1 font-bold">Discutons de ton projet</h2>
+        <h2 class="text-balance text-h1 font-bold">Discutons de votre projet</h2>
         <p class="mt-4 text-pretty text-lead text-text-muted">
-          Formation, accompagnement, audit, mission de dev &mdash; décris-moi le
-          contexte, je reviens vers toi rapidement.
+          Formation, accompagnement, audit, mission de dev &mdash; décrivez-moi le
+          contexte, je reviens vers vous rapidement.
         </p>
       </div>
       <div class="flex flex-wrap items-center gap-3">
