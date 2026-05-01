@@ -134,9 +134,14 @@ const formatDate = (iso: string) =>
         {
           services.map((service) => (
             <Card href={service.href} class="flex h-full flex-col">
-              <h3 class="text-h3 font-bold text-text">{service.title}</h3>
+              <div class="flex items-start justify-between gap-4">
+                <h3 class="text-h3 font-bold text-text">{service.title}</h3>
+                {service.href && (
+                  <ArrowUpRight class="h-4 w-4 shrink-0 text-text-subtle" />
+                )}
+              </div>
               <p class="mt-3 text-text-muted">{service.pitch}</p>
-              <ul class="mt-6 space-y-2 border-t border-border pt-4 font-mono text-mono-sm text-text-muted">
+              <ul class="mt-auto space-y-2 border-t border-border pt-4 font-mono text-mono-sm text-text-muted">
                 {service.bullets.map((bullet) => (
                   <li class="flex items-start gap-2">
                     <span class="mt-1 text-blue-500" aria-hidden="true">
@@ -146,11 +151,6 @@ const formatDate = (iso: string) =>
                   </li>
                 ))}
               </ul>
-              {service.href && (
-                <p class="mt-6 inline-flex items-center gap-1 font-mono text-mono-sm text-blue-500">
-                  En savoir plus <ArrowUpRight class="h-3 w-3" />
-                </p>
-              )}
             </Card>
           ))
         }
