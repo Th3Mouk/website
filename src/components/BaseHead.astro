@@ -16,10 +16,29 @@ const { title, description, image = '/profil2-blue.jpg' } = Astro.props;
 
 <script is:inline>
   (() => {
+    const root = document.documentElement;
+    const mq = matchMedia('(prefers-color-scheme: dark)');
+
+    // Pre-paint theme bootstrap: stored preference wins, otherwise
+    // follow the OS via prefers-color-scheme.
     const stored = localStorage.getItem('theme');
-    const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
-    const theme = stored ?? (prefersDark ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', theme);
+    root.setAttribute('data-theme', stored ?? (mq.matches ? 'dark' : 'light'));
+
+    // Live OS theme sync: when the user has NOT picked a theme, follow
+    // OS changes mid-session (e.g. macOS auto night-shift, manual flip).
+    mq.addEventListener('change', (e) => {
+      if (localStorage.getItem('theme')) return;
+      root.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+    });
+
+    // Cross-tab sync: another tab toggled the theme → follow.
+    addEventListener('storage', (e) => {
+      if (e.key !== 'theme') return;
+      root.setAttribute(
+        'data-theme',
+        e.newValue ?? (mq.matches ? 'dark' : 'light')
+      );
+    });
   })();
 </script>
 
