@@ -80,7 +80,7 @@ const softSkills: SoftSkill[] = [
 interface TimelineEntry {
   period: string;
   role: string;
-  company: string;
+  company?: string;
   note?: string;
 }
 
@@ -92,7 +92,6 @@ const timeline: TimelineEntry[] = [
   {
     period: '2024 — aujourd\'hui',
     role: 'Formateur, Consultant & Responsable Infrastructure',
-    company: 'Indépendant',
     note: "Formation, audit technique, missions de dev — et responsable d'une infrastructure cloud (AWS, IaC) avec contraintes de conformité (ISO 27001, SOC 2, RGPD).",
   },
   {
@@ -177,7 +176,7 @@ const formatDate = (iso: string) =>
         </div>
 
         <div class="mt-8 flex flex-wrap items-center gap-3">
-          <StatusDot status="available" label="Ouvert aux missions" />
+          <StatusDot status="available" label="Disponible" />
           <span class="font-mono text-mono-sm text-text-subtle">·</span>
           <span class="font-mono text-mono-sm text-text-muted">FR / EN</span>
           <span class="font-mono text-mono-sm text-text-subtle">·</span>
@@ -280,8 +279,10 @@ const formatDate = (iso: string) =>
                 {entry.period}
               </p>
               <p class="mt-2 text-h3 font-bold text-text">
-                {entry.role}{' '}
-                <span class="font-normal text-text-muted">@ {entry.company}</span>
+                {entry.role}
+                {entry.company && (
+                  <span class="font-normal text-text-muted"> @ {entry.company}</span>
+                )}
               </p>
               {entry.note && <p class="mt-2 text-text-muted">{entry.note}</p>}
             </li>
