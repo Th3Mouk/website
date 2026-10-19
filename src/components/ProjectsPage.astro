@@ -1,0 +1,132 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from './ui/PageHero.astro';
+import Section from './ui/Section.astro';
+import SectionHeader from './ui/SectionHeader.astro';
+import SpecList from './ui/SpecList.astro';
+import ContactCta from './ui/ContactCta.astro';
+import ProjectCard from './ProjectCard.astro';
+import { ROUTES, localePaths, type Lang } from '../i18n/ui';
+import { projects } from '../data/projects';
+import { CONTACT } from '../consts';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+// Page-specific copy lives next to the page (one file to edit). Shared
+// chrome strings (nav, footer) live in src/i18n/ui.ts.
+const copy = {
+  fr: {
+    seoTitle: 'Projets que je maintiens | Jérémy Marodon',
+    seoDescription:
+      "Projets maintenus par Jérémy Marodon : Materialized View (PostgreSQL/Symfony), Maestro (CLI multi-dépôts), l'app DJ Serato Import et le jeu golf.marodon.com.",
+    kicker: 'projets en cours',
+    h1: 'Projets que je maintiens',
+    lead: "Les produits, librairies open source et projets personnels que je fais tourner et maintiens activement aujourd'hui. Du code en production, accessible et vivant — pas des slides.",
+    sectionKicker: 'en production',
+    sectionTitle: 'En ligne, maintenant',
+    sectionLead: 'Chaque fiche dit ce que fait le projet, sur quoi il tourne, et où le trouver.',
+    facts: { projects: 'projets', active: 'actifs', openSource: 'open source' },
+    ctaKicker: 'et après',
+    ctaTitle: "D'autres projets arrivent",
+    ctaText:
+      "Cette liste grandit au fil de mes projets. Une idée, une collaboration, ou une question sur l'un d'eux ? Écrivez-moi ou jetez un œil à mon GitHub.",
+    ctaEmail: 'Me contacter',
+    ctaGithub: 'GitHub',
+  },
+  en: {
+    seoTitle: 'Projects I maintain | Jérémy Marodon',
+    seoDescription:
+      'Projects maintained by Jérémy Marodon: Materialized View (PostgreSQL/Symfony), Maestro (multi-repo CLI), the Serato Import DJ app and golf.marodon.com.',
+    kicker: 'active projects',
+    h1: 'Projects I maintain',
+    lead: 'The products, open-source libraries and personal projects I actively run and maintain today. Code in production, live and reachable — not slides.',
+    sectionKicker: 'in production',
+    sectionTitle: 'Online, right now',
+    sectionLead: 'Each entry says what the project does, what it runs on, and where to find it.',
+    facts: { projects: 'projects', active: 'active', openSource: 'open source' },
+    ctaKicker: "what's next",
+    ctaTitle: 'More projects on the way',
+    ctaText:
+      'This list grows as my projects do. Got an idea, a collaboration, or a question about one of them? Drop me a line or take a look at my GitHub.',
+    ctaEmail: 'Get in touch',
+    ctaGithub: 'GitHub',
+  },
+} as const;
+
+const c = copy[lang];
+const alternates = localePaths('projects');
+
+const facts = [
+  { label: c.facts.projects, value: String(projects.length) },
+  { label: c.facts.active, value: String(projects.filter((p) => p.status === 'active').length) },
+  {
+    label: c.facts.openSource,
+    value: String(projects.filter((p) => p.links?.some((l) => l.kind === 'github')).length),
+    accent: true,
+  },
+];
+
+const pageUrl = new URL(ROUTES.projects[lang], Astro.site).href;
+
+// JSON-LD: a CollectionPage whose mainEntity is the list of maintained
+// projects. Helps Google surface the page and the individual projects.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: c.seoTitle,
+  description: c.seoDescription,
+  inLanguage: lang,
+  url: pageUrl,
+  isPartOf: {
+    '@type': 'WebSite',
+    name: 'Jérémy Marodon',
+    url: Astro.site?.href,
+  },
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: projects.map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: p.links?.[0]?.url ?? `${pageUrl}#${p.slug}`,
+      name: p.name,
+      description: p.description[lang],
+    })),
+  },
+};
+---
+
+<BaseLayout
+  title={c.seoTitle}
+  description={c.seoDescription}
+  lang={lang}
+  alternates={alternates}
+  jsonLd={jsonLd}
+>
+  <PageHero kicker={c.kicker} title={c.h1} lead={c.lead}>
+    <SpecList slot="aside" items={facts} />
+  </PageHero>
+
+  <Section ariaLabelledby="projects-title">
+    <SectionHeader
+      id="projects-title"
+      kicker={c.sectionKicker}
+      title={c.sectionTitle}
+      lead={c.sectionLead}
+    />
+    <div class="mt-14 grid gap-5 md:grid-cols-2">
+      {projects.map((project) => <ProjectCard project={project} lang={lang} headingLevel="h3" />)}
+    </div>
+  </Section>
+
+  <ContactCta
+    kicker={c.ctaKicker}
+    title={c.ctaTitle}
+    text={c.ctaText}
+    primary={{ mail: true, label: c.ctaEmail }}
+    secondary={{ href: CONTACT.github, label: c.ctaGithub, external: true }}
+  />
+</BaseLayout>

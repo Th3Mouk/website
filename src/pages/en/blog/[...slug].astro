@@ -1,0 +1,15 @@
+---
+// English blog posts: src/content/blog/en/<slug>.mdx → /en/blog/<slug>/
+import type { GetStaticPaths } from 'astro';
+import BlogPostPage from '../../../components/blog/BlogPostPage.astro';
+import { getPosts, postSlug } from '../../../lib/blog';
+
+export const getStaticPaths = (async () => {
+  const posts = await getPosts('en');
+  return posts.map((post) => ({ params: { slug: postSlug(post) }, props: { post } }));
+}) satisfies GetStaticPaths;
+
+const { post } = Astro.props;
+---
+
+<BlogPostPage post={post} />

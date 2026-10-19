@@ -1,0 +1,40 @@
+---
+title: 'Des workspaces multi-dépôts sans monorepo'
+description: 'Sparse-checkout, worktrees Git et packs partagés : comment Maestro prépare des espaces de travail multi-dépôts et réduit le contexte inutile pour les agents IA.'
+pubDate: 2026-09-28
+tags: ['git', 'outillage', 'ia']
+draft: true
+# TODO(content): plan d'article à rédiger. Les faits viennent de la fiche
+# du projet Maestro (src/data/projects.ts).
+---
+
+Travailler sur plusieurs dépôts à la fois sans basculer vers un monorepo : c'est le problème que Maestro résout. Cet article explique l'approche, et pourquoi elle compte encore plus depuis que des agents IA lisent notre code.
+
+## Le coût caché du multi-dépôts
+
+<Callout type="note" title="Plan">
+  Cloner, synchroniser, retrouver le bon état : ce qu'une équipe perd chaque jour.
+</Callout>
+
+## Sparse-checkout et worktrees
+
+```bash
+git sparse-checkout set apps/api packages/shared
+git worktree add ../feature-x feature/x
+```
+
+<Callout type="note" title="Plan">
+  N'exposer que le code nécessaire, et plusieurs branches en parallèle sans recloner.
+</Callout>
+
+## Moins de contexte pour les agents IA
+
+<Callout type="note" title="Plan">
+  Pourquoi un workspace partiel donne de meilleurs résultats et coûte moins cher aux runtimes d'IA.
+</Callout>
+
+## Packs partagés et exécution locale ou cloud
+
+<Callout type="note" title="Plan">
+  Partager une définition de workspace entre équipes ; le même workspace en local et dans le cloud.
+</Callout>

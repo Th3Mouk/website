@@ -1,0 +1,41 @@
+---
+// StatGrid — a row of headline numbers separated by hairlines. The value
+// line is a flex row so the accent "+" sits flush against the number.
+interface Stat {
+  value: string;
+  label: string;
+  meta?: string;
+}
+
+interface Props {
+  items: Stat[];
+  class?: string;
+}
+
+const { items, class: className } = Astro.props;
+---
+
+<ul
+  class:list={[
+    'grid divide-y divide-line sm:divide-x sm:divide-y-0',
+    items.length === 4
+      ? 'sm:grid-cols-4'
+      : items.length === 2
+        ? 'sm:grid-cols-2'
+        : 'sm:grid-cols-3',
+    className,
+  ]}
+>
+  {
+    items.map((stat) => (
+      <li class="py-7 sm:px-8 sm:first:pl-0 sm:last:pr-0">
+        <p class="flex items-baseline text-h1 font-bold tracking-[-0.03em] text-fg">
+          {stat.value.replace(/\+$/, '')}
+          {stat.value.endsWith('+') && <span class="text-accent">+</span>}
+        </p>
+        <p class="mt-2 font-bold text-fg">{stat.label}</p>
+        {stat.meta && <p class="text-label mt-1 text-fg-subtle">{stat.meta}</p>}
+      </li>
+    ))
+  }
+</ul>

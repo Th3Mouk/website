@@ -1,0 +1,36 @@
+---
+// Stroke icon (paths in ./icons.ts). Brand marks with fills (GitHub,
+// LinkedIn) live in their own files. Decorative by default; pass `label`
+// for a meaningful icon.
+import { iconPaths, type IconName } from './icons';
+
+export type { IconName };
+
+interface Props {
+  name: IconName;
+  /** Pixel size (width = height). */
+  size?: number;
+  class?: string;
+  /** Accessible name. Omit for decorative icons (the default). */
+  label?: string;
+}
+
+const { name, size = 16, class: className, label } = Astro.props;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  width={size}
+  height={size}
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class:list={['shrink-0', className]}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  set:html={iconPaths[name]}
+/>

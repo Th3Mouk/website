@@ -1,27 +1,64 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
+import BaseHead, { type ArticleMeta } from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { defaultLang, type Lang } from '../i18n/ui';
+import { getLangFromUrl, htmlLang } from '../i18n/utils';
 
 interface Props {
   title?: string;
   description?: string;
+  /** Page locale. Falls back to the URL-detected locale, then the default. */
+  lang?: Lang;
+  /** Locale→path map of equivalent pages (enables hreflang + the switcher). */
+  alternates?: Partial<Record<Lang, string>>;
+  /** Structured data, forwarded to BaseHead as a JSON-LD script. */
+  jsonLd?: Record<string, unknown>;
+  /** Social image path (defaults to the portrait). */
+  image?: string;
+  /** Article metadata for blog posts (og:type=article). */
+  article?: ArticleMeta;
+  /** Exclude from search engines. */
+  noindex?: boolean;
 }
 
-const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
+const {
+  title = SITE_TITLE,
+  description = SITE_DESCRIPTION,
+  lang = getLangFromUrl(Astro.url) ?? defaultLang,
+  alternates,
+  jsonLd,
+  image,
+  article,
+  noindex,
+} = Astro.props;
 ---
 
 <!doctype html>
-<html lang="fr" data-theme="light">
+<html lang={htmlLang[lang]} data-theme="light">
   <head>
-    <BaseHead title={title} description={description} />
+    <BaseHead
+      title={title}
+      description={description}
+      lang={lang}
+      alternates={alternates}
+      jsonLd={jsonLd}
+      image={image}
+      article={article}
+      noindex={noindex}
+    />
+    <slot name="head" />
   </head>
-  <body class="min-h-screen bg-base-100 text-base-content">
-    <Header />
-    <main>
+  <body class="flex min-h-screen flex-col">
+    <Header lang={lang} alternates={alternates} />
+    <main id="main" class="flex-1">
       <slot />
     </main>
-    <Footer />
+    <Footer lang={lang} />
+    <script>
+      // Email links + copy buttons: the address is decoded on click only.
+      import '../scripts/contact';
+    </script>
   </body>
 </html>

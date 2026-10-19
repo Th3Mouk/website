@@ -1,0 +1,107 @@
+---
+// ProjectCard — one entry of src/data/projects.ts.
+//   full     the projects page: description, tech, action buttons
+//   compact  teasers (home): tagline + tech, whole card links to the entry
+import Card from './ui/Card.astro';
+import Button from './ui/Button.astro';
+import Tag from './ui/Tag.astro';
+import StatusDot from './ui/StatusDot.astro';
+import Icon from './icons/Icon.astro';
+import Github from './icons/Github.astro';
+import { ROUTES, type Lang } from '../i18n/ui';
+import type { Project, ProjectStatus } from '../data/projects';
+
+interface Props {
+  project: Project;
+  lang: Lang;
+  variant?: 'full' | 'compact';
+  /** Heading level inside the card. */
+  headingLevel?: 'h2' | 'h3';
+}
+
+const { project, lang, variant = 'full', headingLevel: Heading = 'h3' } = Astro.props;
+
+const labels = {
+  fr: {
+    links: { site: 'Visiter le site', github: 'Voir sur GitHub', package: 'Package' },
+    status: { active: 'Actif', maintenance: 'Maintenance', paused: 'En pause' },
+  },
+  en: {
+    links: { site: 'Visit the site', github: 'View on GitHub', package: 'Package' },
+    status: { active: 'Active', maintenance: 'Maintenance', paused: 'Paused' },
+  },
+}[lang];
+
+const dotStatus: Record<ProjectStatus, 'available' | 'busy' | 'unavailable'> = {
+  active: 'available',
+  maintenance: 'busy',
+  paused: 'unavailable',
+};
+
+const compact = variant === 'compact';
+const href = compact ? `${ROUTES.projects[lang]}#${project.slug}` : undefined;
+---
+
+<Card
+  id={compact ? undefined : project.slug}
+  href={href}
+  tag="article"
+  class="flex h-full flex-col"
+>
+  <div class="flex items-start justify-between gap-4">
+    <div class="min-w-0">
+      <Heading class="text-h3">{project.name}</Heading>
+      {
+        project.domain && (
+          <p class="mt-1.5 truncate font-mono text-mono-sm text-fg-subtle">{project.domain}</p>
+        )
+      }
+    </div>
+    <StatusDot
+      status={dotStatus[project.status]}
+      label={labels.status[project.status]}
+      class="mt-1.5 shrink-0"
+    />
+  </div>
+
+  <p class="mt-5 text-lead text-fg">{project.tagline[lang]}</p>
+  {!compact && <p class="mt-3 text-fg-muted">{project.description[lang]}</p>}
+
+  {
+    project.tech && project.tech.length > 0 && (
+      <ul class="mt-6 flex flex-wrap gap-1.5">
+        {project.tech.map((tech) => (
+          <li>
+            <Tag>{tech}</Tag>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  {
+    compact ? (
+      <span class="mt-auto inline-flex items-center gap-1.5 pt-7 font-mono text-mono-sm text-fg-subtle transition-colors group-hover/card:text-accent">
+        {lang === 'fr' ? 'Voir le projet' : 'View project'}
+        <Icon
+          name="arrow-right"
+          size={14}
+          class="transition-transform duration-200 group-hover/card:translate-x-0.5"
+        />
+      </span>
+    ) : (
+      project.links &&
+      project.links.length > 0 && (
+        <div class="mt-auto flex flex-wrap gap-2.5 pt-7">
+          {project.links.map((link, i) => (
+            <Button href={link.url} external size="sm" variant={i === 0 ? 'primary' : 'secondary'}>
+              {link.kind === 'github' && <Github size={15} />}
+              {link.label?.[lang] ?? labels.links[link.kind]}
+              {link.kind !== 'github' && <Icon name="arrow-up-right" size={14} />}
+            </Button>
+          ))}
+        </div>
+      )
+    )
+  }
+</Card>

@@ -1,0 +1,392 @@
+---
+// V2 du catalogue formations — version de travail, non liée dans la nav et
+// exclue des moteurs (noindex + filtre sitemap dans astro.config.mjs).
+// L'ancienne page /formation reste intacte pour comparaison.
+// Parti pris V2 :
+//  - copie adressée au décideur (OF, école, entreprise), plus au stagiaire
+//  - verbes de niveau « senior » (concevoir, déployer, diagnostiquer, sécuriser…)
+//  - différenciateur praticien au centre : Principal Engineer en poste, 40 h+/sem
+//  - gabarit par module : niveau / objectifs / prérequis (pas de durée)
+//  - modules ultra-spécifiques conservés (pas de regroupement en parcours)
+//  - module IA repositionné en module phare (dev agentique & automatisation)
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
+import Card from '../components/ui/Card.astro';
+import PageHero from '../components/ui/PageHero.astro';
+import Section from '../components/ui/Section.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
+import SectionKicker from '../components/ui/SectionKicker.astro';
+import SpecList from '../components/ui/SpecList.astro';
+import BulletList from '../components/ui/BulletList.astro';
+import Tag from '../components/ui/Tag.astro';
+import ContactCta from '../components/ui/ContactCta.astro';
+import Icon, { type IconName } from '../components/icons/Icon.astro';
+import { CONTACT } from '../consts';
+
+interface Formation {
+  title: string;
+  /** Short tag rendered as a mono chip on the card */
+  tag: string;
+  /** Niveau visé — signale la profondeur, pas une initiation */
+  niveau: string;
+  /** Le problème que le module résout, adressé au décideur */
+  pitch: string;
+  /** « À l'issue, vos équipes sauront… » — verbes d'action concrets */
+  objectifs: string[];
+  /** Prérequis pour suivre le module utilement */
+  prerequis: string;
+  /** Module mis en avant visuellement */
+  highlight?: boolean;
+}
+
+const formations: Formation[] = [
+  {
+    title: "Développer avec l'IA",
+    tag: 'ia · agents',
+    niveau: 'Tous niveaux dev',
+    highlight: true,
+    pitch:
+      "Passer du « j'ai testé ChatGPT » à un usage qui tient en équipe et en production. Développement agentique, agents autonomes et automatisation — animé par quelqu'un qui est à la frontière de ces pratiques au quotidien (Claude, GPT, Gemini, Copilot, agents et skills maison).",
+    objectifs: [
+      'Piloter un assistant de code agentique sur un vrai dépôt (Claude Code, Copilot, Gemini…)',
+      "Concevoir des agents autonomes et des skills pour automatiser les tâches d'équipe",
+      'Intégrer un LLM dans une application avec garde-fous, qualité et maîtrise des coûts',
+      "Arbitrer là où l'IA accélère vraiment de là où elle casse",
+    ],
+    prerequis: 'Pratique du développement, quel que soit le langage.',
+  },
+  {
+    title: 'PHP Moderne',
+    tag: 'langage',
+    niveau: 'Intermédiaire → avancé',
+    pitch:
+      "Sortir une base PHP du « legacy qu'on n'ose plus toucher » pour la rendre typée, testée et tenable dans le temps.",
+    objectifs: [
+      'Exploiter le typage strict, les enums, readonly et les attributs de PHP 8+',
+      'Structurer et auditer ses dépendances avec Composer',
+      'Refactorer du code existant sans casser la production',
+    ],
+    prerequis: 'Pratique régulière de PHP, même sur une version ancienne (5.x / 7.x).',
+  },
+  {
+    title: 'Symfony',
+    tag: 'framework',
+    niveau: 'Intermédiaire → avancé',
+    pitch:
+      "Concevoir des applications Symfony qui tiennent la charge et la durée — transmis par quelqu'un qui livre du Symfony en production depuis la version 1.4.",
+    objectifs: [
+      'Maîtriser les composants clés, Doctrine ORM et Twig',
+      'Concevoir et sécuriser des API REST',
+      "Appliquer des choix d'architecture et de sécurité qui tiennent dans le temps",
+    ],
+    prerequis: 'Bases de PHP orienté objet.',
+  },
+  {
+    title: 'JavaScript & TypeScript',
+    tag: 'langage',
+    niveau: 'Débutant → intermédiaire',
+    pitch:
+      'Fiabiliser le front et le back JavaScript avec un typage qui attrape les bugs avant la production.',
+    objectifs: [
+      'Maîtriser les fondamentaux de JavaScript et migrer vers TypeScript',
+      'Construire des applications avec React, Vue.js ou Node.js',
+      'Structurer un code front et back maintenable et typé',
+    ],
+    prerequis: 'Bases de programmation ; une première expérience web est un plus.',
+  },
+  {
+    title: "Conception d'API",
+    tag: 'backend',
+    niveau: 'Intermédiaire',
+    pitch:
+      'Concevoir des API REST claires, sécurisées et documentées que les équipes clientes adoptent sans friction.',
+    objectifs: [
+      "Concevoir des contrats d'API REST cohérents et versionnés",
+      'Sécuriser les endpoints : authentification, autorisation, validation',
+      'Documenter et fiabiliser avec OpenAPI / Swagger et Postman',
+    ],
+    prerequis: 'Expérience en développement back-end.',
+  },
+  {
+    title: 'Bases de données',
+    tag: 'data',
+    niveau: 'Intermédiaire',
+    pitch:
+      'Modéliser et requêter des données qui restent rapides et cohérentes quand le volume monte.',
+    objectifs: [
+      'Modéliser un schéma relationnel solide (MySQL, PostgreSQL)',
+      'Choisir et exploiter le NoSQL à bon escient (MongoDB, Redis)',
+      'Écrire et diagnostiquer des requêtes performantes',
+    ],
+    prerequis: 'Notions de SQL.',
+  },
+  {
+    title: 'Tests & qualité de code',
+    tag: 'qualité',
+    niveau: 'Intermédiaire',
+    pitch:
+      "Installer une stratégie de tests qui donne la confiance de déployer — la même que celle que j'applique sur mon code en production.",
+    objectifs: [
+      'Construire une pyramide de tests adaptée au projet',
+      'Écrire des tests unitaires, fonctionnels et E2E réellement utiles',
+      'Intégrer les tests au workflow pour livrer sans régression',
+    ],
+    prerequis: 'Pratique du développement dans au moins un langage.',
+  },
+  {
+    title: 'CI / CD',
+    tag: 'devops',
+    niveau: 'Intermédiaire',
+    pitch:
+      'Automatiser le chemin du commit à la production pour déployer vite, souvent, et sans stress.',
+    objectifs: [
+      'Construire des pipelines avec GitHub Actions, GitLab CI ou Jenkins',
+      'Automatiser tests, build et déploiement',
+      'Mettre en place des déploiements fiables et réversibles',
+    ],
+    prerequis: 'Bases de Git et de la ligne de commande.',
+  },
+  {
+    title: 'DevOps / SRE',
+    tag: 'ops',
+    niveau: 'Intermédiaire → avancé',
+    pitch:
+      "Tenir une application en production sans se faire réveiller à 3 h — supervision, alerting et réponse aux incidents, tirés d'une infrastructure réelle sous contraintes de conformité.",
+    objectifs: [
+      'Instrumenter avec Prometheus, Grafana et Sentry',
+      'Définir des SLO et un alerting qui sert vraiment',
+      'Diagnostiquer et résoudre un incident en production',
+    ],
+    prerequis: "Expérience du déploiement d'applications.",
+  },
+  {
+    title: 'Infrastructure & hébergement',
+    tag: 'infra',
+    niveau: 'Intermédiaire → avancé',
+    pitch:
+      'Déployer et opérer une infrastructure cloud reproductible — conteneurs, AWS et Infrastructure-as-Code — pilotée comme un vrai système de production.',
+    objectifs: [
+      'Conteneuriser et orchestrer avec Docker et Kubernetes',
+      'Déployer sur AWS et automatiser avec Terraform, Pulumi ou Ansible',
+      "Maîtriser l'hébergement, du serveur à la mise en ligne",
+    ],
+    prerequis: 'Aisance avec la ligne de commande Linux.',
+  },
+  {
+    title: 'Méthodes de travail',
+    tag: 'méthode',
+    niveau: 'Tous niveaux',
+    pitch: "Organiser le travail d'équipe pour livrer régulièrement, sans cérémonie inutile.",
+    objectifs: [
+      'Mettre en œuvre Scrum et Kanban selon le contexte',
+      'Structurer un workflow Git collaboratif',
+      "Adopter les rituels et outils qui accélèrent vraiment l'équipe",
+    ],
+    prerequis: 'Aucun.',
+  },
+];
+
+// Preuves du parti pris « praticien en poste » — différenciateur central.
+const proofs = [
+  {
+    label: 'Principal Engineer en poste',
+    detail: 'Sur un produit SaaS en production — pas un formateur qui a quitté le terrain.',
+  },
+  {
+    label: '40 h+ / semaine dans le code',
+    detail: "Ce que je transmets, je l'applique le matin même, sur de vrais systèmes.",
+  },
+  {
+    label: "Management d'équipes",
+    detail: 'Je sais ce qui fait monter une équipe, pas seulement un individu.',
+  },
+  {
+    label: 'À la frontière de l’IA',
+    detail: 'Dev agentique, agents autonomes, skills : un terrain que je pratique tous les jours.',
+  },
+];
+
+const facts = [
+  { label: 'langues', value: 'FR · EN' },
+  { label: 'format', value: 'Présentiel & distance' },
+  { label: 'groupe', value: '4 à 20 personnes' },
+  { label: 'programme', value: 'Sur mesure', accent: true },
+];
+
+interface Audience {
+  icon: IconName;
+  kicker: string;
+  title: string;
+  text: string;
+  bullets: string[];
+}
+
+const audiences: Audience[] = [
+  {
+    icon: 'book-open',
+    kicker: 'organismes de formation & écoles',
+    title: 'Formateur référent',
+    text: 'Intervention sur vos modules existants ou co-construction de programmes sur des thématiques techniques pointues, par un intervenant qui exerce encore le métier. Sessions ponctuelles ou récurrentes.',
+    bullets: [
+      'Modules existants ou sur mesure',
+      'Sessions ponctuelles ou récurrentes',
+      'Bachelor, mastère, formation continue',
+    ],
+  },
+  {
+    icon: 'users',
+    kicker: 'entreprises',
+    title: "Montée en compétences d'équipe",
+    text: 'Programmes taillés sur votre stack et votre niveau, en présentiel ou à distance. Cas pratiques tirés de votre code, suivi possible post-formation pour ancrer les acquis.',
+    bullets: [
+      'Sur votre stack, dans votre code',
+      '4 à 20 personnes, en présentiel ou à distance',
+      'Suivi post-formation possible',
+    ],
+  },
+];
+
+const quoteSubject = 'Demande de formation';
+---
+
+<BaseLayout
+  title="Formations (v2) | Jérémy Marodon"
+  description="Onze modules techniques ultra-spécifiques — PHP, Symfony, JS/TS, IA agentique, DevOps, SRE — animés par un Principal Engineer encore en poste."
+  noindex
+>
+  <PageHero
+    kicker="catalogue formations · v2"
+    title="Formations techniques sur mesure"
+    lead="Onze modules pointus, choisis exactement selon les besoins de votre équipe. Animés par un Principal Engineer encore en poste — plus de 40 heures par semaine dans le code et en production. Pas de slides théoriques recyclées : les pratiques que j'applique aujourd'hui, transmises à votre équipe."
+  >
+    <div class="flex flex-wrap gap-3">
+      <Button mail={quoteSubject} size="lg">
+        <Icon name="mail" />
+        Demander un devis
+      </Button>
+      <Button href="#catalogue" size="lg" variant="secondary">
+        Voir les modules
+        <Icon name="arrow-right" class="rotate-90" />
+      </Button>
+    </div>
+    <SpecList slot="aside" items={facts} />
+  </PageHero>
+
+  <!-- Le parti pris (différenciateur praticien) -->
+  <Section tone="subtle" spacing="sm" ariaLabelledby="stance-title">
+    <SectionHeader
+      id="stance-title"
+      index={1}
+      kicker="le parti pris"
+      title="Formé par un ingénieur encore dans le cambouis"
+      lead="La plupart des formateurs ont quitté le terrain. Moi non. Je dirige des équipes et je livre du code en production tous les jours — c'est ce qui rend chaque module concret, à jour, et directement applicable."
+    />
+
+    <ul class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        proofs.map((p) => (
+          <li class="border-t-2 border-accent pt-5">
+            <p class="text-h4 font-bold text-fg">{p.label}</p>
+            <p class="mt-2 text-fg-muted">{p.detail}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <!-- Catalogue -->
+  <Section id="catalogue" ariaLabelledby="catalogue-title">
+    <SectionHeader
+      id="catalogue-title"
+      index={2}
+      kicker="le catalogue"
+      title="Des modules ultra-spécifiques"
+      lead="Pas de parcours fourre-tout : chaque module cible un besoin précis. Vous composez exactement la montée en compétences dont votre équipe a besoin."
+    />
+
+    <ol class="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {
+        formations.map((formation, i) => (
+          <Card
+            tag="li"
+            variant={formation.highlight ? 'highlight' : 'default'}
+            class:list={[
+              'h-full',
+              formation.highlight && 'shadow-glow md:col-span-2 lg:col-span-1',
+            ]}
+          >
+            <div class="flex items-center justify-between gap-4">
+              {formation.highlight ? (
+                <Tag variant="accent">★ module phare</Tag>
+              ) : (
+                <Tag variant="accent">#{formation.tag}</Tag>
+              )}
+              <span class="font-mono text-mono-sm text-fg-subtle" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+            </div>
+
+            <h3 class="mt-5 text-h3">{formation.title}</h3>
+            <p class="text-label mt-2 text-fg-subtle">
+              <span class="text-accent">niveau</span> · {formation.niveau}
+            </p>
+
+            <p class="mt-4 text-fg-muted">{formation.pitch}</p>
+
+            <div class="mt-6">
+              <p class="text-label text-fg-subtle">À l'issue, vos équipes sauront</p>
+              <BulletList items={formation.objectifs} class="mt-3" />
+            </div>
+
+            <dl class="mt-auto pt-7">
+              <div class="border-t border-line pt-4">
+                <dt class="text-label text-fg-subtle">Prérequis</dt>
+                <dd class="mt-1.5 text-sm text-fg-muted">{formation.prerequis}</dd>
+              </div>
+            </dl>
+          </Card>
+        ))
+      }
+    </ol>
+  </Section>
+
+  <!-- Public visé -->
+  <Section tone="subtle" ariaLabelledby="audience-title">
+    <SectionHeader
+      id="audience-title"
+      index={3}
+      kicker="pour qui"
+      title="Organismes de formation, écoles, entreprises"
+      lead="J'interviens sur deux types de besoins, en présentiel comme à distance, avec des modalités adaptées à chacun."
+    />
+
+    <div class="mt-14 grid gap-5 md:grid-cols-2">
+      {
+        audiences.map((audience) => (
+          <Card class="h-full" padding="lg">
+            <span class="grid size-11 place-items-center rounded-lg bg-accent-soft text-accent">
+              <Icon name={audience.icon} size={20} />
+            </span>
+            <SectionKicker class="mt-6">{audience.kicker}</SectionKicker>
+            <h3 class="mt-3 text-h3">{audience.title}</h3>
+            <p class="mt-4 text-fg-muted">{audience.text}</p>
+            <div class="mt-auto pt-8">
+              <BulletList
+                items={audience.bullets}
+                variant="mono"
+                class="border-t border-line pt-5"
+              />
+            </div>
+          </Card>
+        ))
+      }
+    </div>
+  </Section>
+
+  <ContactCta
+    title="Un sujet précis ? Une équipe à former ?"
+    text="Décrivez-moi le contexte (taille de l'équipe, niveau, stack, période) et je vous renvoie un programme adapté avec un devis sous 48h."
+    primary={{ mail: quoteSubject, label: 'Demander un devis' }}
+    secondary={{ href: CONTACT.linkedin, label: 'LinkedIn', external: true }}
+  />
+</BaseLayout>

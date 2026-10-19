@@ -1,0 +1,62 @@
+---
+// AuthorCard — byline block closing a post.
+import Card from '../ui/Card.astro';
+import Portrait from '../ui/Portrait.astro';
+import IconButton from '../ui/IconButton.astro';
+import Icon from '../icons/Icon.astro';
+import LinkedIn from '../icons/LinkedIn.astro';
+import Github from '../icons/Github.astro';
+import { AUTHOR, CONTACT } from '../../consts';
+import { ROUTES, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  class?: string;
+}
+
+const { lang, class: className } = Astro.props;
+
+const copy = {
+  fr: {
+    kicker: "l'auteur",
+    bio: "Développeur, formateur et consultant depuis 2013 — web, cloud AWS, DevOps. J'écris ici ce que j'apprends en livrant du logiciel en production.",
+    about: 'En savoir plus',
+    portraitAlt: `Portrait de ${AUTHOR.name}`,
+  },
+  en: {
+    kicker: 'the author',
+    bio: 'Developer, trainer and consultant since 2013 — web, AWS cloud, DevOps. I write here about what I learn shipping software to production.',
+    about: 'More about me',
+    portraitAlt: `Portrait of ${AUTHOR.name}`,
+  },
+}[lang];
+---
+
+<Card variant="subtle" class:list={['sm:flex-row sm:items-start sm:gap-6', className]}>
+  <Portrait size={64} alt={copy.portraitAlt} class="max-sm:mb-5" />
+  <div class="min-w-0 flex-1">
+    <p class="text-label text-fg-subtle">
+      <span class="text-accent" aria-hidden="true">{'// '}</span>{copy.kicker}
+    </p>
+    <p class="mt-2 text-h4 font-bold text-fg">{AUTHOR.name}</p>
+    <p class="mt-2 text-fg-muted">{copy.bio}</p>
+    <div class="mt-4 flex flex-wrap items-center gap-1">
+      <a
+        href={ROUTES.about[lang]}
+        class="link mr-3 inline-flex items-center gap-1.5 text-sm font-medium"
+      >
+        {copy.about}
+        <Icon name="arrow-right" size={14} />
+      </a>
+      <IconButton href={CONTACT.linkedin} external label="LinkedIn">
+        <LinkedIn size={17} />
+      </IconButton>
+      <IconButton href={CONTACT.github} external label="GitHub">
+        <Github size={17} />
+      </IconButton>
+      <IconButton mail label="Email">
+        <Icon name="mail" size={18} />
+      </IconButton>
+    </div>
+  </div>
+</Card>

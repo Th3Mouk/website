@@ -1,0 +1,40 @@
+---
+// SpecList — key/value facts set like a spec sheet (mono keys, sans
+// values). Used for hero facts, module details, post metadata.
+//   rows     one fact per row with hairline separators (default)
+//   grid     2-up on wider screens, for denser fact blocks
+// Keep values to short text; use `accent` to tint the one row that matters.
+interface Item {
+  label: string;
+  value: string;
+  /** Tint the value with the accent colour. */
+  accent?: boolean;
+}
+
+interface Props {
+  items: Item[];
+  layout?: 'rows' | 'grid';
+  class?: string;
+}
+
+const { items, layout = 'rows', class: className } = Astro.props;
+---
+
+<dl
+  class:list={[
+    layout === 'grid' ? 'grid gap-x-8 sm:grid-cols-2' : 'flex flex-col',
+    'border-t border-line',
+    className,
+  ]}
+>
+  {
+    items.map((item) => (
+      <div class="flex items-baseline justify-between gap-6 border-b border-line py-3">
+        <dt class="text-label shrink-0 text-fg-subtle">{item.label}</dt>
+        <dd class:list={['text-right text-sm', item.accent ? 'text-accent' : 'text-fg']}>
+          {item.value}
+        </dd>
+      </div>
+    ))
+  }
+</dl>

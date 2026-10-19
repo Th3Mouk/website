@@ -1,51 +1,81 @@
 ---
+// Button — the only clickable "call to action" primitive.
+//   primary    solid brand fill. One per view, for the main action.
+//   secondary  outlined surface. Companion to a primary.
+//   ghost      text-only with hover wash. Toolbars, tertiary actions.
+//   link       inline accent text with arrow-friendly spacing, no box.
+// Renders an <a> when `href` (or `mail`) is set, a <button> otherwise. Put
+// icons in the slot (see components/icons/Icon.astro); spacing is handled by
+// `gap`. `mail` writes to Jérémy without exposing the address (consts.ts).
+import type { HTMLAttributes } from 'astro/types';
+import { mailLink } from '../../consts';
+
+type Variant = 'primary' | 'secondary' | 'ghost' | 'link';
+type Size = 'sm' | 'md' | 'lg';
+
 interface Props {
   href?: string;
-  variant?: 'primary' | 'ghost';
-  size?: 'sm' | 'md';
+  /** Email link: `true`, or the pre-filled subject. Replaces `href`. */
+  mail?: true | string;
+  variant?: Variant;
+  size?: Size;
+  /** Opens in a new tab with rel="noopener noreferrer". */
   external?: boolean;
   type?: 'button' | 'submit' | 'reset';
   class?: string;
   ariaLabel?: string;
+  /** Forwarded to the element (e.g. `data-*`, `download`, `hreflang`). */
+  attrs?: HTMLAttributes<'a'> & HTMLAttributes<'button'>;
 }
 
 const {
-  href,
+  href: hrefProp,
+  mail,
   variant = 'primary',
   size = 'md',
   external = false,
   type = 'button',
-  class: className = '',
+  class: className,
   ariaLabel,
+  attrs: attrsProp = {},
 } = Astro.props;
 
+const { href: mailHref, ...mailAttrs } = mail
+  ? mailLink(typeof mail === 'string' ? mail : undefined)
+  : { href: undefined };
+const href = mailHref ?? hrefProp;
+const attrs = { ...attrsProp, ...mailAttrs };
+
 const base =
-  'inline-flex items-center justify-center gap-2 rounded-md font-medium transition-all duration-200 ease-snappy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none';
+  'group/btn inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap font-medium transition-[background-color,border-color,color,box-shadow,transform] duration-200 ease-snappy disabled:pointer-events-none disabled:opacity-50';
 
-const variants: Record<NonNullable<Props['variant']>, string> = {
+const variants: Record<Variant, string> = {
   primary:
-    'bg-blue-500 text-white hover:bg-blue-600 hover:-translate-y-px hover:shadow-glow-blue',
-  ghost:
-    'border border-border-strong text-text hover:border-blue-500 hover:text-blue-500 hover:-translate-y-px',
+    'rounded-md bg-brand text-on-brand shadow-xs hover:bg-brand-hover hover:shadow-glow active:translate-y-px',
+  secondary:
+    'rounded-md border border-line-strong bg-surface text-fg hover:border-accent hover:text-accent active:translate-y-px',
+  ghost: 'rounded-md text-fg-muted hover:bg-subtle hover:text-fg',
+  link: 'rounded-xs text-accent underline-offset-4 hover:underline',
 };
 
-const sizes: Record<NonNullable<Props['size']>, string> = {
-  sm: 'px-3 py-1.5 text-sm',
-  md: 'px-5 py-3 text-body',
+const sizes: Record<Size, string> = {
+  sm: 'h-8 px-3 text-sm',
+  md: 'h-10 px-4 text-body',
+  lg: 'h-12 px-5 text-body',
 };
 
-const classes = [base, variants[variant], sizes[size], className].join(' ');
+const classes = [base, variants[variant], variant === 'link' ? '' : sizes[size], className];
 
 const externalAttrs = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
 ---
 
 {
   href ? (
-    <a href={href} class={classes} aria-label={ariaLabel} {...externalAttrs}>
+    <a href={href} class:list={classes} aria-label={ariaLabel} {...externalAttrs} {...attrs}>
       <slot />
     </a>
   ) : (
-    <button type={type} class={classes} aria-label={ariaLabel}>
+    <button type={type} class:list={classes} aria-label={ariaLabel} {...attrs}>
       <slot />
     </button>
   )

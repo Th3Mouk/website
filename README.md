@@ -4,8 +4,9 @@ Personal site for Jérémy Marodon — formations & consulting (PHP, Symfony, Ja
 
 ## Stack
 
-- [Astro](https://astro.build/) (static output)
-- [Tailwind CSS](https://tailwindcss.com/) + [DaisyUI](https://daisyui.com/) themes (light / dark)
+- [Astro](https://astro.build/) (static output) + MDX blog with RSS
+- [Tailwind CSS](https://tailwindcss.com/) v4, CSS-first, with an in-house design system
+  (tokens in `src/styles/tokens.css`, light / dark)
 - TypeScript
 - Deployed on [Cloudflare Pages](https://pages.cloudflare.com/)
 

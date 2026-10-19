@@ -1,37 +1,81 @@
 ---
-import { SITE_TITLE } from '../consts';
+import { SITE_TITLE, CONTACT } from '../consts';
 import ThemeToggle from './ThemeToggle.astro';
+import IconButton from './ui/IconButton.astro';
+import Button from './ui/Button.astro';
+import Icon from './icons/Icon.astro';
 import LinkedIn from './icons/LinkedIn.astro';
 import Github from './icons/Github.astro';
+import { ROUTES, languages, defaultLang, type Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+import { getPosts } from '../lib/blog';
+
+interface Props {
+  lang?: Lang;
+  /** Locale→path map of the current page's translations (drives the switcher). */
+  alternates?: Partial<Record<Lang, string>>;
+}
+
+const { lang = defaultLang, alternates } = Astro.props;
+const t = useTranslations(lang);
+
+// The blog link appears once there is something to read in this locale
+// (drafts count in `astro dev`, so the design can be previewed).
+const hasPosts = (await getPosts(lang)).length > 0;
 
 interface NavItem {
   href: string;
   label: string;
 }
 
+// Every page is bilingual: hrefs come from ROUTES so each locale stays in
+// its own language.
 const nav: NavItem[] = [
-  { href: '/', label: 'Accueil' },
-  { href: '/formation', label: 'Formations' },
-  { href: '/about', label: 'À propos' },
+  { href: ROUTES.training[lang], label: t('nav.training') },
+  { href: ROUTES.projects[lang], label: t('nav.projects') },
+  ...(hasPosts ? [{ href: ROUTES.blog[lang], label: t('nav.blog') }] : []),
+  { href: ROUTES.about[lang], label: t('nav.about') },
 ];
+const homeHref = ROUTES.home[lang];
 
-const pathname = Astro.url.pathname;
+const pathname = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
+// Home paths (`/`, `/en/`) prefix every other path, so they match exactly.
 const isActive = (href: string) =>
-  href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(href + '/');
+  href === homeHref ? pathname === href : pathname.startsWith(href);
+
+// Language switcher: only render locales for which this page has a translation.
+const switcherLocales = alternates
+  ? (Object.keys(languages) as Lang[]).filter((l) => alternates[l])
+  : [];
 ---
 
-<header
-  class="sticky top-0 z-40 border-b border-border bg-bg/80 backdrop-blur-md supports-[backdrop-filter]:bg-bg/70"
+<a
+  href="#main"
+  class="sr-only z-[60] rounded-md bg-brand px-4 py-2 text-on-brand focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
 >
-  <nav class="container-content flex h-16 items-center justify-between gap-4">
+  {t('nav.skip')}
+</a>
+
+<header
+  class="site-header sticky top-0 z-50 border-b border-transparent bg-canvas/80 backdrop-blur-lg transition-colors duration-200 data-[scrolled]:border-line"
+>
+  <nav
+    class="container-content flex h-[var(--header-height)] items-center justify-between gap-6"
+    aria-label={t('nav.primary')}
+  >
     <!-- Brand -->
     <a
-      href="/"
-      class="group inline-flex items-baseline gap-1 font-bold text-text transition-colors hover:text-blue-500"
-      aria-label="Retour à l'accueil"
+      href={homeHref}
+      class="group flex items-center gap-2.5 rounded-md font-bold text-fg"
+      aria-label={t('nav.brandHome')}
     >
-      <span class="text-lg">{SITE_TITLE}</span>
-      <span class="font-mono text-mono-sm text-blue-500" aria-hidden="true">/</span>
+      <span
+        class="grid size-8 place-items-center rounded-md bg-fg font-mono text-mono-sm font-bold text-canvas transition-colors duration-200 group-hover:bg-brand group-hover:text-on-brand"
+        aria-hidden="true">jm</span
+      >
+      <span class="text-[1.0625rem] tracking-[-0.01em] whitespace-nowrap">
+        {SITE_TITLE}<span class="font-mono font-normal text-accent" aria-hidden="true">/</span>
+      </span>
     </a>
 
     <!-- Desktop nav -->
@@ -42,12 +86,7 @@ const isActive = (href: string) =>
             <a
               href={item.href}
               aria-current={isActive(item.href) ? 'page' : undefined}
-              class:list={[
-                'rounded-md px-3 py-2 text-sm font-medium transition-colors',
-                isActive(item.href)
-                  ? 'text-blue-500'
-                  : 'text-text-muted hover:bg-bg-subtle hover:text-text',
-              ]}
+              class="relative rounded-md px-3 py-2 text-sm font-medium text-fg-muted transition-colors duration-200 hover:text-fg aria-[current=page]:text-fg after:absolute after:inset-x-3 after:-bottom-[calc((var(--header-height)-2.25rem)/2)] after:h-px after:scale-x-0 after:bg-accent after:transition-transform after:duration-200 aria-[current=page]:after:scale-x-100"
             >
               {item.label}
             </a>
@@ -56,127 +95,149 @@ const isActive = (href: string) =>
       }
     </ul>
 
-    <!-- Right cluster -->
-    <div class="flex items-center gap-2">
-      <ThemeToggle />
-      <a
-        href="https://www.linkedin.com/in/jeremymarodon/"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="hidden rounded-md p-2 text-text-muted transition-colors hover:bg-bg-subtle hover:text-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 sm:inline-flex"
-        aria-label="LinkedIn"
-      >
-        <LinkedIn size={20} class="fill-current" />
-      </a>
-      <a
-        href="https://github.com/Th3Mouk"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="hidden rounded-md p-2 text-text-muted transition-colors hover:bg-bg-subtle hover:text-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 sm:inline-flex"
-        aria-label="GitHub"
-      >
-        <Github size={20} class="fill-current" />
-      </a>
+    <!-- Tools -->
+    <div class="flex items-center gap-1">
+      {
+        switcherLocales.length > 1 && (
+          <div
+            class="mr-1 hidden items-center rounded-md border border-line p-0.5 sm:inline-flex"
+            role="group"
+            aria-label={t('lang.switch')}
+          >
+            {switcherLocales.map((l) => (
+              <a
+                href={alternates![l]}
+                hreflang={l}
+                lang={l}
+                aria-current={l === lang ? 'true' : undefined}
+                title={languages[l]}
+                class="rounded-sm px-2 py-0.5 font-mono text-micro uppercase text-fg-subtle transition-colors hover:text-fg aria-[current=true]:bg-sunken aria-[current=true]:text-fg"
+              >
+                {l}
+              </a>
+            ))}
+          </div>
+        )
+      }
+      <ThemeToggle label={t('theme.toggle')} />
+      <IconButton href={CONTACT.github} external label="GitHub" class="max-sm:hidden">
+        <Github size={17} />
+      </IconButton>
+      <IconButton href={CONTACT.linkedin} external label="LinkedIn" class="max-sm:hidden">
+        <LinkedIn size={17} />
+      </IconButton>
+      <Button mail size="sm" class="ml-2 max-lg:hidden">
+        {t('nav.contact')}
+        <Icon name="arrow-up-right" size={14} />
+      </Button>
 
       <!-- Mobile menu toggle -->
-      <button
-        type="button"
-        class="mobile-menu-toggle inline-flex h-9 w-9 items-center justify-center rounded-md border border-border-strong bg-bg text-text-muted transition-colors hover:border-blue-500 hover:text-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 md:hidden"
-        aria-label="Ouvrir le menu"
-        aria-expanded="false"
-        aria-controls="mobile-menu"
+      <IconButton
+        label={t('nav.openMenu')}
+        class="mobile-menu-toggle md:hidden"
+        attrs={{
+          'aria-expanded': 'false',
+          'aria-controls': 'mobile-menu',
+          'data-label-open': t('nav.openMenu'),
+          'data-label-close': t('nav.closeMenu'),
+        }}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="menu-icon h-4 w-4"
-          aria-hidden="true"
-        >
-          <line x1="4" x2="20" y1="6" y2="6"></line>
-          <line x1="4" x2="20" y1="12" y2="12"></line>
-          <line x1="4" x2="20" y1="18" y2="18"></line>
-        </svg>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="close-icon hidden h-4 w-4"
-          aria-hidden="true"
-        >
-          <line x1="6" x2="18" y1="6" y2="18"></line>
-          <line x1="6" x2="18" y1="18" y2="6"></line>
-        </svg>
-      </button>
+        <Icon name="menu" size={20} class="menu-icon" />
+        <Icon name="close" size={20} class="close-icon hidden" />
+      </IconButton>
     </div>
   </nav>
 
   <!-- Mobile menu -->
-  <div id="mobile-menu" class="hidden border-t border-border bg-bg-elevated md:hidden">
-    <ul class="container-content flex flex-col py-2">
-      {
-        nav.map((item) => (
-          <li>
-            <a
-              href={item.href}
-              aria-current={isActive(item.href) ? 'page' : undefined}
-              class:list={[
-                'block rounded-md px-3 py-3 text-sm font-medium transition-colors',
-                isActive(item.href)
-                  ? 'bg-blue-500/10 text-blue-500'
-                  : 'text-text-muted hover:bg-bg-subtle hover:text-text',
-              ]}
-            >
-              {item.label}
-            </a>
-          </li>
-        ))
-      }
-      <li class="mt-2 flex items-center gap-2 border-t border-border pt-3 sm:hidden">
-        <a
-          href="https://www.linkedin.com/in/jeremymarodon/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="rounded-md p-2 text-text-muted transition-colors hover:bg-bg-subtle hover:text-blue-500"
-          aria-label="LinkedIn"
-        >
-          <LinkedIn size={20} class="fill-current" />
-        </a>
-        <a
-          href="https://github.com/Th3Mouk"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="rounded-md p-2 text-text-muted transition-colors hover:bg-bg-subtle hover:text-blue-500"
-          aria-label="GitHub"
-        >
-          <Github size={20} class="fill-current" />
-        </a>
-      </li>
-    </ul>
+  <div id="mobile-menu" class="hidden border-t border-line bg-canvas md:hidden" data-open="false">
+    <div class="container-content flex flex-col gap-6 py-6">
+      <ul class="flex flex-col">
+        {
+          [{ href: homeHref, label: t('nav.home') }, ...nav].map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+                class="flex items-center justify-between border-b border-line py-3.5 text-h4 font-bold text-fg-muted transition-colors hover:text-fg aria-[current=page]:text-fg"
+              >
+                {item.label}
+                <Icon name="arrow-right" size={16} class="text-fg-subtle" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        {
+          switcherLocales.length > 1 && (
+            <div class="flex items-center gap-3" role="group" aria-label={t('lang.switch')}>
+              {switcherLocales.map((l) => (
+                <a
+                  href={alternates![l]}
+                  hreflang={l}
+                  lang={l}
+                  aria-current={l === lang ? 'true' : undefined}
+                  class="text-label text-fg-subtle aria-[current=true]:text-accent"
+                >
+                  {languages[l]}
+                </a>
+              ))}
+            </div>
+          )
+        }
+        <div class="flex items-center gap-1">
+          <IconButton href={CONTACT.github} external label="GitHub">
+            <Github size={18} />
+          </IconButton>
+          <IconButton href={CONTACT.linkedin} external label="LinkedIn">
+            <LinkedIn size={18} />
+          </IconButton>
+        </div>
+      </div>
+
+      <Button mail size="lg" class="w-full">
+        <Icon name="mail" />
+        {t('contact.write')}
+      </Button>
+    </div>
   </div>
 </header>
 
 <script>
+  const header = document.querySelector<HTMLElement>('.site-header');
   const toggle = document.querySelector<HTMLButtonElement>('.mobile-menu-toggle');
   const menu = document.querySelector<HTMLDivElement>('#mobile-menu');
-  const menuIcon = toggle?.querySelector<SVGElement>('.menu-icon');
-  const closeIcon = toggle?.querySelector<SVGElement>('.close-icon');
 
-  if (toggle && menu && menuIcon && closeIcon) {
-    toggle.addEventListener('click', () => {
-      const open = menu.classList.toggle('hidden') === false;
+  // Hairline under the header only once the page has scrolled.
+  if (header) {
+    const onScroll = () => header.toggleAttribute('data-scrolled', window.scrollY > 8);
+    onScroll();
+    addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  if (toggle && menu) {
+    const menuIcon = toggle.querySelector('.menu-icon');
+    const closeIcon = toggle.querySelector('.close-icon');
+    const labelOpen = toggle.dataset.labelOpen ?? 'Open menu';
+    const labelClose = toggle.dataset.labelClose ?? 'Close menu';
+
+    const setOpen = (open: boolean) => {
+      menu.classList.toggle('hidden', !open);
       toggle.setAttribute('aria-expanded', String(open));
-      toggle.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
-      menuIcon.classList.toggle('hidden', open);
-      closeIcon.classList.toggle('hidden', !open);
+      toggle.setAttribute('aria-label', open ? labelClose : labelOpen);
+      menuIcon?.classList.toggle('hidden', open);
+      closeIcon?.classList.toggle('hidden', !open);
+      header?.toggleAttribute('data-scrolled', open || window.scrollY > 8);
+    };
+
+    toggle.addEventListener('click', () => setOpen(menu.classList.contains('hidden')));
+    addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !menu.classList.contains('hidden')) {
+        setOpen(false);
+        toggle.focus();
+      }
     });
+    matchMedia('(min-width: 48rem)').addEventListener('change', (e) => e.matches && setOpen(false));
   }
 </script>

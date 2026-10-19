@@ -1,0 +1,57 @@
+---
+// IconButton — square, icon-only control (header tools, toolbars).
+// `label` is required: it is the accessible name. `mail` makes it an email
+// link that never exposes the address (see consts.ts → mailLink).
+import { mailLink } from '../../consts';
+
+interface Props {
+  label: string;
+  href?: string;
+  /** Email link: `true`, or the pre-filled subject. Replaces `href`. */
+  mail?: true | string;
+  external?: boolean;
+  class?: string;
+  /** Extra attributes (e.g. aria-expanded, data-*). */
+  attrs?: Record<string, string | undefined>;
+}
+
+const {
+  label,
+  href: hrefProp,
+  mail,
+  external = false,
+  class: className,
+  attrs: attrsProp = {},
+} = Astro.props;
+
+const { href: mailHref, ...mailAttrs } = mail
+  ? mailLink(typeof mail === 'string' ? mail : undefined)
+  : { href: undefined };
+const href = mailHref ?? hrefProp;
+const attrs = { ...attrsProp, ...mailAttrs };
+
+const classes = [
+  'inline-flex size-9 items-center justify-center rounded-md text-fg-muted transition-colors duration-200 hover:bg-subtle hover:text-fg',
+  className,
+];
+const externalAttrs = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+---
+
+{
+  href ? (
+    <a
+      href={href}
+      class:list={classes}
+      aria-label={label}
+      title={label}
+      {...externalAttrs}
+      {...attrs}
+    >
+      <slot />
+    </a>
+  ) : (
+    <button type="button" class:list={classes} aria-label={label} title={label} {...attrs}>
+      <slot />
+    </button>
+  )
+}

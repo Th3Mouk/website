@@ -1,0 +1,70 @@
+---
+// Portrait — the author photo (WebP + JPEG fallback).
+//   round   circular avatar (bylines, author card)
+//   framed  rounded square in a bordered frame with a mono caption bar,
+//           like a figure in a spec sheet (heroes)
+import { AUTHOR } from '../../consts';
+
+interface Props {
+  variant?: 'round' | 'framed';
+  /** Rendered pixel size for `round`; max width for `framed`. */
+  size?: number;
+  alt?: string;
+  caption?: string;
+  eager?: boolean;
+  class?: string;
+}
+
+const {
+  variant = 'round',
+  size = 48,
+  alt = `Portrait de ${AUTHOR.name}`,
+  caption,
+  eager = false,
+  class: className,
+} = Astro.props;
+
+const loading = eager ? 'eager' : 'lazy';
+---
+
+{
+  variant === 'round' ? (
+    <picture class:list={['shrink-0', className]}>
+      <source srcset={AUTHOR.photoWebp} type="image/webp" />
+      <img
+        src={AUTHOR.photo}
+        alt={alt}
+        width={size}
+        height={size}
+        loading={loading}
+        decoding="async"
+        class="rounded-full border border-line bg-sunken object-cover"
+        style={`width:${size}px;height:${size}px`}
+      />
+    </picture>
+  ) : (
+    <figure
+      class:list={['rounded-2xl border border-line bg-surface p-2 shadow-lg', className]}
+      style={`max-width:${size}px`}
+    >
+      <picture>
+        <source srcset={AUTHOR.photoWebp} type="image/webp" />
+        <img
+          src={AUTHOR.photo}
+          alt={alt}
+          width="812"
+          height="1080"
+          loading={loading}
+          fetchpriority={eager ? 'high' : undefined}
+          decoding="async"
+          class="aspect-[4/5] w-full rounded-xl bg-sunken object-cover object-[center_30%]"
+        />
+      </picture>
+      {caption && (
+        <figcaption class="text-label flex items-center justify-between gap-3 px-2 pt-3 pb-1.5 text-fg-subtle">
+          <slot name="caption">{caption}</slot>
+        </figcaption>
+      )}
+    </figure>
+  )
+}

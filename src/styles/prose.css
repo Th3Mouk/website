@@ -1,0 +1,378 @@
+/* ==========================================================================
+   Article typography — `.prose-article`
+   --------------------------------------------------------------------------
+   Styles the HTML rendered from Markdown/MDX blog posts. Owned here rather
+   than via @tailwindcss/typography so it shares the exact same tokens as the
+   rest of the site. Code blocks are highlighted by Shiki at build time with
+   dual themes (astro.config.mjs → markdown.shikiConfig); the colours switch
+   on [data-theme] below.
+   ========================================================================== */
+
+.prose-article {
+  --prose-space: 1.25em;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--color-fg-muted);
+  overflow-wrap: break-word;
+
+  & > * + * {
+    margin-top: var(--prose-space);
+  }
+
+  /* Headings ---------------------------------------------------------- */
+  & :where(h2, h3, h4) {
+    position: relative;
+    color: var(--color-fg);
+    font-weight: 700;
+    text-wrap: balance;
+    scroll-margin-top: calc(var(--header-height) + 1.5rem);
+  }
+
+  & h2 {
+    margin-top: 2.6em;
+    font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.75rem);
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+  }
+
+  & h3 {
+    margin-top: 2em;
+    font-size: clamp(1.15rem, 1.08rem + 0.35vw, 1.3rem);
+    line-height: 1.35;
+  }
+
+  & h4 {
+    margin-top: 1.75em;
+    font-size: 1.0625rem;
+  }
+
+  & :where(h2, h3, h4) + * {
+    margin-top: 0.75em;
+  }
+
+  /* Anchor injected client-side (BlogPostPage script). */
+  & .heading-anchor {
+    margin-left: 0.4em;
+    color: var(--color-fg-subtle);
+    font-family: var(--font-mono);
+    font-weight: 400;
+    text-decoration: none;
+    opacity: 0;
+    transition: opacity var(--duration-fast) ease;
+  }
+
+  & :where(h2, h3, h4):hover .heading-anchor,
+  & .heading-anchor:focus-visible {
+    opacity: 1;
+  }
+
+  & .heading-anchor:hover {
+    color: var(--color-accent);
+  }
+
+  /* Text -------------------------------------------------------------- */
+  & strong {
+    color: var(--color-fg);
+    font-weight: 700;
+  }
+
+  & a:not(.heading-anchor) {
+    color: var(--color-accent);
+    text-decoration-line: underline;
+    text-decoration-color: var(--color-accent-line);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: text-decoration-color var(--duration-fast) ease;
+
+    &:hover {
+      text-decoration-color: currentColor;
+    }
+  }
+
+  & > p:first-child {
+    font-size: 1.15em;
+    color: var(--color-fg);
+  }
+
+  & mark {
+    background: var(--color-accent-soft);
+    color: var(--color-fg);
+    padding: 0 0.15em;
+    border-radius: var(--radius-xs);
+  }
+
+  & kbd {
+    display: inline-block;
+    padding: 0.05em 0.4em;
+    border: 1px solid var(--color-line-strong);
+    border-bottom-width: 2px;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    color: var(--color-fg);
+    font-family: var(--font-mono);
+    font-size: 0.8em;
+    line-height: 1.5;
+  }
+
+  /* Lists ------------------------------------------------------------- */
+  & :where(ul, ol) {
+    padding-left: 1.5em;
+  }
+
+  & li + li {
+    margin-top: 0.4em;
+  }
+
+  & li > :where(ul, ol) {
+    margin-top: 0.4em;
+  }
+
+  & ul > li {
+    position: relative;
+    list-style: none;
+  }
+
+  & ul > li::before {
+    content: '›';
+    position: absolute;
+    left: -1.1em;
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-weight: 700;
+  }
+
+  & ol {
+    list-style: decimal;
+  }
+
+  & ol > li::marker {
+    color: var(--color-fg-subtle);
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+  }
+
+  /* Task lists (GFM) */
+  & ul.contains-task-list > li::before {
+    content: none;
+  }
+
+  & .task-list-item input {
+    margin-right: 0.5em;
+    accent-color: var(--color-brand);
+  }
+
+  /* Blockquote -------------------------------------------------------- */
+  & blockquote {
+    border-left: 2px solid var(--color-accent);
+    padding-left: 1.25em;
+    color: var(--color-fg);
+    font-size: 1.08em;
+    font-style: italic;
+  }
+
+  & blockquote > * + * {
+    margin-top: 0.75em;
+  }
+
+  /* Rule -------------------------------------------------------------- */
+  & hr {
+    height: auto;
+    margin-block: 3em;
+    overflow: visible;
+    border: 0;
+    line-height: 1;
+    text-align: center;
+
+    &::after {
+      content: '// · · ·';
+      color: var(--color-fg-subtle);
+      font-family: var(--font-mono);
+      font-size: var(--text-mono-sm);
+      letter-spacing: 0.3em;
+    }
+  }
+
+  /* Media ------------------------------------------------------------- */
+  & :where(img, video) {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+  }
+
+  & figure {
+    margin-block: 2em;
+  }
+
+  & figcaption {
+    margin-top: 0.75em;
+    color: var(--color-fg-subtle);
+    font-family: var(--font-mono);
+    font-size: var(--text-mono-sm);
+    text-align: center;
+  }
+
+  /* Tables ------------------------------------------------------------ */
+  & .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+  }
+
+  & table {
+    width: 100%;
+    min-width: 32rem;
+    border-collapse: collapse;
+    font-size: 0.9375em;
+    line-height: 1.55;
+  }
+
+  & thead th {
+    background: var(--color-subtle);
+    color: var(--color-fg-subtle);
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  & :where(th, td) {
+    padding: 0.65em 1em;
+    border-bottom: 1px solid var(--color-line);
+    vertical-align: top;
+  }
+
+  & tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  & td {
+    color: var(--color-fg-muted);
+  }
+
+  /* Inline code ------------------------------------------------------- */
+  & :not(pre) > code {
+    padding: 0.12em 0.38em;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    background: var(--color-sunken);
+    color: var(--color-fg);
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+  }
+
+  /* Code blocks (Shiki) ----------------------------------------------- */
+  & pre {
+    position: relative;
+    margin-block: 1.75em;
+    padding: 1.1em 1.25em;
+    overflow-x: auto;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    background: var(--color-sunken) !important;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.7;
+    tab-size: 2;
+  }
+
+  & pre[data-language]:not([data-language='plaintext'])::before {
+    content: attr(data-language);
+    position: absolute;
+    top: 0.55em;
+    right: 0.9em;
+    color: var(--color-fg-subtle);
+    font-size: var(--text-micro);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    pointer-events: none;
+    transition: opacity var(--duration-fast) ease;
+  }
+
+  & pre:hover[data-language]::before {
+    opacity: 0;
+  }
+
+  & pre code {
+    font-size: inherit;
+  }
+
+  /* Footnotes (GFM) */
+  & .footnotes {
+    margin-top: 3.5em;
+    padding-top: 1.5em;
+    border-top: 1px solid var(--color-line);
+    font-size: 0.9em;
+  }
+
+  & .footnotes h2 {
+    margin-top: 0;
+    color: var(--color-fg-subtle);
+    font-family: var(--font-mono);
+    font-size: var(--text-mono-sm);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  & [data-footnote-ref] {
+    font-family: var(--font-mono);
+    font-size: 0.75em;
+    text-decoration: none;
+  }
+}
+
+/* Shiki dual theme: inline vars → active theme colours. */
+.astro-code,
+.astro-code span {
+  color: var(--shiki-light);
+  font-style: var(--shiki-light-font-style);
+  font-weight: var(--shiki-light-font-weight);
+}
+
+[data-theme='dark'] .astro-code,
+[data-theme='dark'] .astro-code span {
+  color: var(--shiki-dark);
+  font-style: var(--shiki-dark-font-style);
+  font-weight: var(--shiki-dark-font-weight);
+}
+
+/* Copy button injected into <pre> by the post page script. */
+.code-copy {
+  position: absolute;
+  top: 0.45em;
+  right: 0.5em;
+  padding: 0.2em 0.55em;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-fg-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  opacity: 0;
+  cursor: pointer;
+  transition:
+    opacity var(--duration-fast) ease,
+    color var(--duration-fast) ease,
+    border-color var(--duration-fast) ease;
+}
+
+pre:hover .code-copy,
+.code-copy:focus-visible {
+  opacity: 1;
+}
+
+.code-copy:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+@media (hover: none) {
+  .code-copy {
+    opacity: 1;
+  }
+
+  .prose-article pre[data-language]::before {
+    display: none;
+  }
+}

@@ -1,0 +1,46 @@
+---
+// TableOfContents — "on this page" list built from the post's h2/h3.
+// The active entry is tracked client-side (BlogPostPage script) through
+// `aria-current="location"` on the links.
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+  title: string;
+  class?: string;
+}
+
+const { headings, title, class: className } = Astro.props;
+// GFM footnotes add a visually hidden "Notes" h2: keep it out of the list.
+const items = headings.filter(
+  (h) => (h.depth === 2 || h.depth === 3) && h.slug !== 'footnote-label'
+);
+---
+
+{
+  items.length > 0 && (
+    <nav aria-label={title} class:list={['toc', className]}>
+      <p class="text-label text-fg-subtle">
+        <span class="text-accent" aria-hidden="true">
+          {'// '}
+        </span>
+        {title}
+      </p>
+      <ol class="mt-4 space-y-0.5 border-l border-line text-sm">
+        {items.map((heading) => (
+          <li>
+            <a
+              href={`#${heading.slug}`}
+              class:list={[
+                '-ml-px block border-l border-transparent py-1 pr-2 text-fg-subtle transition-colors duration-200 hover:text-fg aria-[current=location]:border-accent aria-[current=location]:text-fg',
+                heading.depth === 3 ? 'pl-7' : 'pl-4',
+              ]}
+            >
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}

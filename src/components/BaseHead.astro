@@ -2,42 +2,96 @@
 // Import the global.css file here so that it is included on
 // all pages through the use of the <BaseHead /> component.
 import '../styles/global.css';
+import { ROUTES, defaultLang, type Lang } from '../i18n/ui';
+import { ogLocale } from '../i18n/utils';
+import { SITE_TITLE } from '../consts';
+// Same file the @font-face in global.css points at, so Vite emits one asset.
+import bodyFontUrl from '@fontsource-variable/atkinson-hyperlegible-next/files/atkinson-hyperlegible-next-latin-wght-normal.woff2?url';
+
+export interface ArticleMeta {
+  publishedTime: Date;
+  modifiedTime?: Date;
+  tags?: string[];
+}
 
 interface Props {
   title: string;
   description: string;
   image?: string;
+  /** Page locale — drives `og:locale`. Defaults to the site default. */
+  lang?: Lang;
+  /**
+   * Locale→path map of equivalent pages, for `hreflang` alternates.
+   * Only pass this on pages that genuinely exist in several languages.
+   */
+  alternates?: Partial<Record<Lang, string>>;
+  /** Structured data object, serialized into a JSON-LD <script>. */
+  jsonLd?: Record<string, unknown>;
+  /** Blog posts: switches og:type to `article` and emits article:* tags. */
+  article?: ArticleMeta;
+  /** Keep the page out of search results (work-in-progress, utility pages). */
+  noindex?: boolean;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-const { title, description, image = '/profil2-blue.jpg' } = Astro.props;
+const {
+  title,
+  description,
+  image = '/profil2-blue.jpg',
+  lang = defaultLang,
+  alternates,
+  jsonLd,
+  article,
+  noindex = false,
+} = Astro.props;
+
+// Resolve each alternate path to an absolute URL (hreflang requires it) and
+// add an x-default pointing at the default locale, per Google guidance.
+const alternateEntries = alternates
+  ? (Object.entries(alternates) as [Lang, string][]).map(([loc, path]) => ({
+      hreflang: loc,
+      href: new URL(path, Astro.site).href,
+    }))
+  : [];
+const xDefault = alternates?.[defaultLang]
+  ? new URL(alternates[defaultLang]!, Astro.site).href
+  : undefined;
+
+const imageURL = new URL(image, Astro.site);
+const rssURL = new URL(`${ROUTES.blog[lang]}rss.xml`, Astro.site);
 ---
 
 <script is:inline>
   (() => {
     const root = document.documentElement;
     const mq = matchMedia('(prefers-color-scheme: dark)');
+    let stored = null;
+    try {
+      stored = localStorage.getItem('theme');
+    } catch {
+      /* storage blocked: follow the OS */
+    }
 
     // Pre-paint theme bootstrap: stored preference wins, otherwise
     // follow the OS via prefers-color-scheme.
-    const stored = localStorage.getItem('theme');
     root.setAttribute('data-theme', stored ?? (mq.matches ? 'dark' : 'light'));
 
     // Live OS theme sync: when the user has NOT picked a theme, follow
     // OS changes mid-session (e.g. macOS auto night-shift, manual flip).
     mq.addEventListener('change', (e) => {
-      if (localStorage.getItem('theme')) return;
+      try {
+        if (localStorage.getItem('theme')) return;
+      } catch {
+        /* ignore */
+      }
       root.setAttribute('data-theme', e.matches ? 'dark' : 'light');
     });
 
     // Cross-tab sync: another tab toggled the theme → follow.
     addEventListener('storage', (e) => {
       if (e.key !== 'theme') return;
-      root.setAttribute(
-        'data-theme',
-        e.newValue ?? (mq.matches ? 'dark' : 'light')
-      );
+      root.setAttribute('data-theme', e.newValue ?? (mq.matches ? 'dark' : 'light'));
     });
   })();
 </script>
@@ -47,26 +101,64 @@ const { title, description, image = '/profil2-blue.jpg' } = Astro.props;
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <meta name="generator" content={Astro.generator} />
-<meta name="theme-color" content="#0066FF" />
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0a0a0f" media="(prefers-color-scheme: dark)" />
+<meta name="color-scheme" content="light dark" />
+{noindex && <meta name="robots" content="noindex, follow" />}
+
+<!-- Preload the body font (latin subset) to avoid a late swap. -->
+<link rel="preload" href={bodyFontUrl} as="font" type="font/woff2" crossorigin />
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
+
+<!-- Language alternates (hreflang) for multilingual pages -->
+{alternateEntries.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
+{xDefault && <link rel="alternate" hreflang="x-default" href={xDefault} />}
+
+<!-- Blog feed for this locale -->
+<link rel="alternate" type="application/rss+xml" title={`${SITE_TITLE} — Blog`} href={rssURL} />
 
 <!-- Primary Meta Tags -->
 <title>{title}</title>
 <meta name="title" content={title} />
 <meta name="description" content={description} />
+<meta name="author" content={SITE_TITLE} />
 
 <!-- Open Graph / Facebook -->
-<meta property="og:type" content="website" />
-<meta property="og:url" content={Astro.url} />
+<meta property="og:type" content={article ? 'article' : 'website'} />
+<meta property="og:site_name" content={SITE_TITLE} />
+<meta property="og:url" content={canonicalURL} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image, Astro.url)} />
+<meta property="og:image" content={imageURL} />
+<meta property="og:locale" content={ogLocale[lang]} />
+{
+  alternateEntries
+    .filter((alt) => alt.hreflang !== lang)
+    .map((alt) => <meta property="og:locale:alternate" content={ogLocale[alt.hreflang as Lang]} />)
+}
+{
+  article && (
+    <>
+      <meta property="article:published_time" content={article.publishedTime.toISOString()} />
+      {article.modifiedTime && (
+        <meta property="article:modified_time" content={article.modifiedTime.toISOString()} />
+      )}
+      <meta property="article:author" content={SITE_TITLE} />
+      {article.tags?.map((tag) => (
+        <meta property="article:tag" content={tag} />
+      ))}
+    </>
+  )
+}
 
 <!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:url" content={Astro.url} />
-<meta property="twitter:title" content={title} />
-<meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={new URL(image, Astro.url)} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={canonicalURL} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageURL} />
+
+<!-- Structured data (JSON-LD) -->
+{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />}

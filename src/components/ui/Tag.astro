@@ -1,24 +1,46 @@
 ---
+// Tag — compact mono chip for tech, topics and facts.
+//   neutral  quiet grey chip (default): tech stacks, facts.
+//   accent   brand-tinted: topics, categories, "#hashtags".
+//   outline  bordered, transparent: secondary facts on busy surfaces.
+// With `href` it becomes a link chip.
 interface Props {
-  variant?: 'default' | 'subtle' | 'outline';
+  variant?: 'neutral' | 'accent' | 'outline';
+  size?: 'sm' | 'md';
+  href?: string;
   class?: string;
 }
 
-const { variant = 'default', class: className = '' } = Astro.props;
+const { variant = 'neutral', size = 'sm', href, class: className } = Astro.props;
 
-const variants: Record<NonNullable<Props['variant']>, string> = {
-  default: 'bg-bg-subtle text-text-muted',
-  subtle: 'bg-blue-500/10 text-blue-500',
-  outline: 'border border-border-strong text-text-muted',
+const variants = {
+  neutral: 'border-transparent bg-sunken text-fg-muted',
+  accent: 'border-transparent bg-accent-soft text-accent',
+  outline: 'border-line-strong text-fg-muted',
+};
+
+const sizes = {
+  sm: 'h-6 px-2 text-micro',
+  md: 'h-7 px-2.5 text-mono-sm',
 };
 
 const classes = [
-  'inline-flex items-center rounded-sm px-2 py-0.5 font-mono text-mono-sm',
+  'inline-flex items-center gap-1.5 whitespace-nowrap rounded-sm border font-mono',
   variants[variant],
+  sizes[size],
+  href && 'transition-colors duration-200 hover:border-accent-line hover:text-accent',
   className,
-].join(' ');
+];
 ---
 
-<span class={classes}>
-  <slot />
-</span>
+{
+  href ? (
+    <a href={href} class:list={classes}>
+      <slot />
+    </a>
+  ) : (
+    <span class:list={classes}>
+      <slot />
+    </span>
+  )
+}

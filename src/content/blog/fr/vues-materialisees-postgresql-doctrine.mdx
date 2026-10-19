@@ -1,0 +1,53 @@
+---
+title: 'Vues matérialisées PostgreSQL : les gérer comme du code'
+description: 'Définitions SQL versionnées, détection de drift, rebuild sûr et refresh CONCURRENTLY : comment gérer les vues matérialisées PostgreSQL sur Doctrine DBAL et Symfony.'
+pubDate: 2026-10-12
+tags: ['postgresql', 'symfony', 'php']
+draft: true
+# TODO(content): plan d'article à rédiger. Les faits viennent de la fiche
+# du projet Materialized View (src/data/projects.ts).
+---
+
+Les vues matérialisées sont l'un des outils les plus efficaces de PostgreSQL pour servir des agrégats coûteux — et l'un des plus pénibles à faire vivre dans un projet. Cet article raconte pourquoi j'ai fini par écrire une librairie pour les gérer de façon déclarative.
+
+## Le problème
+
+<Callout type="note" title="Plan">
+  Pourquoi les migrations classiques gèrent mal les vues matérialisées : définitions dispersées,
+  ordre de dépendances, état réel de la base qui dérive.
+</Callout>
+
+## Des définitions SQL versionnées
+
+<Callout type="note" title="Plan">
+  Une vue = un fichier SQL dans le dépôt. Ce que ça change pour la revue de code et l'historique.
+</Callout>
+
+## Détecter le drift
+
+<Callout type="note" title="Plan">
+  Comparer la définition versionnée à ce qui tourne vraiment en base, et le signaler avant le
+  déploiement.
+</Callout>
+
+## Rebuild sûr et `REFRESH CONCURRENTLY`
+
+```sql
+REFRESH MATERIALIZED VIEW CONCURRENTLY sales_by_month;
+```
+
+<Callout type="warning">
+  `CONCURRENTLY` exige un index unique sur la vue. Sans lui, PostgreSQL refuse le refresh.
+</Callout>
+
+## Le bundle Symfony
+
+<Callout type="note" title="Plan">
+  Autoconfiguration, commandes console et déploiement multi-tenant.
+</Callout>
+
+## Ce que j'en retiens
+
+<Callout type="note" title="Plan">
+  Retour d'expérience en production.
+</Callout>

@@ -1,0 +1,446 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from './ui/Button.astro';
+import Card from './ui/Card.astro';
+import Section from './ui/Section.astro';
+import SectionHeader from './ui/SectionHeader.astro';
+import SectionKicker from './ui/SectionKicker.astro';
+import StatusDot from './ui/StatusDot.astro';
+import SpecList from './ui/SpecList.astro';
+import BulletList from './ui/BulletList.astro';
+import StatGrid from './ui/StatGrid.astro';
+import Portrait from './ui/Portrait.astro';
+import Testimonial from './ui/Testimonial.astro';
+import ContactCta from './ui/ContactCta.astro';
+import ProjectCard from './ProjectCard.astro';
+import PostCard from './blog/PostCard.astro';
+import Icon, { type IconName } from './icons/Icon.astro';
+import { testimonials } from '../data/testimonials';
+import { projects } from '../data/projects';
+import { getPosts } from '../lib/blog';
+import { ROUTES, localePaths, type Lang } from '../i18n/ui';
+import { AUTHOR, CONTACT, SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+interface Service {
+  title: string;
+  icon: IconName;
+  pitch: string;
+  bullets: readonly string[];
+  href?: string;
+  cta?: string;
+}
+
+// Page-specific copy lives next to the page (one file to edit). Shared
+// chrome strings (nav, footer) live in src/i18n/ui.ts.
+const copy = {
+  fr: {
+    seoTitle: SITE_TITLE,
+    seoDescription: SITE_DESCRIPTION,
+    jobTitle: 'Formateur, consultant et développeur',
+    portraitAlt: `Portrait de ${AUTHOR.name}`,
+    kicker: 'développeur · formateur · consultant',
+    tagline: 'Web · Cloud · DevOps · 13 ans de pratique',
+    lead: "Je conçois, je code et je déploie en production plusieurs fois par jour. C'est ce qui me permet de transformer des idées en solutions sur mesure qui passent à l'échelle, tiennent dans le temps et respectent les exigences du projet, tout en faisant monter en compétences les équipes qui les portent et en boostant leur productivité.",
+    contact: 'Me contacter',
+    seeTraining: 'Voir les formations',
+    available: 'Disponible',
+    remote: 'À distance & sur site',
+    stats: [
+      { value: '50+', label: 'Personnes formées', meta: 'depuis 2013' },
+      { value: '25+', label: 'Projets livrés', meta: 'apps & formations' },
+      { value: '10+', label: 'Entreprises accompagnées', meta: 'partenariats & missions' },
+    ],
+    statsLabel: 'Chiffres clés',
+    facts: [
+      { label: 'pratique', value: '13 ans · depuis 2013' },
+      { label: 'terrain', value: 'Web · Cloud · DevOps' },
+      { label: 'langues', value: 'FR / EN' },
+      { label: 'format', value: 'À distance & sur site' },
+    ],
+    services: [
+      {
+        title: 'Formation',
+        icon: 'users',
+        pitch:
+          'Modules sur mesure pour développeurs et équipes : PHP, Symfony, JavaScript, DevOps, IA. Approche cas pratiques + projets réels, alignée sur les attentes des entreprises.',
+        bullets: ['Devs juniors → seniors', 'Cas pratiques & projets', 'Programmes sur mesure'],
+        href: ROUTES.training.fr,
+        cta: 'Voir le catalogue',
+      },
+      {
+        title: 'Consulting',
+        icon: 'layers',
+        pitch:
+          "Décisions techniques difficiles, architectures qui tiennent, audits qui débloquent. De l'application au cloud, du code à la conformité.",
+        bullets: ['Architecture & cloud', 'Audit, sécurité & conformité', 'Performance & qualité'],
+      },
+      {
+        title: 'Développement',
+        icon: 'code',
+        pitch:
+          'Applications modernes performantes, rénovation de bases de code legacy, nouvelles fonctionnalités. Code fiable, évolutif, en phase avec vos objectifs.',
+        bullets: ['Apps web modernes', 'Modernisation legacy', 'Solutions sur mesure'],
+      },
+    ],
+    servicesKicker: 'services',
+    servicesTitle: 'Trois manières de travailler ensemble',
+    servicesLead:
+      'Selon le besoin : transmettre, accompagner ou construire. Souvent les trois en même temps.',
+    projectsKicker: 'projets',
+    projectsTitle: 'Ce qui tourne en ce moment',
+    projectsLead:
+      'Les produits, librairies open source et projets personnels que je maintiens activement. Du code en production, accessible et vivant.',
+    allProjects: 'Tous les projets',
+    blogKicker: 'blog',
+    blogTitle: 'Notes de terrain',
+    blogLead: "Ce que j'apprends en livrant du logiciel en production, écrit pour être réutilisé.",
+    allPosts: 'Tous les articles',
+    testimonialsKicker: 'témoignages',
+    testimonialsTitle: 'Ce que disent ceux qui ont travaillé avec moi',
+    testimonialsLead: "Recommandations LinkedIn issues d'anciens collègues et managers.",
+    fullVersions: 'Versions intégrales',
+    recoAnchor: '#recommandations',
+    trainingKicker: 'formations',
+    trainingTitle: 'Formations sur site',
+    trainingText:
+      '11 modules taillés pour les équipes tech : PHP moderne, Symfony, JS/TS, bases de données, CI/CD, DevOps, IA et plus. Concret, programme adapté à votre stack.',
+    seeCatalogue: 'Voir le catalogue',
+    ctaTitle: 'Discutons de votre projet',
+    ctaText:
+      'Formation, audit, accompagnement, mission tech — envoyez un mail, je réponds rapidement.',
+  },
+  en: {
+    seoTitle: 'Jérémy Marodon — Trainer, consultant & developer',
+    seoDescription:
+      'Jérémy Marodon: technical trainer, consultant and developer. Web, AWS cloud, DevOps. 13 years of writing code, teaching it and keeping production running.',
+    jobTitle: 'Trainer, consultant and developer',
+    portraitAlt: `Portrait of ${AUTHOR.name}`,
+    kicker: 'developer · trainer · consultant',
+    tagline: 'Web · Cloud · DevOps · 13 years of practice',
+    lead: 'I design, write and ship code to production several times a day. That is what lets me turn ideas into tailored solutions that scale, last over time and meet the project’s requirements — while upskilling the teams who own them and making them more productive.',
+    contact: 'Get in touch',
+    seeTraining: 'See the training',
+    available: 'Available',
+    remote: 'Remote & on-site',
+    stats: [
+      { value: '50+', label: 'People trained', meta: 'since 2013' },
+      { value: '25+', label: 'Projects delivered', meta: 'apps & courses' },
+      { value: '10+', label: 'Companies supported', meta: 'partnerships & engagements' },
+    ],
+    statsLabel: 'Key figures',
+    facts: [
+      { label: 'practice', value: '13 years · since 2013' },
+      { label: 'field', value: 'Web · Cloud · DevOps' },
+      { label: 'languages', value: 'FR / EN' },
+      { label: 'format', value: 'Remote & on-site' },
+    ],
+    services: [
+      {
+        title: 'Training',
+        icon: 'users',
+        pitch:
+          'Tailored modules for developers and teams: PHP, Symfony, JavaScript, DevOps, AI. Hands-on exercises and real projects, aligned with what companies expect.',
+        bullets: ['Junior → senior devs', 'Hands-on cases & projects', 'Tailored programmes'],
+        href: ROUTES.training.en,
+        cta: 'See the catalogue',
+      },
+      {
+        title: 'Consulting',
+        icon: 'layers',
+        pitch:
+          'Hard technical decisions, architectures that hold up, audits that unblock. From the application to the cloud, from code to compliance.',
+        bullets: ['Architecture & cloud', 'Audit, security & compliance', 'Performance & quality'],
+      },
+      {
+        title: 'Development',
+        icon: 'code',
+        pitch:
+          'Fast, modern applications, legacy codebase renovation, new features. Reliable, scalable code, in line with your goals.',
+        bullets: ['Modern web apps', 'Legacy modernisation', 'Tailored solutions'],
+      },
+    ],
+    servicesKicker: 'services',
+    servicesTitle: 'Three ways to work together',
+    servicesLead:
+      'Depending on the need: teach, advise or build. Often all three at the same time.',
+    projectsKicker: 'projects',
+    projectsTitle: "What's running right now",
+    projectsLead:
+      'The products, open-source libraries and personal projects I actively maintain. Code in production, live and reachable.',
+    allProjects: 'All projects',
+    blogKicker: 'blog',
+    blogTitle: 'Field notes',
+    blogLead: 'What I learn shipping software to production, written to be reused.',
+    allPosts: 'All posts',
+    testimonialsKicker: 'testimonials',
+    testimonialsTitle: 'What people who worked with me say',
+    testimonialsLead:
+      'LinkedIn recommendations from former colleagues and managers, quoted in their original French.',
+    fullVersions: 'Full versions',
+    recoAnchor: '#recommendations',
+    trainingKicker: 'training',
+    trainingTitle: 'On-site training',
+    trainingText:
+      '11 modules built for tech teams: modern PHP, Symfony, JS/TS, databases, CI/CD, DevOps, AI and more. Hands-on, with a programme adapted to your stack.',
+    seeCatalogue: 'See the catalogue',
+    ctaTitle: "Let's talk about your project",
+    ctaText: 'Training, audit, advisory, a tech engagement — send me an email, I reply quickly.',
+  },
+} as const;
+
+const c = copy[lang];
+const alternates = localePaths('home');
+const services: readonly Service[] = c.services;
+
+// TODO(content): remplacer ce teaser par 3 vrais cas clients (contexte,
+// problème, décision tech, résultat) quand les fiches /projets/[slug]
+// existeront. En attendant : les projets réellement maintenus.
+const featuredProjects = projects.slice(0, 3);
+const latestPosts = (await getPosts(lang)).slice(0, 3);
+
+// Section numbering follows what is actually rendered.
+let n = 0;
+const next = () => ++n;
+
+const pageUrl = new URL(ROUTES.home[lang], Astro.site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${Astro.site}#website`,
+      url: Astro.site?.href,
+      name: AUTHOR.name,
+      inLanguage: ['fr', 'en'],
+    },
+    {
+      '@type': 'WebPage',
+      '@id': `${pageUrl}#webpage`,
+      url: pageUrl,
+      name: c.seoTitle,
+      description: c.seoDescription,
+      inLanguage: lang,
+      isPartOf: { '@id': `${Astro.site}#website` },
+      about: { '@id': `${Astro.site}#person` },
+    },
+    {
+      '@type': 'Person',
+      '@id': `${Astro.site}#person`,
+      name: AUTHOR.name,
+      url: Astro.site?.href,
+      image: new URL(AUTHOR.photo, Astro.site).href,
+      jobTitle: c.jobTitle,
+      description: c.seoDescription,
+      sameAs: [CONTACT.linkedin, CONTACT.github],
+      knowsAbout: ['PHP', 'Symfony', 'JavaScript', 'TypeScript', 'AWS', 'DevOps', 'PostgreSQL'],
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title={c.seoTitle}
+  description={c.seoDescription}
+  lang={lang}
+  alternates={alternates}
+  jsonLd={jsonLd}
+>
+  <!-- Hero -->
+  <section class="relative isolate overflow-hidden border-b border-line">
+    <div class="bg-blueprint absolute inset-0 -z-10" aria-hidden="true"></div>
+    <div class="bg-glow absolute inset-0 -z-10" aria-hidden="true"></div>
+
+    <div
+      class="container-content grid gap-12 pt-12 pb-14 sm:pt-16 md:pt-24 md:pb-20 lg:grid-cols-[minmax(0,1fr)_21rem] lg:items-center lg:gap-20 lg:pb-24"
+    >
+      <div class="animate-fade-up">
+        <div class="flex items-center gap-4">
+          <Portrait size={56} eager alt={c.portraitAlt} class="lg:hidden" />
+          <SectionKicker>{c.kicker}</SectionKicker>
+        </div>
+
+        <h1 class="mt-7 text-display">Jérémy <span class="text-accent">Marodon</span></h1>
+
+        <p class="text-label mt-6 text-fg-muted">{c.tagline}</p>
+
+        <p class="mt-7 max-w-2xl text-lead text-fg-muted">{c.lead}</p>
+
+        <div class="mt-10 flex flex-wrap items-center gap-3">
+          <Button mail size="lg">
+            <Icon name="mail" />
+            {c.contact}
+          </Button>
+          <Button href={ROUTES.training[lang]} size="lg" variant="secondary">
+            {c.seeTraining}
+            <Icon name="arrow-right" class="transition-transform group-hover/btn:translate-x-0.5" />
+          </Button>
+        </div>
+
+        <div class="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 lg:hidden">
+          <StatusDot status="available" label={c.available} />
+          <span class="text-fg-subtle" aria-hidden="true">·</span>
+          <span class="font-mono text-mono-sm text-fg-muted">FR / EN</span>
+          <span class="text-fg-subtle" aria-hidden="true">·</span>
+          <span class="font-mono text-mono-sm text-fg-muted">{c.remote}</span>
+        </div>
+      </div>
+
+      <div class="hidden animate-fade-up [animation-delay:120ms] lg:block">
+        <Portrait variant="framed" size={336} eager alt={c.portraitAlt} caption="fig.01">
+          <Fragment slot="caption">
+            <span>fig.01 — j. marodon</span>
+            <StatusDot status="available" label={c.available} />
+          </Fragment>
+        </Portrait>
+        <SpecList items={[...c.facts]} class="mt-6" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="border-b border-line" aria-label={c.statsLabel}>
+    <div class="container-content">
+      <StatGrid items={[...c.stats]} />
+    </div>
+  </section>
+
+  <!-- Services -->
+  <Section ariaLabelledby="services-title">
+    <SectionHeader
+      id="services-title"
+      index={next()}
+      kicker={c.servicesKicker}
+      title={c.servicesTitle}
+      lead={c.servicesLead}
+    />
+
+    <div class="mt-14 grid gap-5 md:grid-cols-3">
+      {
+        services.map((service, i) => (
+          <Card href={service.href} class="flex h-full flex-col">
+            <div class="flex items-center justify-between">
+              <span class="grid size-11 place-items-center rounded-lg bg-accent-soft text-accent">
+                <Icon name={service.icon} size={20} />
+              </span>
+              <span class="font-mono text-mono-sm text-fg-subtle">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+            </div>
+            <h3 class="mt-6 text-h3">{service.title}</h3>
+            <p class="mt-3 pb-8 text-fg-muted">{service.pitch}</p>
+            <div class="mt-auto border-t border-line pt-5">
+              <BulletList items={service.bullets} variant="mono" />
+              {service.cta && (
+                <span class="mt-5 inline-flex items-center gap-1.5 font-medium text-accent">
+                  {service.cta}
+                  <Icon
+                    name="arrow-right"
+                    size={15}
+                    class="transition-transform duration-200 group-hover/card:translate-x-0.5"
+                  />
+                </span>
+              )}
+            </div>
+          </Card>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- Projects -->
+  <Section tone="subtle" ariaLabelledby="projects-title">
+    <SectionHeader
+      id="projects-title"
+      index={next()}
+      kicker={c.projectsKicker}
+      title={c.projectsTitle}
+      lead={c.projectsLead}
+    >
+      <Button slot="actions" href={ROUTES.projects[lang]} variant="secondary">
+        {c.allProjects}
+        <Icon name="arrow-right" />
+      </Button>
+    </SectionHeader>
+
+    <div class="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {
+        featuredProjects.map((project) => (
+          <ProjectCard project={project} lang={lang} variant="compact" />
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- Blog -->
+  {
+    latestPosts.length > 0 && (
+      <Section ariaLabelledby="blog-title">
+        <SectionHeader
+          id="blog-title"
+          index={next()}
+          kicker={c.blogKicker}
+          title={c.blogTitle}
+          lead={c.blogLead}
+        >
+          <Button slot="actions" href={ROUTES.blog[lang]} variant="secondary">
+            {c.allPosts}
+            <Icon name="arrow-right" />
+          </Button>
+        </SectionHeader>
+        <div class="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {latestPosts.map((post) => (
+            <PostCard post={post} />
+          ))}
+        </div>
+      </Section>
+    )
+  }
+
+  <!-- Testimonials -->
+  <Section tone={latestPosts.length > 0 ? 'subtle' : 'default'} ariaLabelledby="testimonials-title">
+    <SectionHeader
+      id="testimonials-title"
+      index={next()}
+      kicker={c.testimonialsKicker}
+      title={c.testimonialsTitle}
+      lead={c.testimonialsLead}
+    >
+      <Button slot="actions" href={`${ROUTES.about[lang]}${c.recoAnchor}`} variant="secondary">
+        {c.fullVersions}
+        <Icon name="arrow-right" />
+      </Button>
+    </SectionHeader>
+
+    <div class="mt-14 grid gap-5 md:grid-cols-2">
+      {testimonials.map((t) => <Testimonial testimonial={t} lang={lang} />)}
+    </div>
+  </Section>
+
+  <!-- Training highlight -->
+  <Section spacing="sm">
+    <Card href={ROUTES.training[lang]} variant="highlight" padding="lg">
+      <div class="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+        <div class="max-w-2xl">
+          <SectionKicker class="mb-4">{c.trainingKicker}</SectionKicker>
+          <h2 class="text-h2">{c.trainingTitle}</h2>
+          <p class="mt-4 text-lead text-fg-muted">{c.trainingText}</p>
+        </div>
+        <span
+          class="text-label inline-flex shrink-0 items-center gap-2 text-accent transition-transform duration-200 group-hover/card:translate-x-1"
+        >
+          {c.seeCatalogue}
+          <Icon name="arrow-right" />
+        </span>
+      </div>
+    </Card>
+  </Section>
+
+  <ContactCta title={c.ctaTitle} text={c.ctaText} />
+</BaseLayout>

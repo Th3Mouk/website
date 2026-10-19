@@ -1,0 +1,243 @@
+/* ==========================================================================
+   Design tokens — marodon.com
+   --------------------------------------------------------------------------
+   Three tiers, each built only from the one above it:
+
+   1. Primitives   raw palette (--blue-500, --slate-200, --ink-950…).
+                   Plain custom properties: NO Tailwind utility is generated,
+                   so components can't reach for a raw colour by accident.
+   2. Semantic     role-based tokens (--color-canvas, --color-fg-muted,
+                   --color-accent…), declared in @theme so Tailwind turns them
+                   into utilities (bg-canvas, text-fg-muted, border-line…).
+                   Light values live in @theme, dark overrides on
+                   [data-theme='dark'].
+   3. Components   src/components/ui/* consume semantic utilities only.
+
+   The browsable reference (tokens + components) is kept privately, outside
+   this repository; this file remains the source of truth.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Primitives
+   -------------------------------------------------------------------------- */
+:root {
+  /* Electric blue — brand. 500 is the historical #0066FF. */
+  --blue-50: #eef4ff;
+  --blue-100: #d9e7ff;
+  --blue-200: #b3cfff;
+  --blue-300: #80afff;
+  --blue-400: #4d8dff;
+  --blue-500: #0066ff;
+  --blue-600: #0052cc;
+  --blue-700: #003d99;
+  --blue-800: #002966;
+  --blue-900: #001a42;
+  --blue-950: #0a1a33;
+
+  /* Slate — light-theme neutrals. */
+  --slate-0: #ffffff;
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+
+  /* Ink — dark-theme surfaces (blue-tinted near-black). */
+  --ink-400: #7b8698;
+  --ink-600: #3a3a47;
+  --ink-700: #262631;
+  --ink-800: #1c1c25;
+  --ink-850: #16161d;
+  --ink-900: #111118;
+  --ink-950: #0a0a0f;
+
+  /* Signal hues. */
+  --green-400: #34d399;
+  --green-500: #10b981;
+  --green-600: #059669;
+  --amber-400: #fbbf24;
+  --amber-500: #f59e0b;
+  --amber-600: #d97706;
+  --red-400: #f87171;
+  --red-500: #ef4444;
+  --red-600: #dc2626;
+
+  /* Motion durations (used by component CSS; Tailwind has duration-*). */
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 400ms;
+
+  /* Sticky header height — used for scroll offsets and sticky asides. */
+  --header-height: 4rem;
+}
+
+/* --------------------------------------------------------------------------
+   2. Semantic tokens (light theme = default values)
+   -------------------------------------------------------------------------- */
+@theme static {
+  /* Wipe Tailwind's default palette: only the roles below exist. */
+  --color-*: initial;
+  --color-white: #fff;
+  --color-black: #000;
+
+  /* Surfaces */
+  --color-canvas: var(--slate-0); /* page background */
+  --color-subtle: var(--slate-50); /* alternate bands, footer */
+  --color-surface: var(--slate-0); /* cards, panels */
+  --color-surface-hover: var(--slate-50);
+  --color-sunken: var(--slate-100); /* code, inputs, wells */
+
+  /* Text */
+  --color-fg: var(--slate-900);
+  --color-fg-muted: var(--slate-600);
+  --color-fg-subtle: var(--slate-500);
+  --color-on-brand: #fff;
+
+  /* Lines */
+  --color-line: var(--slate-200);
+  --color-line-strong: var(--slate-300);
+
+  /* Brand: solid fills (constant across themes) */
+  --color-brand: var(--blue-500);
+  --color-brand-hover: var(--blue-600);
+
+  /* Accent: text, icons, borders (lightened in dark for contrast) */
+  --color-accent: var(--blue-500);
+  --color-accent-soft: color-mix(in oklab, var(--blue-500) 8%, transparent);
+  --color-accent-line: color-mix(in oklab, var(--blue-500) 32%, transparent);
+
+  /* Signals */
+  --color-success: var(--green-600);
+  --color-success-soft: color-mix(in oklab, var(--green-500) 12%, transparent);
+  --color-warning: var(--amber-600);
+  --color-warning-soft: color-mix(in oklab, var(--amber-500) 14%, transparent);
+  --color-danger: var(--red-600);
+  --color-danger-soft: color-mix(in oklab, var(--red-500) 12%, transparent);
+
+  /* Typography ---------------------------------------------------------- */
+  --font-sans:
+    'Atkinson Hyperlegible Next Variable', 'Atkinson Hyperlegible Next', ui-sans-serif, system-ui,
+    sans-serif;
+  --font-mono:
+    'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Fluid type scale (≈1.25 ratio on mobile, ≈1.333 on desktop). */
+  --text-*: initial;
+  --text-micro: 0.75rem;
+  --text-micro--line-height: 1.35;
+  --text-mono-sm: 0.8125rem;
+  --text-mono-sm--line-height: 1.45;
+  --text-sm: 0.9375rem;
+  --text-sm--line-height: 1.55;
+  --text-body: 1rem;
+  --text-body--line-height: 1.7;
+  --text-lead: clamp(1.125rem, 1.07rem + 0.25vw, 1.25rem);
+  --text-lead--line-height: 1.6;
+  --text-h4: 1.125rem;
+  --text-h4--line-height: 1.4;
+  --text-h3: clamp(1.25rem, 1.15rem + 0.45vw, 1.5rem);
+  --text-h3--line-height: 1.3;
+  --text-h3--letter-spacing: -0.01em;
+  --text-h2: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
+  --text-h2--line-height: 1.15;
+  --text-h2--letter-spacing: -0.02em;
+  --text-h1: clamp(2.25rem, 1.65rem + 2.6vw, 3.5rem);
+  --text-h1--line-height: 1.07;
+  --text-h1--letter-spacing: -0.025em;
+  --text-display: clamp(2.75rem, 1.6rem + 5vw, 5.25rem);
+  --text-display--line-height: 1;
+  --text-display--letter-spacing: -0.035em;
+
+  /* Layout -------------------------------------------------------------- */
+  --container-content: 75rem; /* 1200px — page grid */
+  --container-reading: 43rem; /* ≈70ch — article body */
+
+  --spacing-gutter: clamp(1.25rem, 0.6rem + 2.8vw, 3rem);
+  --spacing-section: clamp(4.5rem, 3rem + 6vw, 8rem);
+  --spacing-section-sm: clamp(3rem, 2.2rem + 3.5vw, 5rem);
+
+  /* Radii — small and technical. */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-2xl: 20px;
+
+  /* Elevation */
+  --shadow-*: initial;
+  --shadow-xs: 0 1px 2px rgb(15 23 42 / 0.05);
+  --shadow-sm: 0 1px 2px rgb(15 23 42 / 0.04), 0 2px 6px -1px rgb(15 23 42 / 0.06);
+  --shadow-md: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px -6px rgb(15 23 42 / 0.12);
+  --shadow-lg: 0 2px 4px rgb(15 23 42 / 0.04), 0 24px 48px -12px rgb(15 23 42 / 0.18);
+  --shadow-glow: 0 0 0 4px color-mix(in oklab, var(--blue-500) 18%, transparent);
+
+  /* Motion */
+  --ease-snappy: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-fade-up: fade-up 600ms var(--ease-snappy) both;
+  --animate-pulse-soft: pulse-soft 2.4s ease-in-out infinite;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pulse-soft {
+    0%,
+    100% {
+      opacity: 0.75;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0;
+      transform: scale(2.2);
+    }
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Dark theme — only semantic values change; primitives stay put.
+   -------------------------------------------------------------------------- */
+[data-theme='dark'] {
+  --color-canvas: var(--ink-950);
+  --color-subtle: var(--ink-900);
+  --color-surface: var(--ink-850);
+  --color-surface-hover: var(--ink-800);
+  --color-sunken: var(--ink-900);
+
+  --color-fg: var(--slate-100);
+  --color-fg-muted: var(--slate-400);
+  --color-fg-subtle: var(--ink-400);
+
+  --color-line: var(--ink-700);
+  --color-line-strong: var(--ink-600);
+
+  --color-brand-hover: #1a75ff;
+
+  --color-accent: var(--blue-400);
+  --color-accent-soft: color-mix(in oklab, var(--blue-400) 13%, transparent);
+  --color-accent-line: color-mix(in oklab, var(--blue-400) 40%, transparent);
+
+  --color-success: var(--green-400);
+  --color-warning: var(--amber-400);
+  --color-danger: var(--red-400);
+
+  /* Shadows read as depth only with a faint top highlight in the dark. */
+  --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4), 0 2px 8px -2px rgb(0 0 0 / 0.5);
+  --shadow-md: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 28px -8px rgb(0 0 0 / 0.65);
+  --shadow-lg: 0 2px 4px rgb(0 0 0 / 0.4), 0 28px 56px -14px rgb(0 0 0 / 0.75);
+  --shadow-glow: 0 0 0 4px color-mix(in oklab, var(--blue-400) 22%, transparent);
+}

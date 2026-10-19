@@ -1,14 +1,28 @@
 ---
-// Mono-styled section label, used as a kicker above section headlines.
-// Renders as `// section-name` to evoke a code comment — signals the
-// developer/technical voice of the site.
+// Kicker — mono label above a headline, written as a code comment
+// ("// section-name"): the signature of the site's technical voice.
+// Optional `index` prefixes a step number ("// 01 · services").
+type KickerTag = 'p' | 'span' | 'div';
+
 interface Props {
+  index?: string | number;
+  tag?: KickerTag;
   class?: string;
 }
-const { class: className = '' } = Astro.props;
+
+const { index, tag: Tag = 'p', class: className } = Astro.props;
+const idx = index === undefined ? undefined : String(index).padStart(2, '0');
 ---
 
-<p class:list={['font-mono text-mono-sm uppercase tracking-wider text-text-subtle', className]}>
-  <span class="text-blue-500">{'//'}</span>
-  <slot />
-</p>
+<Tag class:list={['text-label flex items-center gap-2 text-fg-subtle', className]}>
+  <span class="text-accent" aria-hidden="true">{'//'}</span>
+  {
+    idx && (
+      <>
+        <span class="text-fg-muted">{idx}</span>
+        <span aria-hidden="true">·</span>
+      </>
+    )
+  }
+  <span><slot /></span>
+</Tag>

@@ -1,0 +1,51 @@
+---
+// Section — vertical rhythm + page grid for one band of a page.
+//   tone      'default' (canvas) | 'subtle' (alternate band)
+//   spacing   'lg' (default, --spacing-section) | 'sm' (--spacing-section-sm)
+//   divider   hairline on top, to separate two bands of the same tone
+// Content is wrapped in `container-content` unless `bleed` is set.
+interface Props {
+  id?: string;
+  tone?: 'default' | 'subtle';
+  spacing?: 'sm' | 'lg';
+  divider?: boolean;
+  bleed?: boolean;
+  class?: string;
+  /** Classes for the inner container. */
+  innerClass?: string;
+  ariaLabelledby?: string;
+}
+
+const {
+  id,
+  tone = 'default',
+  spacing = 'lg',
+  divider = false,
+  bleed = false,
+  class: className,
+  innerClass,
+  ariaLabelledby,
+} = Astro.props;
+---
+
+<section
+  id={id}
+  aria-labelledby={ariaLabelledby}
+  class:list={[
+    'relative',
+    tone === 'subtle' && 'bg-subtle',
+    spacing === 'lg' ? 'py-section' : 'py-section-sm',
+    (divider || tone === 'subtle') && 'border-y border-line',
+    className,
+  ]}
+>
+  {
+    bleed ? (
+      <slot />
+    ) : (
+      <div class:list={['container-content', innerClass]}>
+        <slot />
+      </div>
+    )
+  }
+</section>

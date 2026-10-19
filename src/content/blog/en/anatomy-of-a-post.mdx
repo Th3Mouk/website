@@ -1,0 +1,67 @@
+---
+title: 'Anatomy of a post: the blog template'
+description: 'The reference template for the blog: headings, lists, code, callouts, tables and quotes. A visual test bench and a cheat sheet for writing a post.'
+pubDate: 2026-10-19
+tags: ['meta', 'design-system']
+draft: true
+translationKey: anatomy
+---
+
+This post is a test bench. It gathers every element a post can contain, to check at a glance that the typography holds up in light and dark, on mobile and on large screens. It stays a draft: it only shows in `astro dev`.
+
+## Writing a post
+
+A post is an MDX file in `src/content/blog/<lang>/`. The folder sets the language, the file name sets the URL. The frontmatter is validated at build time by the schema in `src/content.config.ts`:
+
+```yaml
+---
+title: 'Painless PostgreSQL materialized views'
+description: '150 to 160 characters, which is what Google displays.'
+pubDate: 2026-10-19
+tags: ['postgresql', 'symfony']
+draft: true # dev only
+translationKey: matviews # same value on the FR version
+---
+```
+
+The first paragraph of a post is slightly larger: it is the standfirst. It should make people want to read on **and** sum up the point for those who stop there.
+
+### Headings and hierarchy
+
+`##` headings structure the post and feed the table of contents on the right. `###` add one more level. Going deeper is usually a sign the post should be split.
+
+## Body text
+
+A paragraph reads best at 65 to 75 characters per line: that is the column width. [Links](https://astro.build) are underlined subtly, `inline code` stands out without shouting, shortcuts are written <kbd>⌘</kbd> + <kbd>K</kbd> and you can <mark>highlight a passage</mark> that matters.
+
+- Bullet lists use the accent chevron.
+- Items can wrap over several lines without breaking the alignment, even when the sentence clearly runs past one line.
+- Three items are often enough.
+
+1. Numbered lists keep mono digits.
+2. For steps that have an order.
+
+## Code
+
+Blocks are highlighted at build time by Shiki, with a light and a dark theme.
+
+```ts
+export function readingTime(body = ''): number {
+  const words = body.split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(words / 220));
+}
+```
+
+## Callouts
+
+<Callout type="tip">Default callout titles follow the page language: this one reads “Tip”.</Callout>
+
+<Callout type="warning">A `REFRESH` without `CONCURRENTLY` locks the view for reads.</Callout>
+
+> Technical quality is built through small, consistent decisions, not grand plans.
+
+| Element | Syntax               | Use                |
+| ------- | -------------------- | ------------------ |
+| Callout | `<Callout type="…">` | Aside, tip, risk   |
+| Code    | ` ```lang `          | Runnable examples  |
+| Key     | `<kbd>`              | Keyboard shortcuts |

@@ -1,0 +1,95 @@
+---
+// ContactCta — closing band of a page: kicker, headline, one-line pitch
+// and up to two actions, by default "write to me" + LinkedIn. When the
+// primary action is an email (`mail`), a "copy address" button follows it:
+// the address itself is never printed (see consts.ts → mailLink).
+import Button from './Button.astro';
+import CopyEmailButton from './CopyEmailButton.astro';
+import SectionKicker from './SectionKicker.astro';
+import Icon from '../icons/Icon.astro';
+import { CONTACT } from '../../consts';
+import { useTranslations } from '../../i18n/utils';
+import type { Lang } from '../../i18n/ui';
+
+interface LinkAction {
+  href: string;
+  label: string;
+  external?: boolean;
+}
+
+interface MailAction {
+  /** `true`, or the pre-filled subject. */
+  mail: true | string;
+  label: string;
+}
+
+interface Props {
+  kicker?: string;
+  title: string;
+  text?: string;
+  primary?: LinkAction | MailAction;
+  secondary?: LinkAction;
+}
+
+const t = useTranslations((Astro.currentLocale ?? 'fr') as Lang);
+
+const {
+  kicker = 'contact',
+  title,
+  text,
+  primary = { mail: true, label: t('contact.write') },
+  secondary = { href: CONTACT.linkedin, label: 'LinkedIn', external: true },
+} = Astro.props;
+
+const mail = 'mail' in primary ? primary.mail : undefined;
+---
+
+<section class="py-section-sm">
+  <div class="container-content">
+    <div
+      class="relative isolate overflow-hidden rounded-2xl border border-line bg-subtle px-6 py-12 md:px-12 md:py-16"
+    >
+      <div class="bg-blueprint absolute inset-0 -z-10 opacity-60" aria-hidden="true"></div>
+      <div class="bg-glow absolute inset-0 -z-10" aria-hidden="true"></div>
+
+      <div class="grid gap-10 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:gap-16">
+        <div class="max-w-2xl">
+          <SectionKicker class="mb-4">{kicker}</SectionKicker>
+          <h2 class="text-h2">{title}</h2>
+          {text && <p class="mt-5 text-lead text-fg-muted">{text}</p>}
+        </div>
+        <div class="flex flex-wrap items-center gap-3 md:max-w-[26rem] md:justify-end">
+          {
+            mail ? (
+              <Button mail={mail} size="lg">
+                <Icon name="mail" />
+                {primary.label}
+              </Button>
+            ) : (
+              'href' in primary && (
+                <Button href={primary.href} size="lg" external={primary.external}>
+                  {primary.label}
+                  <Icon name="arrow-right" />
+                </Button>
+              )
+            )
+          }
+          {
+            secondary && (
+              <Button
+                href={secondary.href}
+                size="lg"
+                variant="secondary"
+                external={secondary.external}
+              >
+                {secondary.label}
+                <Icon name="arrow-up-right" />
+              </Button>
+            )
+          }
+          {mail && <CopyEmailButton size="lg" />}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

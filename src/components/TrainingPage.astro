@@ -1,0 +1,398 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from './ui/Button.astro';
+import Card from './ui/Card.astro';
+import PageHero from './ui/PageHero.astro';
+import Section from './ui/Section.astro';
+import SectionHeader from './ui/SectionHeader.astro';
+import SectionKicker from './ui/SectionKicker.astro';
+import SpecList from './ui/SpecList.astro';
+import BulletList from './ui/BulletList.astro';
+import Tag from './ui/Tag.astro';
+import ContactCta from './ui/ContactCta.astro';
+import Icon, { type IconName } from './icons/Icon.astro';
+import { ROUTES, localePaths, type Lang } from '../i18n/ui';
+import { AUTHOR, CONTACT } from '../consts';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+interface Formation {
+  title: string;
+  description: string;
+  /** Short tag rendered as a mono chip on the card */
+  tag: string;
+}
+
+interface Audience {
+  icon: IconName;
+  kicker: string;
+  title: string;
+  text: string;
+  bullets: readonly string[];
+}
+
+// Page-specific copy lives next to the page (one file to edit). Shared
+// chrome strings (nav, footer) live in src/i18n/ui.ts.
+const copy = {
+  fr: {
+    seoTitle: 'Formations | Jérémy Marodon',
+    seoDescription:
+      '11 formations techniques pour développeurs et équipes : PHP, Symfony, JavaScript, DevOps, IA, et plus.',
+    catalogueName: 'Catalogue de formations techniques',
+    kicker: 'catalogue formations',
+    h1: 'Formations sur site',
+    lead: 'Onze modules conçus pour les équipes techniques qui veulent monter en compétences sur les fondations modernes du métier — back, data, DevOps, IA. Concrets, adaptés à votre stack, programme construit avec vous.',
+    quote: 'Demander un devis',
+    quoteSubject: 'Demande de formation',
+    seeModules: 'Voir les modules',
+    facts: [
+      { label: 'langues', value: 'FR · EN' },
+      { label: 'durée', value: '2 à 7 jours' },
+      { label: 'groupe', value: '4 à 20 personnes' },
+      { label: 'format', value: 'En présentiel', accent: true },
+    ],
+    formations: [
+      {
+        title: 'PHP Moderne',
+        tag: 'langage',
+        description:
+          'Découvrez les bases de PHP 8+ tout en approfondissant les concepts avancés comme la programmation orientée objet et la gestion des dépendances avec Composer. Mettez-vous à jour sur les nouvelles fonctionnalités et syntaxes de PHP. Cette formation vous aide à adopter les bonnes pratiques pour vos projets professionnels.',
+      },
+      {
+        title: 'Symfony',
+        tag: 'framework',
+        description:
+          "Apprenez à développer des applications avec Symfony, un framework PHP robuste et complet. Fort de plus de 10 ans d'expérience avec Symfony depuis la version 1.4, je vous guide à travers ses composants essentiels, Doctrine ORM, Twig, la création d'API REST et les bonnes pratiques en sécurité et en gestion de projets.",
+      },
+      {
+        title: 'JavaScript & TypeScript',
+        tag: 'langage',
+        description:
+          "Explorez les fondamentaux de JavaScript et découvrez comment TypeScript peut rendre vos projets plus fiables et maintenables. Cette formation vous accompagne dans l'utilisation des frameworks modernes comme React, Vue.js et Node.js pour construire des applications front et back performantes.",
+      },
+      {
+        title: "Travailler avec l'IA",
+        tag: 'productivité',
+        description:
+          "Découvrez comment intégrer des outils d'intelligence artificielle dans votre workflow pour gagner en efficacité. Apprenez à utiliser des modèles comme GPT d'OpenAI ou Claude d'Anthropic pour automatiser des tâches et développer plus rapidement.",
+      },
+      {
+        title: "Développement d'API",
+        tag: 'backend',
+        description:
+          "Découvrez les bonnes pratiques pour concevoir et développer des API RESTful fiables et bien documentées. Cette formation aborde la création d'API, la sécurisation des endpoints et l'utilisation d'outils comme Swagger et Postman pour garantir leur qualité.",
+      },
+      {
+        title: 'Bases de données',
+        tag: 'data',
+        description:
+          'Maîtrisez les bonnes pratiques de gestion des bases de données, relationnelles (MySQL, PostgreSQL) et NoSQL (MongoDB, Redis). Cette formation couvre la modélisation, les requêtes et les bases pour structurer vos données de manière efficace.',
+      },
+      {
+        title: 'Tests & qualité de code',
+        tag: 'qualité',
+        description:
+          'Apprenez à mettre en place une stratégie et une pyramide de tests dans vos projets. Découvrez les différents types de tests (unitaires, fonctionnels, etc.) et comment les intégrer dans vos workflows pour assurer une meilleure qualité et fiabilité de vos logiciels.',
+      },
+      {
+        title: 'CI / CD',
+        tag: 'devops',
+        description:
+          'Apprenez à automatiser vos processus de développement avec des pipelines CI/CD. Découvrez comment tester et déployer vos applications de manière rapide et fiable en utilisant des outils modernes comme GitHub Actions, GitLab CI et Jenkins.',
+      },
+      {
+        title: 'DevOps / SRE',
+        tag: 'ops',
+        description:
+          "Initiez-vous aux pratiques DevOps et au Site Reliability Engineering (SRE) pour améliorer la supervision et la stabilité des applications en production. Découvrez comment mettre en place des outils de monitoring et d'alerting comme Prometheus, Grafana et Sentry pour assurer le bon fonctionnement de vos services.",
+      },
+      {
+        title: 'Infrastructure & hébergement',
+        tag: 'infra',
+        description:
+          "Apprenez à utiliser Docker et Kubernetes pour gérer vos conteneurs, à déployer sur AWS, et explorez les outils d'Infrastructure-as-Code comme Terraform, Pulumi et Ansible. Cette formation couvre également l'hébergement web, l'installation de serveurs et les bases pour héberger vos applications sur différentes plateformes.",
+      },
+      {
+        title: 'Méthodes de travail',
+        tag: 'méthode',
+        description:
+          "Initiez-vous aux méthodologies Agile comme Scrum et Kanban pour organiser vos projets et travailler efficacement en équipe. Cette formation vous accompagne également dans l'utilisation de Git et d'outils collaboratifs pour structurer vos workflows de manière productive.",
+      },
+    ],
+    catalogueKicker: 'le catalogue',
+    catalogueTitle: 'Onze modules, à composer',
+    catalogueLead:
+      "Chaque module se suit seul ou s'enchaîne avec d'autres pour construire un parcours adapté à votre équipe.",
+    audiences: [
+      {
+        icon: 'book-open',
+        kicker: 'organismes de formation & écoles',
+        title: 'Formateur référent',
+        text: 'Intervention sur vos modules existants ou co-construction de programmes sur des thématiques techniques pointues. Disponible pour des sessions ponctuelles ou récurrentes.',
+        bullets: [
+          'Modules existants ou sur mesure',
+          'Sessions ponctuelles ou récurrentes',
+          'Bachelor, mastère, formation continue',
+        ],
+      },
+      {
+        icon: 'users',
+        kicker: 'entreprises',
+        title: "Montée en compétences d'équipe",
+        text: 'Programmes taillés sur votre stack et votre niveau, en présentiel ou à distance. Cas pratiques tirés de votre code, suivi possible post-formation pour ancrer les acquis.',
+        bullets: [
+          'Sur votre stack, dans votre code',
+          '4 à 20 personnes, 2 à 7 jours',
+          'Suivi post-formation possible',
+        ],
+      },
+    ],
+    audienceKicker: 'pour qui',
+    audienceTitle: 'Organismes de formation, écoles, entreprises',
+    audienceLead: "J'interviens sur deux types de besoins, avec des modalités adaptées à chacun.",
+    ctaTitle: 'Un sujet précis ? Une équipe à former ?',
+    ctaText:
+      "Décrivez-moi le contexte (taille de l'équipe, niveau, stack, période) et je vous renvoie un programme adapté avec un devis sous 48h.",
+  },
+  en: {
+    seoTitle: 'Technical training for dev teams | Jérémy Marodon',
+    seoDescription:
+      '11 on-site technical training modules for developers and teams: modern PHP, Symfony, JavaScript/TypeScript, APIs, databases, CI/CD, DevOps, AI and more.',
+    catalogueName: 'Technical training catalogue',
+    kicker: 'training catalogue',
+    h1: 'On-site training',
+    lead: 'Eleven modules designed for technical teams who want to level up on the modern foundations of the craft — back end, data, DevOps, AI. Hands-on, adapted to your stack, with a programme built together with you.',
+    quote: 'Request a quote',
+    quoteSubject: 'Training request',
+    seeModules: 'See the modules',
+    facts: [
+      { label: 'languages', value: 'FR · EN' },
+      { label: 'duration', value: '2 to 7 days' },
+      { label: 'group', value: '4 to 20 people' },
+      { label: 'format', value: 'In person', accent: true },
+    ],
+    formations: [
+      {
+        title: 'Modern PHP',
+        tag: 'language',
+        description:
+          'Learn the basics of PHP 8+ while going deeper into advanced concepts such as object-oriented programming and dependency management with Composer. Catch up on the latest PHP features and syntax. This course helps you adopt good practices for your professional projects.',
+      },
+      {
+        title: 'Symfony',
+        tag: 'framework',
+        description:
+          'Learn to build applications with Symfony, a robust and complete PHP framework. With more than 10 years of Symfony experience, going back to version 1.4, I guide you through its core components, Doctrine ORM, Twig, building REST APIs, and good practices for security and project management.',
+      },
+      {
+        title: 'JavaScript & TypeScript',
+        tag: 'language',
+        description:
+          'Explore the fundamentals of JavaScript and see how TypeScript makes your projects more reliable and maintainable. This course covers modern frameworks such as React, Vue.js and Node.js to build fast front-end and back-end applications.',
+      },
+      {
+        title: 'Working with AI',
+        tag: 'productivity',
+        description:
+          'Learn how to bring artificial intelligence tools into your workflow to work more efficiently. Use models such as OpenAI’s GPT or Anthropic’s Claude to automate tasks and develop faster.',
+      },
+      {
+        title: 'API development',
+        tag: 'backend',
+        description:
+          'Learn the good practices for designing and building reliable, well-documented RESTful APIs. This course covers creating APIs, securing endpoints, and using tools such as Swagger and Postman to ensure their quality.',
+      },
+      {
+        title: 'Databases',
+        tag: 'data',
+        description:
+          'Master good practices for managing databases, both relational (MySQL, PostgreSQL) and NoSQL (MongoDB, Redis). This course covers data modelling, queries and the basics of structuring your data efficiently.',
+      },
+      {
+        title: 'Testing & code quality',
+        tag: 'quality',
+        description:
+          'Learn to set up a testing strategy and a test pyramid in your projects. Discover the different kinds of tests (unit, functional, etc.) and how to integrate them into your workflows for better software quality and reliability.',
+      },
+      {
+        title: 'CI / CD',
+        tag: 'devops',
+        description:
+          'Learn to automate your development process with CI/CD pipelines. See how to test and deploy your applications quickly and reliably with modern tools such as GitHub Actions, GitLab CI and Jenkins.',
+      },
+      {
+        title: 'DevOps / SRE',
+        tag: 'ops',
+        description:
+          'Get started with DevOps practices and Site Reliability Engineering (SRE) to improve monitoring and stability of applications in production. Learn to set up monitoring and alerting tools such as Prometheus, Grafana and Sentry to keep your services running.',
+      },
+      {
+        title: 'Infrastructure & hosting',
+        tag: 'infra',
+        description:
+          'Learn to use Docker and Kubernetes to manage your containers, deploy to AWS, and explore Infrastructure-as-Code tools such as Terraform, Pulumi and Ansible. This course also covers web hosting, server setup and the basics of hosting your applications on different platforms.',
+      },
+      {
+        title: 'Ways of working',
+        tag: 'method',
+        description:
+          'Get started with Agile methodologies such as Scrum and Kanban to organise your projects and work effectively as a team. This course also covers Git and collaborative tools to structure your workflows productively.',
+      },
+    ],
+    catalogueKicker: 'the catalogue',
+    catalogueTitle: 'Eleven modules to combine',
+    catalogueLead:
+      'Each module can be taken on its own or chained with others to build a path that fits your team.',
+    audiences: [
+      {
+        icon: 'book-open',
+        kicker: 'training providers & schools',
+        title: 'Lead trainer',
+        text: 'I teach your existing modules or co-design programmes on advanced technical topics. Available for one-off or recurring sessions.',
+        bullets: [
+          'Existing or tailored modules',
+          'One-off or recurring sessions',
+          "Bachelor's, master's, continuing education",
+        ],
+      },
+      {
+        icon: 'users',
+        kicker: 'companies',
+        title: 'Team upskilling',
+        text: 'Programmes tailored to your stack and your level, in person or remote. Hands-on cases drawn from your own code, with optional follow-up after the course to make the learning stick.',
+        bullets: [
+          'On your stack, in your code',
+          '4 to 20 people, 2 to 7 days',
+          'Optional post-course follow-up',
+        ],
+      },
+    ],
+    audienceKicker: 'who it is for',
+    audienceTitle: 'Training providers, schools, companies',
+    audienceLead: 'I work on two kinds of needs, with arrangements suited to each.',
+    ctaTitle: 'A specific topic? A team to train?',
+    ctaText:
+      'Tell me about the context (team size, level, stack, timing) and I will send back a tailored programme with a quote within 48 hours.',
+  },
+} as const;
+
+const c = copy[lang];
+const alternates = localePaths('training');
+const formations: readonly Formation[] = c.formations;
+const audiences: readonly Audience[] = c.audiences;
+const pageUrl = new URL(ROUTES.training[lang], Astro.site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: c.catalogueName,
+  description: c.seoDescription,
+  url: pageUrl,
+  inLanguage: lang,
+  itemListElement: formations.map((formation, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'Course',
+      name: formation.title,
+      description: formation.description,
+      inLanguage: lang,
+      provider: { '@type': 'Person', name: AUTHOR.name, url: Astro.site?.href },
+    },
+  })),
+};
+---
+
+<BaseLayout
+  title={c.seoTitle}
+  description={c.seoDescription}
+  lang={lang}
+  alternates={alternates}
+  jsonLd={jsonLd}
+>
+  <PageHero kicker={c.kicker} title={c.h1} lead={c.lead}>
+    <div class="flex flex-wrap gap-3">
+      <Button mail={c.quoteSubject} size="lg">
+        <Icon name="mail" />
+        {c.quote}
+      </Button>
+      <Button href="#catalogue" size="lg" variant="secondary">
+        {c.seeModules}
+        <Icon name="arrow-right" class="rotate-90" />
+      </Button>
+    </div>
+    <SpecList slot="aside" items={[...c.facts]} />
+  </PageHero>
+
+  <!-- Catalogue -->
+  <Section id="catalogue" ariaLabelledby="catalogue-title">
+    <SectionHeader
+      id="catalogue-title"
+      index={1}
+      kicker={c.catalogueKicker}
+      title={c.catalogueTitle}
+      lead={c.catalogueLead}
+    />
+
+    <ol class="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {
+        formations.map((formation, i) => (
+          <Card tag="li" class="h-full">
+            <div class="flex items-center justify-between gap-4">
+              <Tag variant="accent">#{formation.tag}</Tag>
+              <span class="font-mono text-mono-sm text-fg-subtle" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+            </div>
+            <h3 class="mt-5 text-h3">{formation.title}</h3>
+            <p class="mt-3 text-fg-muted">{formation.description}</p>
+          </Card>
+        ))
+      }
+    </ol>
+  </Section>
+
+  <!-- Audience -->
+  <Section tone="subtle" ariaLabelledby="audience-title">
+    <SectionHeader
+      id="audience-title"
+      index={2}
+      kicker={c.audienceKicker}
+      title={c.audienceTitle}
+      lead={c.audienceLead}
+    />
+
+    <div class="mt-14 grid gap-5 md:grid-cols-2">
+      {
+        audiences.map((audience) => (
+          <Card class="h-full" padding="lg">
+            <span class="grid size-11 place-items-center rounded-lg bg-accent-soft text-accent">
+              <Icon name={audience.icon} size={20} />
+            </span>
+            <SectionKicker class="mt-6">{audience.kicker}</SectionKicker>
+            <h3 class="mt-3 text-h3">{audience.title}</h3>
+            <p class="mt-4 text-fg-muted">{audience.text}</p>
+            <div class="mt-auto pt-8">
+              <BulletList
+                items={audience.bullets}
+                variant="mono"
+                class="border-t border-line pt-5"
+              />
+            </div>
+          </Card>
+        ))
+      }
+    </div>
+  </Section>
+
+  <ContactCta
+    title={c.ctaTitle}
+    text={c.ctaText}
+    primary={{ mail: c.quoteSubject, label: c.quote }}
+    secondary={{ href: CONTACT.linkedin, label: 'LinkedIn', external: true }}
+  />
+</BaseLayout>

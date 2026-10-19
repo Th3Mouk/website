@@ -1,0 +1,135 @@
+---
+title: "Anatomie d'un article : le gabarit du blog"
+description: "Le gabarit de référence du blog : titres, listes, code, encadrés, tableaux et citations. Sert de banc d'essai visuel et de mémo pour écrire un article."
+pubDate: 2026-10-19
+tags: ['meta', 'design-system']
+draft: true
+translationKey: anatomy
+---
+
+Cet article est un banc d'essai. Il rassemble tous les éléments qu'un billet peut contenir, pour vérifier d'un coup d'œil que la typographie tient en clair comme en sombre, sur mobile comme sur grand écran. Il reste en brouillon : il n'apparaît qu'en `astro dev`.
+
+## Écrire un article
+
+Un article est un fichier MDX dans `src/content/blog/<langue>/`. Le dossier donne la langue, le nom du fichier donne l'URL. Le frontmatter est validé au build par le schéma de `src/content.config.ts` :
+
+```yaml
+---
+title: 'Vues matérialisées PostgreSQL sans douleur'
+description: "150 à 160 caractères, c'est ce que Google affiche."
+pubDate: 2026-10-19
+tags: ['postgresql', 'symfony']
+draft: true # visible en dev uniquement
+translationKey: matviews # même valeur sur la version EN
+---
+```
+
+Le premier paragraphe d'un article est légèrement agrandi : c'est le chapeau. Il doit donner envie de lire la suite **et** résumer le propos pour qui s'arrête là.
+
+### Titres et hiérarchie
+
+Les `##` structurent l'article et alimentent la table des matières à droite. Les `###` la complètent d'un niveau. Au-delà, c'est souvent le signe qu'il faut découper l'article.
+
+#### Un titre de niveau 4
+
+Utilisé avec parcimonie, pour un détail dans une sous-section.
+
+## Le texte courant
+
+Un paragraphe se lit mieux autour de 65 à 75 caractères par ligne : c'est la largeur de la colonne. Les [liens](https://astro.build) sont soulignés discrètement, le `code en ligne` se détache sans crier, les raccourcis s'écrivent <kbd>⌘</kbd> + <kbd>K</kbd> et l'on peut <mark>surligner un passage</mark> qui compte.
+
+Une note de bas de page s'ajoute ainsi[^1], et se retrouve en fin d'article.
+
+### Listes
+
+- Une liste à puces utilise le chevron d'accent.
+- Les éléments peuvent tenir sur plusieurs lignes sans que l'alignement ne casse, même quand la phrase s'étire franchement au-delà d'une ligne.
+  - Et s'imbriquer sur un niveau.
+- Trois éléments suffisent souvent.
+
+1. Une liste numérotée garde des chiffres en mono.
+2. Pour des étapes qui ont un ordre.
+3. Comme une procédure de déploiement.
+
+- [x] Une liste de tâches cochée
+- [ ] Et une autre qui ne l'est pas
+
+## Le code
+
+Les blocs sont colorés au build par Shiki, avec un thème clair et un thème sombre. Le langage s'affiche en haut à droite, et un bouton permet de copier au survol.
+
+```ts
+// src/lib/blog.ts
+export function readingTime(body = ''): number {
+  const words = body.split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(words / 220));
+}
+```
+
+```php
+<?php
+
+final readonly class RefreshMaterializedView
+{
+    public function __construct(
+        private Connection $connection,
+    ) {}
+
+    public function __invoke(string $view): void
+    {
+        $this->connection->executeStatement(
+            sprintf('REFRESH MATERIALIZED VIEW CONCURRENTLY %s', $view),
+        );
+    }
+}
+```
+
+```sql
+CREATE MATERIALIZED VIEW sales_by_month AS
+SELECT date_trunc('month', created_at) AS month,
+       sum(amount)                     AS total
+FROM orders
+GROUP BY 1
+WITH NO DATA;
+```
+
+```bash
+npm run build && npx wrangler pages deploy dist
+```
+
+## Les encadrés
+
+<Callout type="note">
+  Une note apporte un complément neutre, qu'on peut sauter sans perdre le fil.
+</Callout>
+
+<Callout type="tip" title="Bon réflexe">
+  Une astuce donne un raccourci ou une recommandation. Le titre est optionnel : sans lui, l'encadré
+  affiche son type.
+</Callout>
+
+<Callout type="warning">
+  Un avertissement signale ce qui mord si on l'ignore — un `REFRESH` sans `CONCURRENTLY` verrouille
+  la vue en lecture.
+</Callout>
+
+<Callout type="danger">
+  Le danger est réservé à la perte de données, la sécurité ou la production.
+</Callout>
+
+## Citations et tableaux
+
+> La qualité technique se construit par petites décisions cohérentes, pas par grands plans.
+
+| Élément   | Syntaxe              | Usage                      |
+| --------- | -------------------- | -------------------------- |
+| Encadré   | `<Callout type="…">` | Complément, astuce, risque |
+| Code      | ` ```lang `          | Exemples exécutables       |
+| Note      | `[^1]`               | Source, précision          |
+| Raccourci | `<kbd>`              | Touches clavier            |
+
+---
+
+Un séparateur horizontal marque une rupture de ton ou de sujet, sans titre.
+
+[^1]: Les notes sont générées par le support GFM de Markdown, sans plugin supplémentaire.

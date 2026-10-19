@@ -1,0 +1,50 @@
+---
+// 404 — one page for both locales (static hosts serve a single 404.html),
+// so the message is shown in French and English.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/ui/Button.astro';
+import SectionKicker from '../components/ui/SectionKicker.astro';
+import Icon from '../components/icons/Icon.astro';
+import { ROUTES } from '../i18n/ui';
+---
+
+<BaseLayout
+  title="Page introuvable | Jérémy Marodon"
+  description="Cette page n'existe pas ou a été déplacée."
+  noindex
+>
+  <section class="relative isolate overflow-hidden">
+    <div class="bg-blueprint absolute inset-0 -z-10" aria-hidden="true"></div>
+    <div class="bg-glow absolute inset-0 -z-10" aria-hidden="true"></div>
+
+    <div class="container-content py-section">
+      <div class="max-w-2xl animate-fade-up">
+        <SectionKicker>erreur 404</SectionKicker>
+        <p
+          class="mt-6 font-mono text-[clamp(4.5rem,3rem+8vw,9rem)] leading-none font-bold tracking-[-0.06em] text-fg"
+          aria-hidden="true"
+        >
+          4<span class="text-accent">0</span>4
+        </p>
+        <h1 class="mt-8 text-h2">Cette page n'existe pas.</h1>
+        <p class="mt-4 text-lead text-fg-muted">
+          Le lien est peut-être ancien, ou la page a été déplacée.
+          <span lang="en" class="mt-2 block text-fg-subtle"
+            >This page doesn't exist — the link may be outdated, or the page has moved.</span
+          >
+        </p>
+        <pre
+          class="mt-8 overflow-x-auto rounded-lg border border-line bg-sunken px-4 py-3 font-mono text-mono-sm text-fg-muted"><span class="text-fg-subtle">$</span> curl -I {Astro.url.pathname}
+<span class="text-danger">HTTP/2 404</span></pre>
+        <div class="mt-10 flex flex-wrap gap-3">
+          <Button href={ROUTES.home.fr} size="lg">
+            <Icon name="arrow-left" />
+            Accueil
+          </Button>
+          <Button href={ROUTES.projects.fr} size="lg" variant="secondary">Projets</Button>
+          <Button href={ROUTES.training.fr} size="lg" variant="secondary">Formations</Button>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

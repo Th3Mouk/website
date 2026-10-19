@@ -1,0 +1,49 @@
+---
+// Callout — boxed aside for articles and docs. Available in MDX posts
+// without an import: <Callout type="tip" title="…">…</Callout>
+//   note     neutral information (default)
+//   tip      a recommendation or shortcut
+//   warning  something that bites if ignored
+//   danger   data loss, security, production risk
+import Icon, { type IconName } from '../icons/Icon.astro';
+
+type CalloutType = 'note' | 'tip' | 'warning' | 'danger';
+
+interface Props {
+  type?: CalloutType;
+  title?: string;
+  class?: string;
+}
+
+const { type = 'note', title, class: className } = Astro.props;
+
+const styles: Record<CalloutType, { icon: IconName; box: string; tint: string }> = {
+  note: { icon: 'info', box: 'border-line bg-subtle', tint: 'text-fg-muted' },
+  tip: { icon: 'lightbulb', box: 'border-accent-line bg-accent-soft', tint: 'text-accent' },
+  warning: {
+    icon: 'alert-triangle',
+    box: 'border-warning/35 bg-warning-soft',
+    tint: 'text-warning',
+  },
+  danger: { icon: 'alert-octagon', box: 'border-danger/35 bg-danger-soft', tint: 'text-danger' },
+};
+
+// Default titles follow the page locale (resolved from the URL by Astro i18n).
+const labels = {
+  fr: { note: 'Note', tip: 'Astuce', warning: 'Attention', danger: 'Danger' },
+  en: { note: 'Note', tip: 'Tip', warning: 'Warning', danger: 'Danger' },
+};
+const lang = Astro.currentLocale === 'en' ? 'en' : 'fr';
+
+const s = styles[type];
+---
+
+<aside class:list={['my-7 flex gap-3.5 rounded-lg border px-5 py-4', s.box, className]} role="note">
+  <Icon name={s.icon} size={18} class:list={['mt-[0.3em]', s.tint]} />
+  <div class="min-w-0 flex-1 text-[0.97em] leading-[1.7] text-fg-muted">
+    <p class:list={['text-label mb-1.5', s.tint]}>{title ?? labels[lang][type]}</p>
+    <div class="space-y-3">
+      <slot />
+    </div>
+  </div>
+</aside>

@@ -1,0 +1,41 @@
+---
+// Breadcrumbs — path back up the hierarchy, as a mono trail. The last
+// item is the current page (no link). Pair with BreadcrumbList JSON-LD.
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items: Crumb[];
+  label?: string;
+  class?: string;
+}
+
+const { items, label = "Fil d'Ariane", class: className } = Astro.props;
+---
+
+<nav aria-label={label} class={className}>
+  <ol class="text-label flex flex-wrap items-center gap-x-2 gap-y-1 text-fg-subtle">
+    {
+      items.map((item, i) => (
+        <li class="flex min-w-0 items-center gap-2">
+          {i > 0 && (
+            <span class="text-accent" aria-hidden="true">
+              /
+            </span>
+          )}
+          {item.href ? (
+            <a href={item.href} class="transition-colors hover:text-accent">
+              {item.label}
+            </a>
+          ) : (
+            <span aria-current="page" class="truncate text-fg-muted">
+              {item.label}
+            </span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>

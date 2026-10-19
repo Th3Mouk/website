@@ -1,0 +1,172 @@
+---
+// Blog index, shared by /blog/ (FR) and /en/blog/ (EN).
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../ui/PageHero.astro';
+import Section from '../ui/Section.astro';
+import SectionKicker from '../ui/SectionKicker.astro';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+import Tag from '../ui/Tag.astro';
+import ContactCta from '../ui/ContactCta.astro';
+import Icon from '../icons/Icon.astro';
+import CopyEmailButton from '../ui/CopyEmailButton.astro';
+import PostCard from './PostCard.astro';
+import { ROUTES, localePaths, type Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+import { collectTags, getPosts, postUrl } from '../../lib/blog';
+import { AUTHOR, SITE_TITLE } from '../../consts';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const copy = {
+  fr: {
+    seoTitle: 'Blog — notes de terrain | Jérémy Marodon',
+    seoDescription:
+      "Retours d'expérience sur PHP, Symfony, PostgreSQL, le cloud AWS, le DevOps et le développement avec l'IA, par un ingénieur qui livre du logiciel en production.",
+    kicker: 'blog',
+    h1: 'Notes de terrain',
+    lead: "Ce que j'apprends en livrant du logiciel en production : PHP, Symfony, PostgreSQL, cloud, DevOps, IA. Des retours d'expérience concrets, écrits pour être réutilisés.",
+    topics: 'sujets',
+    archive: 'tous les articles',
+    rss: 'Flux RSS',
+    emptyKicker: 'en préparation',
+    emptyTitle: 'Les premiers articles arrivent',
+    emptyText:
+      'Le blog est en cours de rédaction. En attendant, abonnez-vous au flux RSS ou écrivez-moi si un sujet vous intéresse.',
+    ctaKicker: 'suivre',
+    ctaTitle: 'Un sujet que vous aimeriez lire ?',
+    ctaText:
+      "Une question technique, un retour d'expérience à partager : écrivez-moi. Pour suivre les nouveaux articles, le flux RSS suffit.",
+  },
+  en: {
+    seoTitle: 'Blog — field notes | Jérémy Marodon',
+    seoDescription:
+      'Field notes on PHP, Symfony, PostgreSQL, AWS cloud, DevOps and AI-assisted development, from an engineer who ships software to production.',
+    kicker: 'blog',
+    h1: 'Field notes',
+    lead: 'What I learn shipping software to production: PHP, Symfony, PostgreSQL, cloud, DevOps, AI. Concrete lessons, written to be reused.',
+    topics: 'topics',
+    archive: 'all posts',
+    rss: 'RSS feed',
+    emptyKicker: 'in progress',
+    emptyTitle: 'First posts are on the way',
+    emptyText:
+      'The blog is being written. In the meantime, subscribe to the RSS feed or drop me a line if a topic interests you.',
+    ctaKicker: 'follow',
+    ctaTitle: 'A topic you would like to read about?',
+    ctaText:
+      'A technical question, a lesson worth sharing: write to me. To follow new posts, the RSS feed is all you need.',
+  },
+}[lang];
+
+const posts = await getPosts(lang);
+const [featured, ...rest] = posts;
+const tags = collectTags(posts);
+const rssHref = `${ROUTES.blog[lang]}rss.xml`;
+const pageUrl = new URL(ROUTES.blog[lang], Astro.site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: `${SITE_TITLE} — Blog`,
+  description: copy.seoDescription,
+  inLanguage: lang,
+  url: pageUrl,
+  author: { '@type': 'Person', name: AUTHOR.name, url: Astro.site?.href },
+  blogPost: posts.map((post) => ({
+    '@type': 'BlogPosting',
+    headline: post.data.title,
+    description: post.data.description,
+    datePublished: post.data.pubDate.toISOString(),
+    url: new URL(postUrl(post), Astro.site).href,
+  })),
+};
+---
+
+<BaseLayout
+  title={copy.seoTitle}
+  description={copy.seoDescription}
+  lang={lang}
+  alternates={localePaths('blog')}
+  jsonLd={jsonLd}
+  noindex={posts.length === 0}
+>
+  <PageHero kicker={copy.kicker} title={copy.h1} lead={copy.lead}>
+    <Button href={rssHref} variant="secondary" size="sm">
+      <Icon name="rss" size={15} />
+      {copy.rss}
+    </Button>
+    {
+      tags.length > 0 && (
+        <div slot="aside">
+          <SectionKicker>{copy.topics}</SectionKicker>
+          <ul class="mt-4 flex flex-wrap gap-1.5">
+            {tags.map(({ tag, count }) => (
+              <li>
+                <Tag variant="outline" size="md">
+                  #{tag}
+                  <span class="text-fg-subtle">{count}</span>
+                </Tag>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+  </PageHero>
+
+  <Section spacing="sm">
+    {
+      featured ? (
+        <>
+          <PostCard post={featured} variant="featured" headingLevel="h2" />
+          {rest.length > 0 && (
+            <div class="mt-16">
+              <h2 class="text-label border-b border-line pb-4 text-fg-subtle">
+                <span class="text-accent">{'// '}</span>
+                {copy.archive}
+                <span class="ml-2 text-fg-muted">{posts.length}</span>
+              </h2>
+              {rest.map((post) => (
+                <PostCard post={post} variant="row" />
+              ))}
+            </div>
+          )}
+        </>
+      ) : (
+        <Card variant="subtle" padding="lg" class="items-start">
+          <SectionKicker>{copy.emptyKicker}</SectionKicker>
+          <h2 class="mt-4 text-h2">{copy.emptyTitle}</h2>
+          <p class="mt-4 max-w-2xl text-lead text-fg-muted">{copy.emptyText}</p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <Button href={rssHref} variant="secondary">
+              <Icon name="rss" size={15} />
+              {copy.rss}
+            </Button>
+            <Button mail>
+              <Icon name="mail" />
+              {t('contact.write')}
+            </Button>
+            <CopyEmailButton />
+          </div>
+        </Card>
+      )
+    }
+  </Section>
+
+  {
+    featured && (
+      <ContactCta
+        kicker={copy.ctaKicker}
+        title={copy.ctaTitle}
+        text={copy.ctaText}
+        secondary={{ href: rssHref, label: copy.rss }}
+      />
+    )
+  }
+</BaseLayout>

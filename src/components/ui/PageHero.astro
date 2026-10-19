@@ -1,0 +1,48 @@
+---
+// PageHero — top band of an inner page: blueprint backdrop, kicker, the
+// page's single <h1>, a lead and an optional footer slot (tags, actions,
+// spec list). The `aside` slot adds a right-hand column on desktop.
+import SectionKicker from './SectionKicker.astro';
+
+interface Props {
+  kicker?: string;
+  title: string;
+  lead?: string;
+  class?: string;
+}
+
+const { kicker, title, lead, class: className } = Astro.props;
+const hasAside = Astro.slots.has('aside');
+---
+
+<section class:list={['relative isolate overflow-hidden border-b border-line', className]}>
+  <div class="bg-blueprint absolute inset-0 -z-10 opacity-70" aria-hidden="true"></div>
+  <div class="bg-glow absolute inset-0 -z-10" aria-hidden="true"></div>
+
+  <div
+    class:list={[
+      'container-content pt-16 pb-14 md:pt-24 md:pb-20',
+      hasAside && 'grid gap-12 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-end lg:gap-16',
+    ]}
+  >
+    <div class="max-w-3xl animate-fade-up">
+      {kicker && <SectionKicker class="mb-5">{kicker}</SectionKicker>}
+      <h1 class="text-h1">{title}</h1>
+      {lead && <p class="mt-6 max-w-2xl text-lead text-fg-muted">{lead}</p>}
+      {
+        Astro.slots.has('default') && (
+          <div class="mt-8">
+            <slot />
+          </div>
+        )
+      }
+    </div>
+    {
+      hasAside && (
+        <div class="animate-fade-up [animation-delay:120ms]">
+          <slot name="aside" />
+        </div>
+      )
+    }
+  </div>
+</section>

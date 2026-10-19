@@ -1,0 +1,35 @@
+---
+// CopyEmailButton — copies Jérémy's address to the clipboard. The address
+// is decoded at click time (src/scripts/contact.ts), never written in the
+// HTML. Pair it with a `mail` Button: mailto: does nothing for people who
+// only use webmail. Labels follow the page locale.
+import Button from './Button.astro';
+import Icon from '../icons/Icon.astro';
+import { EMAIL_ENCODED } from '../../consts';
+import { useTranslations } from '../../i18n/utils';
+import type { Lang } from '../../i18n/ui';
+
+interface Props {
+  variant?: 'secondary' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  class?: string;
+}
+
+const { variant = 'ghost', size = 'md', class: className } = Astro.props;
+const t = useTranslations((Astro.currentLocale ?? 'fr') as Lang);
+---
+
+<Button
+  variant={variant}
+  size={size}
+  class={className}
+  attrs={{
+    'data-copy-email': EMAIL_ENCODED,
+    'data-idle': t('contact.copy'),
+    'data-done': t('contact.copied'),
+    'aria-live': 'polite',
+  }}
+>
+  <Icon name="copy" />
+  <span data-label>{t('contact.copy')}</span>
+</Button>

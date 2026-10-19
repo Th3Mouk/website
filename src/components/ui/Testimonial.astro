@@ -1,0 +1,82 @@
+---
+// Testimonial — a recommendation with attribution.
+//   pull   short excerpt in a card (home page grid)
+//   full   complete text with relation context (about page)
+// Quotes are verbatim French recommendations, so the quote and the French
+// role/relation lines carry lang="fr" even on English pages.
+// Falls back to an initials monogram while the author photo is missing
+// from /public (photos are added by hand, see data/testimonials.ts).
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import Card from './Card.astro';
+import type { Testimonial } from '../../data/testimonials';
+
+interface Props {
+  testimonial: Testimonial;
+  variant?: 'pull' | 'full';
+  lang?: 'fr' | 'en';
+  class?: string;
+}
+
+const { testimonial: t, variant = 'pull', lang = 'fr', class: className } = Astro.props;
+
+const hasPhoto = existsSync(join(process.cwd(), 'public', t.photo));
+const initials = t.name
+  .split(/\s+/)
+  .map((part) => part[0])
+  .join('')
+  .slice(0, 2)
+  .toUpperCase();
+
+const date = new Date(t.date).toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US', {
+  year: 'numeric',
+  month: 'long',
+});
+const quote = variant === 'full' ? t.fullQuote : t.pullQuote;
+---
+
+<Card tag="figure" class:list={['flex h-full flex-col', className]}>
+  <span
+    class="pointer-events-none absolute top-5 right-6 font-mono text-[3.5rem] leading-none font-bold text-accent/15 select-none"
+    aria-hidden="true">&rdquo;</span
+  >
+  <blockquote class="flex-1" lang="fr">
+    <p class:list={['text-fg', variant === 'pull' ? 'text-lead' : 'text-body leading-[1.75]']}>
+      {variant === 'pull' ? <>&ldquo;{quote}&rdquo;</> : quote}
+    </p>
+  </blockquote>
+  <figcaption class="mt-8 flex items-center gap-4 border-t border-line pt-5">
+    {
+      hasPhoto ? (
+        <img
+          src={t.photo}
+          alt=""
+          width="44"
+          height="44"
+          loading="lazy"
+          decoding="async"
+          class="size-11 shrink-0 rounded-full border border-line bg-sunken object-cover"
+        />
+      ) : (
+        <span
+          class="grid size-11 shrink-0 place-items-center rounded-full border border-line bg-sunken font-mono text-mono-sm text-fg-muted"
+          aria-hidden="true"
+        >
+          {initials}
+        </span>
+      )
+    }
+    <div class="min-w-0 flex-1">
+      <p class="truncate font-bold text-fg">{t.name}</p>
+      <p class="truncate text-sm text-fg-muted" lang="fr">{t.role}</p>
+      {
+        variant === 'full' && (
+          <p class="mt-1 text-sm text-fg-subtle" lang="fr">
+            {t.relation}
+          </p>
+        )
+      }
+    </div>
+    <time datetime={t.date} class="text-label hidden shrink-0 text-fg-subtle sm:block">{date}</time>
+  </figcaption>
+</Card>

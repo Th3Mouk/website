@@ -1,0 +1,46 @@
+---
+// Timeline — vertical, dated sequence (career, changelog). The first entry
+// is treated as "current" and gets a filled accent node.
+interface Entry {
+  period: string;
+  title: string;
+  /** Rendered after the title, e.g. the company. */
+  context?: string;
+  note?: string;
+}
+
+interface Props {
+  entries: Entry[];
+  class?: string;
+}
+
+const { entries, class: className } = Astro.props;
+---
+
+<ol class:list={['relative', className]}>
+  {
+    entries.map((entry, i) => (
+      <li class="relative grid gap-2 pb-10 pl-8 last:pb-0 md:grid-cols-[11rem_minmax(0,1fr)] md:gap-10 md:pl-0">
+        <span
+          class="absolute top-2 bottom-0 left-[3px] w-px bg-line md:left-[calc(11rem+1.25rem-0.5px)]"
+          aria-hidden="true"
+        />
+        <span
+          class:list={[
+            'absolute top-[0.4rem] left-0 size-[7px] rounded-full ring-4 ring-canvas md:left-[calc(11rem+1.25rem-3.5px)]',
+            i === 0 ? 'bg-accent' : 'border border-line-strong bg-canvas',
+          ]}
+          aria-hidden="true"
+        />
+        <p class="text-label pt-0.5 text-fg-subtle md:text-right">{entry.period}</p>
+        <div class="md:pl-10">
+          <p class="text-h4 font-bold text-fg">
+            {entry.title}
+            {entry.context && <span class="font-normal text-fg-muted"> · {entry.context}</span>}
+          </p>
+          {entry.note && <p class="mt-2 max-w-2xl text-fg-muted">{entry.note}</p>}
+        </div>
+      </li>
+    ))
+  }
+</ol>

@@ -1,0 +1,125 @@
+---
+// PostCard — a blog post teaser.
+//   card      grid tile (home, related posts)
+//   featured  the lead story on the blog index
+//   row       editorial list row: date column + title/summary
+import Card from '../ui/Card.astro';
+import Tag from '../ui/Tag.astro';
+import Icon from '../icons/Icon.astro';
+import { postLang, postUrl, readingTime, formatDate, typeset, type Post } from '../../lib/blog';
+import { useTranslations } from '../../i18n/utils';
+
+interface Props {
+  post: Post;
+  variant?: 'card' | 'featured' | 'row';
+  headingLevel?: 'h2' | 'h3';
+}
+
+const { post, variant = 'card', headingLevel: Heading = 'h3' } = Astro.props;
+const lang = postLang(post);
+const t = useTranslations(lang);
+const url = postUrl(post);
+const { pubDate, tags, draft } = post.data;
+const title = typeset(post.data.title, lang);
+const description = typeset(post.data.description, lang);
+const minutes = readingTime(post.body);
+const iso = pubDate.toISOString();
+---
+
+{
+  variant === 'row' ? (
+    <article class="group relative grid gap-3 border-b border-line py-8 md:grid-cols-[10rem_minmax(0,1fr)_auto] md:gap-10">
+      <p class="text-label text-fg-subtle md:pt-1.5">
+        <time datetime={iso}>{formatDate(pubDate, lang, 'short')}</time>
+      </p>
+      <div class="min-w-0">
+        <Heading class="text-h3">
+          <a href={url} class="link-overlay transition-colors duration-200 group-hover:text-accent">
+            {title}
+          </a>
+        </Heading>
+        <p class="mt-2.5 max-w-2xl text-fg-muted">{description}</p>
+        <div class="mt-4 flex flex-wrap items-center gap-1.5">
+          {draft && <Tag variant="outline">{t('blog.draft')}</Tag>}
+          {tags.map((tag) => (
+            <Tag variant="accent">#{tag}</Tag>
+          ))}
+          <span class="text-label ml-1.5 text-fg-subtle">
+            · {`${minutes} ${t('blog.readingTime')}`}
+          </span>
+        </div>
+      </div>
+      <Icon
+        name="arrow-right"
+        size={20}
+        class="hidden self-center text-fg-subtle transition-[color,transform] duration-200 group-hover:translate-x-1 group-hover:text-accent md:block"
+      />
+    </article>
+  ) : variant === 'featured' ? (
+    <article class="group relative isolate overflow-hidden rounded-2xl border border-line bg-surface transition-[border-color,box-shadow] duration-200 hover:border-accent-line hover:shadow-md">
+      <div class="bg-blueprint absolute inset-0 -z-10 opacity-50" aria-hidden="true" />
+      <div class="bg-glow absolute inset-0 -z-10" aria-hidden="true" />
+      <div class="grid gap-8 p-7 md:p-10 lg:grid-cols-[minmax(0,1fr)_14rem] lg:gap-16">
+        <div>
+          <div class="flex flex-wrap items-center gap-1.5">
+            {draft && <Tag variant="outline">{t('blog.draft')}</Tag>}
+            {tags.map((tag) => (
+              <Tag variant="accent">#{tag}</Tag>
+            ))}
+          </div>
+          <Heading class="mt-5 text-h2">
+            <a
+              href={url}
+              class="link-overlay transition-colors duration-200 group-hover:text-accent"
+            >
+              {title}
+            </a>
+          </Heading>
+          <p class="mt-4 max-w-2xl text-lead text-fg-muted">{description}</p>
+          <span class="mt-8 inline-flex items-center gap-2 font-medium text-accent">
+            {t('blog.readPost')}
+            <Icon
+              name="arrow-right"
+              class="transition-transform duration-200 group-hover:translate-x-1"
+            />
+          </span>
+        </div>
+        <dl class="flex gap-8 self-end border-t border-line pt-5 lg:flex-col lg:gap-5 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-8">
+          <div>
+            <dt class="text-label text-fg-subtle">{t('blog.publishedOn')}</dt>
+            <dd class="mt-1 text-fg">
+              <time datetime={iso}>{formatDate(pubDate, lang)}</time>
+            </dd>
+          </div>
+          <div>
+            <dt class="text-label text-fg-subtle">{lang === 'fr' ? 'Lecture' : 'Reading'}</dt>
+            <dd class="mt-1 text-fg">{`${minutes} ${t('blog.readingTime')}`}</dd>
+          </div>
+        </dl>
+      </div>
+    </article>
+  ) : (
+    <Card tag="article" interactive class="flex h-full flex-col">
+      <p class="text-label flex flex-wrap items-center gap-x-2 text-fg-subtle">
+        <time datetime={iso}>{formatDate(pubDate, lang, 'short')}</time>
+        <span aria-hidden="true">·</span>
+        <span>{`${minutes} ${t('blog.readingTime')}`}</span>
+      </p>
+      <Heading class="mt-4 text-h3">
+        <a
+          href={url}
+          class="link-overlay transition-colors duration-200 group-hover/card:text-accent"
+        >
+          {title}
+        </a>
+      </Heading>
+      <p class="mt-3 text-fg-muted">{description}</p>
+      <div class="mt-auto flex flex-wrap gap-1.5 pt-6">
+        {draft && <Tag variant="outline">{t('blog.draft')}</Tag>}
+        {tags.slice(0, 3).map((tag) => (
+          <Tag variant="accent">#{tag}</Tag>
+        ))}
+      </div>
+    </Card>
+  )
+}

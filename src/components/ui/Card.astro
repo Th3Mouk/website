@@ -1,31 +1,70 @@
 ---
+// Card — the surface primitive.
+//   default    raised surface with a hairline border.
+//   subtle     flush with `bg-subtle` bands (no elevation).
+//   highlight  accent-tinted, for the one item that should stand out.
+// With `href`, the whole card becomes the link and gains a hover state.
+// When the card holds its own links, use `interactive` instead and put
+// `link-overlay` on the main inner <a> to make the whole surface clickable.
+// Cards are flex columns: push a footer down with `mt-auto`.
+// Children can react to hover with `group-hover/card:*`.
 interface Props {
   href?: string;
   external?: boolean;
+  /** Hover state without rendering an <a> (pair with an inner `link-overlay`). */
+  interactive?: boolean;
+  variant?: 'default' | 'subtle' | 'highlight';
+  padding?: 'none' | 'sm' | 'md' | 'lg';
   class?: string;
+  /** Optional DOM id, e.g. for in-page deep links (`#slug`). */
+  id?: string;
+  /** Element to render when there is no href (article for self-contained items). */
+  tag?: 'div' | 'article' | 'li' | 'figure' | 'section';
 }
 
-const { href, external = false, class: className = '' } = Astro.props;
+const {
+  href,
+  external = false,
+  interactive = false,
+  variant = 'default',
+  padding = 'md',
+  class: className,
+  id,
+  tag: Tag = 'div',
+} = Astro.props;
 
-const base =
-  'block rounded-lg border border-border bg-bg-elevated p-6 transition-all duration-200 ease-snappy';
-const interactive = href
-  ? 'hover:-translate-y-0.5 hover:border-blue-500 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
-  : '';
+const variants = {
+  default: 'border-line bg-surface',
+  subtle: 'border-line bg-subtle',
+  highlight: 'border-accent-line bg-accent-soft',
+};
 
-const classes = [base, interactive, className].join(' ');
+const paddings = {
+  none: '',
+  sm: 'p-5',
+  md: 'p-6 md:p-7',
+  lg: 'p-7 md:p-10',
+};
+
+const classes = [
+  'group/card relative flex min-w-0 flex-col rounded-xl border transition-[border-color,box-shadow,transform,background-color] duration-200 ease-snappy',
+  variants[variant],
+  paddings[padding],
+  (href || interactive) && 'hover:-translate-y-0.5 hover:border-accent-line hover:shadow-md',
+  className,
+];
 
 const externalAttrs = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
 ---
 
 {
   href ? (
-    <a href={href} class={classes} {...externalAttrs}>
+    <a href={href} id={id} class:list={classes} {...externalAttrs}>
       <slot />
     </a>
   ) : (
-    <div class={classes}>
+    <Tag id={id} class:list={classes}>
       <slot />
-    </div>
+    </Tag>
   )
 }
