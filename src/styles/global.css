@@ -66,6 +66,20 @@
   }
 }
 
+/* Theme menu trigger (ThemeToggle.astro): one icon per preference, chosen
+   from <html data-theme-pref> which BaseHead sets before first paint. */
+@layer components {
+  .theme-icon {
+    display: none;
+  }
+
+  :root[data-theme-pref='light'] .theme-icon-light,
+  :root[data-theme-pref='dark'] .theme-icon-dark,
+  :root:not([data-theme-pref='light'], [data-theme-pref='dark']) .theme-icon-system {
+    display: block;
+  }
+}
+
 /* --------------------------------------------------------------------------
    Layout & decorative utilities (part of the design system — see
    AGENTS.md → Design system). Prefer these over ad-hoc arbitrary values.

@@ -66,7 +66,7 @@ const switcherLocales = alternates
     <!-- Brand -->
     <a
       href={homeHref}
-      class="group flex items-center gap-2.5 rounded-md font-bold text-fg"
+      class="group flex shrink-0 items-center gap-2.5 rounded-md font-bold text-fg"
       aria-label={t('nav.brandHome')}
     >
       <span
@@ -78,8 +78,9 @@ const switcherLocales = alternates
       </span>
     </a>
 
-    <!-- Desktop nav -->
-    <ul class="hidden items-center gap-1 md:flex">
+    <!-- Desktop nav: from lg only. Below 1024px brand + links + tools no longer
+         fit (FR labels are the widest), so the burger takes over. -->
+    <ul class="hidden items-center gap-1 lg:flex">
       {
         nav.map((item) => (
           <li>
@@ -96,7 +97,7 @@ const switcherLocales = alternates
     </ul>
 
     <!-- Tools -->
-    <div class="flex items-center gap-1">
+    <div class="flex shrink-0 items-center gap-1">
       {
         switcherLocales.length > 1 && (
           <div
@@ -119,7 +120,10 @@ const switcherLocales = alternates
           </div>
         )
       }
-      <ThemeToggle label={t('theme.toggle')} />
+      <ThemeToggle
+        label={t('theme.toggle')}
+        options={{ light: t('theme.light'), dark: t('theme.dark'), system: t('theme.system') }}
+      />
       <IconButton href={CONTACT.github} external label="GitHub" class="max-sm:hidden">
         <Github size={17} />
       </IconButton>
@@ -134,7 +138,7 @@ const switcherLocales = alternates
       <!-- Mobile menu toggle -->
       <IconButton
         label={t('nav.openMenu')}
-        class="mobile-menu-toggle md:hidden"
+        class="mobile-menu-toggle lg:hidden"
         attrs={{
           'aria-expanded': 'false',
           'aria-controls': 'mobile-menu',
@@ -149,7 +153,7 @@ const switcherLocales = alternates
   </nav>
 
   <!-- Mobile menu -->
-  <div id="mobile-menu" class="hidden border-t border-line bg-canvas md:hidden" data-open="false">
+  <div id="mobile-menu" class="hidden border-t border-line bg-canvas lg:hidden" data-open="false">
     <div class="container-content flex flex-col gap-6 py-6">
       <ul class="flex flex-col">
         {
@@ -238,6 +242,6 @@ const switcherLocales = alternates
         toggle.focus();
       }
     });
-    matchMedia('(min-width: 48rem)').addEventListener('change', (e) => e.matches && setOpen(false));
+    matchMedia('(min-width: 64rem)').addEventListener('change', (e) => e.matches && setOpen(false));
   }
 </script>

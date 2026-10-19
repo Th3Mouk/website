@@ -64,34 +64,34 @@ const rssURL = new URL(`${ROUTES.blog[lang]}rss.xml`, Astro.site);
 
 <script is:inline>
   (() => {
+    // Theme bootstrap, before first paint. Preference: localStorage 'theme'
+    // ('light' | 'dark'), absent = follow the OS. `data-theme` is what the
+    // CSS reads; `data-theme-pref` drives the theme menu's icon.
     const root = document.documentElement;
     const mq = matchMedia('(prefers-color-scheme: dark)');
-    let stored = null;
-    try {
-      stored = localStorage.getItem('theme');
-    } catch {
-      /* storage blocked: follow the OS */
-    }
-
-    // Pre-paint theme bootstrap: stored preference wins, otherwise
-    // follow the OS via prefers-color-scheme.
-    root.setAttribute('data-theme', stored ?? (mq.matches ? 'dark' : 'light'));
-
-    // Live OS theme sync: when the user has NOT picked a theme, follow
-    // OS changes mid-session (e.g. macOS auto night-shift, manual flip).
-    mq.addEventListener('change', (e) => {
+    const readStored = () => {
       try {
-        if (localStorage.getItem('theme')) return;
+        const value = localStorage.getItem('theme');
+        return value === 'light' || value === 'dark' ? value : null;
       } catch {
-        /* ignore */
+        return null;
       }
-      root.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+    };
+    const apply = (stored) => {
+      root.setAttribute('data-theme', stored ?? (mq.matches ? 'dark' : 'light'));
+      root.setAttribute('data-theme-pref', stored ?? 'system');
+    };
+
+    apply(readStored());
+
+    // "System": follow OS changes mid-session (auto night mode, manual flip).
+    mq.addEventListener('change', () => {
+      if (!readStored()) apply(null);
     });
 
-    // Cross-tab sync: another tab toggled the theme → follow.
+    // Another tab changed the preference → follow.
     addEventListener('storage', (e) => {
-      if (e.key !== 'theme') return;
-      root.setAttribute('data-theme', e.newValue ?? (mq.matches ? 'dark' : 'light'));
+      if (e.key === 'theme' || e.key === null) apply(readStored());
     });
   })();
 </script>

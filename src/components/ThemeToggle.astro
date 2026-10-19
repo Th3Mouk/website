@@ -1,34 +1,146 @@
 ---
-// Theme toggle: flips light <-> dark and remembers the choice. The initial
-// theme is set pre-paint by the inline script in BaseHead (localStorage,
-// else prefers-color-scheme), so this component only handles clicks.
-import IconButton from './ui/IconButton.astro';
+// Theme menu: light, dark, or system (follow the OS, live). The choice is
+// stored in localStorage — 'theme' = 'light' | 'dark', absent = system.
+// BaseHead's inline script applies it pre-paint and sets `data-theme-pref`
+// on <html>, so the trigger shows the right icon without a flash
+// (see `.theme-icon` in global.css).
 import Icon from './icons/Icon.astro';
+import type { IconName } from './icons/icons';
 
 interface Props {
   label: string;
+  options: { light: string; dark: string; system: string };
 }
 
-const { label } = Astro.props;
+const { label, options } = Astro.props;
+
+const items: { value: 'light' | 'dark' | 'system'; icon: IconName; label: string }[] = [
+  { value: 'light', icon: 'sun', label: options.light },
+  { value: 'dark', icon: 'moon', label: options.dark },
+  { value: 'system', icon: 'monitor', label: options.system },
+];
 ---
 
-<IconButton label={label} class="theme-toggle">
-  <!-- Sun: shown in dark mode (click → light). Moon: shown in light mode. -->
-  <Icon name="sun" size={18} class="hidden dark:block" />
-  <Icon name="moon" size={18} class="dark:hidden" />
-</IconButton>
+<div class="theme-menu relative">
+  <button
+    type="button"
+    class="theme-menu-trigger inline-flex size-9 items-center justify-center rounded-md text-fg-muted transition-colors duration-200 hover:bg-subtle hover:text-fg aria-expanded:bg-subtle aria-expanded:text-fg"
+    aria-label={label}
+    title={label}
+    aria-haspopup="menu"
+    aria-expanded="false"
+    aria-controls="theme-menu-list"
+  >
+    {
+      items.map((item) => (
+        <Icon name={item.icon} size={18} class={`theme-icon theme-icon-${item.value}`} />
+      ))
+    }
+  </button>
+
+  <div
+    id="theme-menu-list"
+    role="menu"
+    aria-label={label}
+    hidden
+    class="absolute top-full right-0 z-50 mt-2 w-44 rounded-lg border border-line bg-surface p-1 shadow-lg"
+  >
+    {
+      items.map((item) => (
+        <button
+          type="button"
+          role="menuitemradio"
+          aria-checked="false"
+          tabindex="-1"
+          data-theme-value={item.value}
+          class="group flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-left text-sm text-fg-muted transition-colors duration-200 hover:bg-subtle hover:text-fg focus-visible:bg-subtle aria-checked:text-fg"
+        >
+          <Icon name={item.icon} size={16} />
+          <span class="flex-1">{item.label}</span>
+          <Icon name="check" size={14} class="invisible text-accent group-aria-checked:visible" />
+        </button>
+      ))
+    }
+  </div>
+</div>
 
 <script>
-  for (const button of document.querySelectorAll<HTMLButtonElement>('.theme-toggle')) {
-    button.addEventListener('click', () => {
-      const html = document.documentElement;
-      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', next);
-      try {
-        localStorage.setItem('theme', next);
-      } catch {
-        // Private mode / blocked storage: the toggle still works for this page.
+  type Pref = 'light' | 'dark' | 'system';
+
+  const root = document.documentElement;
+  const osDark = matchMedia('(prefers-color-scheme: dark)');
+
+  const readPref = (): Pref => {
+    try {
+      const stored = localStorage.getItem('theme');
+      return stored === 'light' || stored === 'dark' ? stored : 'system';
+    } catch {
+      return 'system';
+    }
+  };
+
+  const applyPref = (pref: Pref) => {
+    try {
+      if (pref === 'system') localStorage.removeItem('theme');
+      else localStorage.setItem('theme', pref);
+    } catch {
+      // Storage blocked: the choice still applies to this page.
+    }
+    root.dataset.themePref = pref;
+    root.setAttribute('data-theme', pref === 'system' ? (osDark.matches ? 'dark' : 'light') : pref);
+  };
+
+  for (const menu of document.querySelectorAll<HTMLElement>('.theme-menu')) {
+    const trigger = menu.querySelector<HTMLButtonElement>('.theme-menu-trigger')!;
+    const list = menu.querySelector<HTMLElement>('[role="menu"]')!;
+    const items = [...list.querySelectorAll<HTMLButtonElement>('[data-theme-value]')];
+
+    const syncChecked = () => {
+      const pref = root.dataset.themePref ?? readPref();
+      for (const item of items) {
+        item.setAttribute('aria-checked', String(item.dataset.themeValue === pref));
       }
+    };
+
+    const setOpen = (open: boolean) => {
+      list.hidden = !open;
+      trigger.setAttribute('aria-expanded', String(open));
+      if (open) {
+        syncChecked();
+        (items.find((i) => i.getAttribute('aria-checked') === 'true') ?? items[0]).focus();
+      }
+    };
+
+    trigger.addEventListener('click', () => setOpen(list.hasAttribute('hidden')));
+
+    for (const item of items) {
+      item.addEventListener('click', () => {
+        applyPref(item.dataset.themeValue as Pref);
+        setOpen(false);
+        trigger.focus();
+      });
+    }
+
+    list.addEventListener('keydown', (e) => {
+      const index = items.indexOf(document.activeElement as HTMLButtonElement);
+      const move = (to: number) => items[(to + items.length) % items.length].focus();
+      if (e.key === 'ArrowDown') move(index + 1);
+      else if (e.key === 'ArrowUp') move(index - 1);
+      else if (e.key === 'Home') move(0);
+      else if (e.key === 'End') move(items.length - 1);
+      else if (e.key === 'Escape') {
+        setOpen(false);
+        trigger.focus();
+      } else {
+        // Tab leaves the menu: close it but keep the native focus move.
+        if (e.key === 'Tab') setOpen(false);
+        return;
+      }
+      e.preventDefault();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!list.hidden && !menu.contains(e.target as Node)) setOpen(false);
     });
   }
 </script>

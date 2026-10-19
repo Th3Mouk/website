@@ -59,7 +59,10 @@ export const ui = {
     'nav.closeMenu': 'Fermer le menu',
     'nav.skip': 'Aller au contenu',
     'lang.switch': 'Changer de langue',
-    'theme.toggle': 'Basculer le thème clair/sombre',
+    'theme.toggle': 'Thème',
+    'theme.light': 'Clair',
+    'theme.dark': 'Sombre',
+    'theme.system': 'Système',
     'footer.tagline':
       "Formateur & consultant technique senior. J'aide les équipes et développeurs à livrer du logiciel fiable, depuis 2013.",
     'footer.pages': 'pages',
@@ -94,7 +97,10 @@ export const ui = {
     'nav.closeMenu': 'Close menu',
     'nav.skip': 'Skip to content',
     'lang.switch': 'Switch language',
-    'theme.toggle': 'Toggle light/dark theme',
+    'theme.toggle': 'Theme',
+    'theme.light': 'Light',
+    'theme.dark': 'Dark',
+    'theme.system': 'System',
     'footer.tagline':
       'Senior technical trainer & consultant. I help teams and developers ship reliable software, since 2013.',
     'footer.pages': 'pages',
