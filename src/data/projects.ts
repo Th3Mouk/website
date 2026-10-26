@@ -54,8 +54,8 @@ export interface Project {
  */
 export const projects: Project[] = [
   {
-    slug: 'serato-cue',
-    name: 'Serato Import',
+    slug: 'crateflow',
+    name: 'CrateFlow',
     status: 'active',
     tech: ['Python', 'macOS', 'Serato DJ', 'Mixed In Key'],
     tagline: {
